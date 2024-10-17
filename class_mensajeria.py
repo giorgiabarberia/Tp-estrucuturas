@@ -1,5 +1,9 @@
 from collections import deque
 import datetime
+from class_celular import Celular
+from class_central import Central
+
+central = Central()
 
 # Clase Mensajería
 class Mensajeria:
@@ -34,9 +38,8 @@ class Mensajeria:
         }
         self.bandeja_entrada.append(mensaje)
     
-    ## TENGO ENTENDIDO QUE TENEMOS QUE PODER ELEGIR QUE ELIMINAR
     # Elimina el último mensaje recibido
-    def eliminar_mensaje_entrada(self):   #PREGUNTAR: ACA SUPONEMOS QUE ELIMINAMOS EL ULTIMO SOLO
+    def eliminar_mensaje_entrada(self):  
         if self.bandeja_entrada:
             eliminado = self.bandeja_entrada.pop()
             print(f'Se eliminó el mensaje: {eliminado}')
@@ -71,25 +74,111 @@ class Mensajeria:
 
 # Clase SMS (herencia de Mensajería)
 class SMS(Mensajeria):
-    def __init__(self, num_remitente):
+    def __init__(self, celular:Celular):
         super().__init__()
-        self.num_remitente = num_remitente
+        self.chats = {}  
+        self.celular = celular
+        self.num_remitente = celular.numero
+
+    def obtener_nombre_o_num(self,numero):
+        return self.celular.agenda_contactos.get(numero,numero)
     
+    def buscar_num_por_nombre(self, nombre):
+        return self.celular.agenda_contactos.get(nombre)
+
     # Función para enviar un mensaje, se agrega a la bandeja de salida
     def enviar_sms(self, num_destino, texto):
-        self.enviar_mensaje(self.num_remitente, num_destino, texto)
+        if num_destino not in self.chats:
+            self.chats[num_destino] = deque()
+        mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
+        self.chats[num_destino].append(mensaje)
+
+    def recibir_mensaje(self, num_remitente, texto):
+        if num_remitente not in self.chats:
+            self.chats[num_remitente] = deque()     #Pila con mensajes recibidos
+        mensaje = f'{num_remitente}: {texto} 1 [{self.obtener_hora_actual()}]'
+        self.chats[num_remitente].append(mensaje)
+    
+    def eliminar_mensaje(self, num_destino, num_mensaje_a_elim):
+        if num_destino not in self.chats:
+            print('Chat no encontrado')
+        self.chats[num_destino][num_mensaje_a_elim] = 'Mensaje eliminado'
+        
+    def ejecutar_sms(self):
+        print('\n---SMS---')
+        for numero in self.chats.keys():
+            nombre = self.obtener_nombre_o_num(numero)
+            print(f'- {nombre}')
+        while True:
+            print('Elegir chat de SMS:\n1. Por contacto\n2.Por número telefónico\nSalir')
+            opcion = print('Seleccione una opción: ').strip()
+            if opcion == '1':
+                nombre = input('Abrir chat con: ').strip()
+                numero = self.buscar_num_por_nombre(nombre)
+                if not numero:
+                    print(f'No se encontró el contacto {nombre}')
+                    return
+            elif opcion == '2': ###VALIDAR QUE EL NUMERO EXISTA
+                numero = input('Enviar mensaje al número: ').strip()
+                if not 
+            elif opcion == '3':
+                break
+            else:
+                print('Opción Inválida. Por favor intente nuevamente.')
+        for mensaje in self.chats[numero]:
+            print(mensaje)
+        while True:
+            print('1. Enviar un mensaje\n2.Eliminar un mensaje\n3.Salir')
+            opcion = print('Seleccione una opcion: ').strip()
+            if opcion == '1':
+                texto = input('Mensje: ')
+                if central.enviar_sms(self.num_remitente,numero,texto):
+                    self.enviar_mensaje(numero,texto)
+                    ##HACER QUE EL OTRO NÚMERO LO RECIBA
+            
+                
+
+   
+   
+   
+        
+
 
 # Clase Email (herencia de Mensajería)
 class Email(Mensajeria):
     def __init__(self, email_remitente):
-        super().__init__()
-        self.email_remitente = email_remitente
-        self.leido = False
+        self.bandeja_entrada=deque()
+        self.bandeja_salida=deque()
+        #self.email_remitente = email_remitente
+        #self.leido = False
     
+     # Agrega un mensaje a la bandeja de salida
+    def enviar_email(self, remitente, destino, contenido):
+        mensaje = {
+            'Remitente': remitente,
+            'Destino': destino,
+            'Contenido': contenido,
+            'Hora': self.obtener_hora_actual(),
+            'Leido': False  # Se marca como no leído por defecto
+        }
+        self.bandeja_salida.append(mensaje) 
+    
+    # Agrega un mensaje a la bandeja de entrada
+    def recibir_mensaje(self, remitente, destino, contenido):
+        mensaje = {
+            'Remitente': remitente,
+            'Destino': destino,
+            'Contenido': contenido,
+            'Hora': self.obtener_hora_actual(),
+            'Leido': False  # Se marca como no leído
+        }
+        self.bandeja_entrada.append(mensaje)
+  
     # Función para enviar un email, se agrega a la bandeja de salida
-    def enviar_email(self, email_destino:Mensajeria, asunto, cuerpo):
-        mail = f'Asunto: {asunto}\n{cuerpo}'
-        self.enviar_mensaje(self.email_remitente, email_destino, mail)
+    #def enviar_email(self, email_destino, asunto, cuerpo):
+        #mail = f'Asunto: {asunto}\n{cuerpo}'
+        #self.enviar_mensaje(self.email_remitente, email_destino, mail) 
+ 
 
     #función para abrir un email y marcarlo como leído
     def ver_emails_noleidos(self):

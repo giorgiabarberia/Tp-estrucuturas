@@ -1,31 +1,23 @@
 from class_mensajeria import SMS,Email
 from class_central import Central
-
+import validaciones 
 central = Central()
-
-# Función que valida que un número de teléfono sea válido
-def validar_telefono(telefono: str) -> bool:
-    return telefono.isdigit() and 10 <= len(telefono) <= 13
-
-# Función para preguntar si desea continuar
-def desea_continuar() -> bool:
-    while True:
-        cont = input('¿Desea continuar? (si o no): ').strip().lower()
-        if cont in {'si', 'no'}:
-            return cont == 'si'
 
 class Celular:
     id_usados = set()
     numeros_usados = set()
+    mails_usados = set()
     
-    def __init__(self, id: int, nombre: str, modelo: str, sistema_operativo: str, version: str, cap_memoria_ram: str, cap_almacenamiento: str, numero: str, direcc_email: str = None):
-        if not validar_telefono(numero):
+    def __init__(self, id: int, nombre: str, modelo: str, sistema_operativo: str, version: str, cap_memoria_ram: str, cap_almacenamiento: str, numero: str, direcc_email: str):
+        if not validaciones.validar_telefono(numero):
             raise ValueError(f'Error: el número de teléfono {numero} no es válido.')
         if id in Celular.id_usados:
             raise ValueError(f'Error: el id ingresado ya está en uso.')
         if numero in Celular.numeros_usados:
             raise ValueError(f'Error: el número de teléfono ya está en uso.')
-        
+        if direcc_email in Celular.mails_usados:
+            raise ValueError(f'Error: el mail ya está en uso.')
+
         self.id = id
         self.nombre = nombre
         self.modelo = modelo
@@ -44,6 +36,7 @@ class Celular:
         
         Celular.id_usados.add(id)
         Celular.numeros_usados.add(numero)
+        Celular.mails_usados.add(direcc_email)
 
         self.sms = SMS(numero)
         self.email = Email(direcc_email) if direcc_email else None
@@ -58,7 +51,7 @@ class Celular:
     def agendar_contacto(self):
         nombre = input('Nombre del contacto: ')
         numero = input('Número de teléfono: ')
-        if not validar_telefono(numero):
+        if not validaciones.validar_telefono(numero):
             print(f'Error: El número {numero} no es válido.')
             return
         if nombre in self.agenda_contactos:
@@ -132,7 +125,7 @@ class Celular:
             if ingreso == self.contraseña:
                 return ingreso
             print('Contraseña incorrecta.')
-            if not desea_continuar():
+            if not validaciones.desea_continuar():
                 return ''
     
     ## desbloquear el celular automáticamente si no hay contraseña, si la hay usa validar_contraseña_actual
@@ -146,7 +139,7 @@ class Celular:
     ## cambiar el nombre del usuario, valida que no sea muy largo y que exista     
     def cambiar_nombre(self):
         print(f'{self.nombre}, ud. va a cambiar su nombre')
-        if desea_continuar():
+        if validaciones.desea_continuar():
             while True:
                 nuevo = input('Ingrese un nuevo nombre: ').strip()
                 if 0 < len(nuevo) <= 50:
@@ -230,66 +223,6 @@ class Celular:
             else:
                 print("Opción Inválida. Por favor, intente nuevamente.")
 
-    #menu para todo lo que se pueda hacer con sms
-    def abrir_app_sms(self):
-        opciones = {
-            '1': 'Enviar SMS',
-            '2': 'Eliminar mensaje recibido',
-            '3': 'Eliminar mensaje enviado',
-            '4': 'Mostrar mensajes recibidos',
-            '5': 'Mostrar mensajes enviados',
-            '6': 'Salir'
-        }
-        while True:
-            print("\n---SMS---")
-            for key, value in opciones.items():
-                print(f"{key}. {value}")
-            opcion = input("\nSeleccione una opción: ").strip()
-            if opcion == '1':
-                self.enviar_sms()
-            elif opcion == '2':
-                self.sms.eliminar_mensaje_entrada()
-            elif opcion == '3':
-                self.sms.eliminar_mensaje_salida()
-            elif opcion == '4':
-                self.sms.mostrar_bandeja_entrada()
-            elif opcion == '5':
-                self.sms.mostrar_bandeja_salida()
-            elif opcion == '6':
-                break
-            else:
-                print("Opción Inválida. Por favor, intente nuevamente.")
-   
-   ##COMPLETAR BIEN, USAR CENTRAL   
-    def enviar_sms(self):
-        opciones = {
-            '1': 'Contacto',
-            '2': 'Número telefónico',
-            '3': 'Volver'
-        }
-        while True:
-            for key, value in opciones.items():
-                print(f"{key}. {value}")
-            opcion = input("\nSeleccione una opción: ").strip()
-            if opcion == '1':
-                nombre = input('Enviar mensaje a: ').strip()
-                numero = self.buscar_num_por_nombre(nombre)
-                if not numero:
-                    print(f'No se encontró el contacto {nombre}')
-                    return
-            elif opcion == '2':
-                numero = input('Enviar mensaje al número: ').strip()
-                ## Se me hace rara esta forma de validar 
-                if not validar_telefono(numero):
-                    print(f'El número {numero} no es válido.')
-                    return
-            elif opcion == '3':
-                break
-            else:
-                print('Opción Inválida. Por favor intente nuevamente.')
-            texto = input('Mensaje: ')
-            central.enviar_sms(self.numero,numero,texto)
-  
     #menu para todo lo que se pueda hacer con email
     def abrir_app_email(self):
         opciones = {

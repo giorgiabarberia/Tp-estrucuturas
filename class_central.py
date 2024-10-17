@@ -3,12 +3,13 @@ from class_mensajeria import SMS
 
 # Clase Central
 class Central:
+    ids_registrados = {}
     celulares_registrados = {}  # Diccionario de celulares registrados por número
     registros = []  # log PREGUNTAR COMO SE USA (actividad, lista de registros de celualres)
 
     # Para verificar si un celular está disponible (encendido y con red móvil activa)
     def verif_disponibilidad(self, numero):
-        celu = self.celulares_registrados.get(numero)
+        celu = self.ids_registrados.get(numero)
         if celu and celu.prendido and celu.red_movil:
             return True
         print(f'{numero} no se encuentra disponible.')
@@ -23,12 +24,7 @@ class Central:
     def enviar_sms(self,num_remitente,num_destino,texto):
         if self.celular_registrado(num_destino):
             if self.verif_disponibilidad(num_remitente) and self.verif_disponibilidad(num_destino):
-                remitente = self.celulares_registrados[num_remitente]
-                destino = self.celulares_registrados[num_destino]
                 
-                remitente.sms.enviar_sms(num_destino,texto)
-                destino.sms.recibir_mensaje(num_remitente,num_destino,texto)
-
                 self.registros.append({
                     'Tipo':'SMS',
                     'Remitente':num_remitente,
