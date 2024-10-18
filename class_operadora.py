@@ -1,3 +1,5 @@
+### comentario
+
 from class_celular import Celular
 from class_central import Central
 import validaciones
