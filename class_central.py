@@ -1,5 +1,4 @@
 import datetime
-import validaciones 
 from class_mensajeria import SMS
 
 # Clase Central

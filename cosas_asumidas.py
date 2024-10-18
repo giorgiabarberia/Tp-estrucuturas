@@ -1,0 +1,1 @@
+## Asumimos que cada persona solo puede tener un mail, y este no se puede repetir

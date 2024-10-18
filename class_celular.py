@@ -4,16 +4,14 @@ import validaciones
 central = Central()
 
 class Celular:
-    id_usados = set()
-    numeros_usados = set()
     mails_usados = set()
     
     def __init__(self, id: int, nombre: str, modelo: str, sistema_operativo: str, version: str, cap_memoria_ram: str, cap_almacenamiento: str, numero: str, direcc_email: str):
         if not validaciones.validar_telefono(numero):
             raise ValueError(f'Error: el número de teléfono {numero} no es válido.')
-        if id in Celular.id_usados:
+        if id in Central.ids_registrados.keys():
             raise ValueError(f'Error: el id ingresado ya está en uso.')
-        if numero in Celular.numeros_usados:
+        if numero in Central.celulares_registrados.keys():
             raise ValueError(f'Error: el número de teléfono ya está en uso.')
         if direcc_email in Celular.mails_usados:
             raise ValueError(f'Error: el mail ya está en uso.')
@@ -26,21 +24,18 @@ class Celular:
         self.ram = cap_memoria_ram
         self.almacenamiento = cap_almacenamiento
         self.numero = numero
-        self.direcc_email = direcc_email
+        self.direcc_email = direcc_email  ## Acá el email está dos veces, una vez como objeto y otra el mail en sí
         self.prendido = False
         self.contraseña = None
         self.bloqueo = True
         self.red_movil = False
         self.datos = False
         self.en_llamada = False
-        
-        Celular.id_usados.add(id)
-        Celular.numeros_usados.add(numero)
-        Celular.mails_usados.add(direcc_email)
-
-        self.sms = SMS(numero)
-        self.email = Email(direcc_email) if direcc_email else None
+        self.sms = SMS(numero)  
+        self.email = Email(direcc_email)  ## 
         self.agenda_contactos = {}
+        
+        Celular.mails_usados.add(direcc_email)
         
     def __str__(self):
         return (f'Celular de {self.nombre}\nModelo: {self.modelo}\n'
@@ -70,7 +65,17 @@ class Celular:
                 return celular
         print(f"No se encontró ningún celular registrado con el email {email}.")
         return None
-
+    
+    ## Se llama esta funcion cuando desde class operadora se elimina un celular, porque una vez que se elimina
+    # se pueden volver a usar el mail en otro. 
+    @classmethod
+    def eliminar_mail_celular(cls,mail):
+        try:
+            cls.mails_usados.remove(mail)
+        except:
+            print('No se eliminaron el mail de su celular porque no se encontraba registrado.')
+        
+        
     ## prendo el celular, y al prenderlo se ejecuta la funcion desbloquear
     def prender_celular(self):
         if self.prendido:

@@ -1,4 +1,5 @@
 from class_operadora import Operadora
+operadora = Operadora()
 
 def mostrar_menu():
     print("Menú Principal")
@@ -23,11 +24,10 @@ def menu_principal():
                 sub_opcion = input("Seleccione una opción: ")
                 
                 if sub_opcion == '1':
-                    pass
-                    ##Crea el celular
+                    operadora.registrar_celular()
                 elif sub_opcion == '2':
-                    pass 
-                    ## Elimina el celular
+                    numero = input('Ingrese el número del celular al que quiere eliminar: ')
+                    operadora.eliminar_celular(numero) ## No valido acá que el numero exista poruqe lo hice en la funcion, pero nose si mejor hacerlo acá
                 elif sub_opcion == '3':
                     break
                 else:

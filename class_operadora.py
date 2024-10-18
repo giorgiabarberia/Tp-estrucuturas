@@ -55,10 +55,12 @@ class Operadora:
         Central.ids_registrados[celular.id] = celular
         Central.celulares_registrados[celular.numero] = celular
         
-
     def eliminar_celular(self,numero):
         if numero in Central.celulares_registrados:
+            cel = Central.celulares_registrados[numero]
+            mail = cel.direcc_email ## O nose si poner email, depende como resolvamos eso
             del Central.celulares_registrados[numero]
+            Celular.eliminar_mail_celular(mail)
             print(f'Celular {numero} eliminado con éxito.')
         else:
-            print(f'Error: No se encontró el celular {numero}')
+            print(f'Error: No se encontró el celular {numero}, no estaba registrado en la central,\nEs posible que ya haya sido eliminado')
