@@ -1,4 +1,5 @@
 import datetime
+import validaciones 
 from class_mensajeria import SMS
 
 # Clase Central
@@ -25,20 +26,24 @@ class Central:
         if self.celular_registrado(num_destino):
             if self.verif_disponibilidad(num_remitente) and self.verif_disponibilidad(num_destino):
                 
+                remitente_celu = self.celulares_registrados[num_remitente]
+                destino_celu = self.celulares_registrados[num_destino]
+
+                remitente_celu.sms.enviar_sms(num_destino,texto)
+                destino_celu.sms.recibir_mensaje(num_remitente,texto)
+
                 self.registros.append({
-                    'Tipo':'SMS',
-                    'Remitente':num_remitente,
-                    'Destino':num_destino,
-                    'Contenido':texto,
-                    'Fecha':datetime.datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+                    'Tipo': 'SMS',
+                    'Remitente': num_remitente,
+                    'Destinatario': num_destino,
+                    'Fecha': datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
                 })
-                print(f'SMS enviado a {num_destino}')
                 return True
             else:
                 print('Error: Verificar conexión a la red móvil.')
         else:
-            print('El numero destinatario no está registrado')
-            
+            print('Error: el número destinatario no está registrado.')
+        return False
 
 
 

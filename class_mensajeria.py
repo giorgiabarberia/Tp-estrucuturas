@@ -74,11 +74,12 @@ class Mensajeria:
 
 # Clase SMS (herencia de Mensajería)
 class SMS(Mensajeria):
-    def __init__(self, celular:Celular):
+    def __init__(self, celular:Celular, central):
         super().__init__()
         self.chats = {}  
         self.celular = celular
         self.num_remitente = celular.numero
+        self.central = central
 
     def obtener_nombre_o_num(self,numero):
         return self.celular.agenda_contactos.get(numero,numero)
@@ -93,17 +94,40 @@ class SMS(Mensajeria):
         mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
         self.chats[num_destino].append(mensaje)
 
-    def recibir_mensaje(self, num_remitente, texto):
+    def recibir_sms(self, num_remitente, texto):
         if num_remitente not in self.chats:
             self.chats[num_remitente] = deque()     #Pila con mensajes recibidos
-        mensaje = f'{num_remitente}: {texto} 1 [{self.obtener_hora_actual()}]'
+        mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
         self.chats[num_remitente].append(mensaje)
     
+    def mostrar_chat(self,numero):
+        if numero not in self.chats:
+            print('')
+            return
+        nombre = self.obtener_nombre_o_num(numero)
+        print(f'---Chat con {nombre}---')
+        for i,mensaje in enumerate(self.chats[numero]):
+            print(f'{i+1}. {mensaje}')
+
     def eliminar_mensaje(self, num_destino, num_mensaje_a_elim):
         if num_destino not in self.chats:
             print('Chat no encontrado')
-        self.chats[num_destino][num_mensaje_a_elim] = 'Mensaje eliminado'
-        
+        if 0 <= num_mensaje_a_elim < len(self.chats[num_destino]):
+            self.chats[num_destino][num_mensaje_a_elim] = 'Mensaje eliminado' 
+            print('Mensaje eliminado correctamente.')
+        else:  
+            print('Número de mensaje inválido.')
+
+    def enviar_nuevo_sms(self,num_destino):
+        texto = input('Mensaje: ')
+        if texto:
+            if self.central.enviar_sms(self.num_remitente,num_destino,texto):
+                print('Mensaje enviado correctamente.')
+            else:
+                print('No se pudo enviar el mensaje. Verifica disponibilidad.')
+        else:
+            print('No se puede enviar un mensaje vacío.')
+
     def ejecutar_sms(self):
         print('\n---SMS---')
         for numero in self.chats.keys():
@@ -117,24 +141,34 @@ class SMS(Mensajeria):
                 numero = self.buscar_num_por_nombre(nombre)
                 if not numero:
                     print(f'No se encontró el contacto {nombre}')
-                    return
+                    continue
+                self.mostrar_chat(numero)
             elif opcion == '2': ###VALIDAR QUE EL NUMERO EXISTA
                 numero = input('Enviar mensaje al número: ').strip()
-                if not 
+                self.mostrar_chat(numero)
             elif opcion == '3':
+                print('Saliendo de SMS...')
                 break
             else:
                 print('Opción Inválida. Por favor intente nuevamente.')
-        for mensaje in self.chats[numero]:
-            print(mensaje)
+                continue
+        
         while True:
             print('1. Enviar un mensaje\n2.Eliminar un mensaje\n3.Salir')
-            opcion = print('Seleccione una opcion: ').strip()
-            if opcion == '1':
-                texto = input('Mensje: ')
-                if central.enviar_sms(self.num_remitente,numero,texto):
-                    self.enviar_mensaje(numero,texto)
-                    ##HACER QUE EL OTRO NÚMERO LO RECIBA
+            sub_opcion = print('Seleccione una opcion: ').strip()
+            if sub_opcion == '1':
+                self.enviar_nuevo_sms(numero)
+            elif sub_opcion == '2':
+                try:
+                    num_mensaje_a_elim = int(input('Número del mensaje que desea eliminar: '))
+                    self.eliminar_mensaje(numero,num_mensaje_a_elim)
+                except ValueError:
+                    print('Error. Ingrese un número válido.')
+            elif sub_opcion == '3':
+                break
+            else:
+                print('Opción inválida. Intente nuevamente.')
+                
             
                 
 
