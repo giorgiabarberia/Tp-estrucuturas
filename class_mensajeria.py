@@ -81,25 +81,29 @@ class SMS(Mensajeria):
         self.num_remitente = celular.numero
         self.central = central
 
+    #devuelve el nombre de contacto de un numero o el numero si no está agendado
     def obtener_nombre_o_num(self,numero):
         return self.celular.agenda_contactos.get(numero,numero)
     
+    #a partir del nombre de contacto devuelve el numero
     def buscar_num_por_nombre(self, nombre):
         return self.celular.agenda_contactos.get(nombre)
 
-    # Función para enviar un mensaje, se agrega a la bandeja de salida
+    # se agrega el mensaje en el chat del que lo envia 
     def enviar_sms(self, num_destino, texto):
         if num_destino not in self.chats:
             self.chats[num_destino] = deque()
         mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
         self.chats[num_destino].append(mensaje)
 
+    #se agrega el mensaje en el chat del que lo recibe
     def recibir_sms(self, num_remitente, texto):
         if num_remitente not in self.chats:
             self.chats[num_remitente] = deque()     #Pila con mensajes recibidos
         mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
         self.chats[num_remitente].append(mensaje)
     
+    #muestra todos los mensajes con una persona
     def mostrar_chat(self,numero):
         if numero not in self.chats:
             print('')
@@ -118,6 +122,7 @@ class SMS(Mensajeria):
         else:  
             print('Número de mensaje inválido.')
 
+    #llama a la funcion de la central para que envie el mensaje
     def enviar_nuevo_sms(self,num_destino):
         texto = input('Mensaje: ')
         if texto:
@@ -128,6 +133,7 @@ class SMS(Mensajeria):
         else:
             print('No se puede enviar un mensaje vacío.')
 
+    #todo en sms 
     def ejecutar_sms(self):
         print('\n---SMS---')
         for numero in self.chats.keys():
@@ -152,7 +158,7 @@ class SMS(Mensajeria):
             else:
                 print('Opción Inválida. Por favor intente nuevamente.')
                 continue
-        
+
         while True:
             print('1. Enviar un mensaje\n2.Eliminar un mensaje\n3.Salir')
             sub_opcion = print('Seleccione una opcion: ').strip()
