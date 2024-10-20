@@ -50,5 +50,11 @@ class Central:
         else:
             print('Error: celular no encontrado.')
             return None
+        
+    def obtener_celu_por_email(self,direcc_email):
+        for celular in self.celulares_registrados.values():
+            if celular.direcc_email == direcc_email:
+                return celular
+        return None
 
 

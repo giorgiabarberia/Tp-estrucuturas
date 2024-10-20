@@ -2,75 +2,8 @@ from collections import deque
 from datetime import datetime
 from class_central import Central
 
-# Clase Mensajería
-class Mensajeria:
-    def __init__(self):
-        self.bandeja_entrada = deque()  # Pila mensajes recibidos
-        self.bandeja_salida = deque()   # Pila mensajes enviados
-
-    # Devuelve la hora actual
-    @staticmethod
-    def obtener_hora_actual():
-        return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-
-    # Agrega un mensaje a la bandeja de salida
-    def enviar_mensaje(self, remitente, destino, contenido):
-        mensaje = {
-            'Remitente': remitente,
-            'Destino': destino,
-            'Contenido': contenido,
-            'Hora': self.obtener_hora_actual(),
-            'Leido': False  # Se marca como no leído por defecto
-        }
-        self.bandeja_salida.append(mensaje)
-    
-    # Agrega un mensaje a la bandeja de entrada
-    def recibir_mensaje(self, remitente, destino, contenido):
-        mensaje = {
-            'Remitente': remitente,
-            'Destino': destino,
-            'Contenido': contenido,
-            'Hora': self.obtener_hora_actual(),
-            'Leido': False  # Se marca como no leído
-        }
-        self.bandeja_entrada.append(mensaje)
-    
-    # Elimina el último mensaje recibido
-    def eliminar_mensaje_entrada(self):  
-        if self.bandeja_entrada:
-            eliminado = self.bandeja_entrada.pop()
-            print(f'Se eliminó el mensaje: {eliminado}')
-        else:
-            print('No hay mensajes en la bandeja de entrada.')
-    
-    # Elimina el último mensaje que se envió
-    def eliminar_mensaje_salida(self):
-        if self.bandeja_salida:
-            eliminado = self.bandeja_salida.pop()
-            print(f'Se eliminó el mensaje: {eliminado}')
-        else:
-            print('No hay mensajes en la bandeja de salida.')
-
-    # Muestra la bandeja de entrada
-    def mostrar_bandeja_entrada(self):
-        if not self.bandeja_entrada:
-            print('Bandeja de entrada vacía.')
-        else:
-            print('Bandeja de entrada:')
-            for mensaje in self.bandeja_entrada:
-                print(f'[{mensaje["Hora"]}] {mensaje["Remitente"]} | {mensaje["Contenido"]} | Leído: {mensaje["Leido"]}')
-
-    # Muestra la bandeja de salida
-    def mostrar_bandeja_salida(self):
-        if not self.bandeja_salida:
-            print('Bandeja de salida vacía.')
-        else:
-            print('Bandeja de salida:')
-            for mensaje in self.bandeja_salida:
-                print(f'[{mensaje["Hora"]}] {mensaje["Destino"]} | {mensaje["Contenido"]}')
-
-# Clase SMS (herencia de Mensajería)
-class SMS(Mensajeria):
+# Clase SMS 
+class SMS():
     def __init__(self, id_celular, central:Central):
         super().__init__()
         self.chats = {}  
@@ -79,6 +12,10 @@ class SMS(Mensajeria):
             raise ValueError('Error: Celular no encontrado en la central.')
         self.num_remitente = self.celular.numero
         self.central = central
+
+    @staticmethod
+    def obtener_hora_actual():
+        return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
 
     #Devuelve el nombre de contacto de un número o el número si no está agendado
     def obtener_nombre_o_num(self,numero):
@@ -111,8 +48,8 @@ class SMS(Mensajeria):
         print(f'---Chat con {nombre}---')
         if numero not in self.chats:
             return
-        for i,mensaje in enumerate(self.chats[numero]):
-            print(f'{i+1}. {mensaje}')
+        for i,mensaje in enumerate(self.chats[numero],start=1):
+            print(f'{i}. {mensaje}')
 
     #Eliminar un mensaje a partir de su índice (se elimina sólo en el celular de la persona)
     def eliminar_mensaje(self, num_destino, num_mensaje_a_elim):
@@ -178,76 +115,121 @@ class SMS(Mensajeria):
                 else:
                     print('Opción inválida. Intente nuevamente.')
                 
-            
-                
 
-   
-   
-   
-        
+#Clase Email 
+class Email():
+    def __init__(self, direcc_email):
+        self.bandeja_entrada = deque()
+        self.bandeja_salida = deque()
+        self.email_remitente = direcc_email
 
+    @staticmethod
+    def obtener_fecha_actual():
+        return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
 
-# Clase Email (herencia de Mensajería)
-class Email(Mensajeria):
-    def __init__(self, email_remitente):
-        self.bandeja_entrada=deque()
-        self.bandeja_salida=deque()
-        #self.email_remitente = email_remitente
-        #self.leido = False
-    
-     # Agrega un mensaje a la bandeja de salida
-    def enviar_email(self, remitente, destino, contenido):
+    #Agrega un email a la bandeja de salida y a la bandeja de entrada de quien lo recibe 
+    def enviar_email(self,central:Central):
+        print('\nMensaje nuevo')
+        destino = input('Para: ')
+        asunto = input('Asunto: ')
+        cuerpo = input('Cuerpo: ')
         mensaje = {
-            'Remitente': remitente,
+            'Remitente': self.email_remitente,
             'Destino': destino,
-            'Contenido': contenido,
-            'Hora': self.obtener_hora_actual(),
-            'Leido': False  # Se marca como no leído por defecto
+            'Asunto': asunto,
+            'Cuerpo': cuerpo,
+            'Fecha': self.obtener_fecha_actual(),
+            'Leído': False  #Se marca como no leído por defecto
         }
         self.bandeja_salida.append(mensaje) 
+
+        celu_destino = central.obtener_celu_por_email(destino)
+        if celu_destino:    #Aclaración: podemos enviar un mail a una dirección que no exista, pero a esta nunca le va a llegar el mail
+            celu_destino.email.recibir_email(self.email_remitente,destino,asunto,cuerpo)
     
-    # Agrega un mensaje a la bandeja de entrada
-    def recibir_mensaje(self, remitente, destino, contenido):
+    #Agrega un mensaje a la bandeja de entrada
+    def recibir_email(self, remitente, destino, asunto,cuerpo):
         mensaje = {
             'Remitente': remitente,
             'Destino': destino,
-            'Contenido': contenido,
-            'Hora': self.obtener_hora_actual(),
-            'Leido': False  # Se marca como no leído
+            'Asunto': asunto,
+            'Cuerpo': cuerpo,
+            'Fecha': self.obtener_fecha_actual(),
+            'Leído': False  #Se marca como no leído
         }
         self.bandeja_entrada.append(mensaje)
-  
-    # Función para enviar un email, se agrega a la bandeja de salida
-    #def enviar_email(self, email_destino, asunto, cuerpo):
-        #mail = f'Asunto: {asunto}\n{cuerpo}'
-        #self.enviar_mensaje(self.email_remitente, email_destino, mail) 
- 
 
     #función para abrir un email y marcarlo como leído
-    def ver_emails_noleidos(self):
-        for mensaje in self.bandeja_entrada:
-            if not mensaje['Leido']:
-                mensaje['Leido'] = True
-                print(f'Email de {mensaje["Remitente"]} abierto: {mensaje["Contenido"]}')
-            return
-        print('No hay mensajes no leídos.')
-    
-    #funcion para mostrar todos los emails no leidos (del primero al ultimo)
-    def mostrar_emails_noleidos(self):
-        for mensaje in self.bandeja_entrada:
-            if mensaje['Leido'] == False:
-                print(f'Email de {mensaje["Remitente"]} : {mensaje["Contenido"]}')
-            return
-        print('No hay mensajes no leídos.')
+    def abrir_un_email(self, indice):
+        if 1 <= indice <= len(self.bandeja_entrada):
+            email = self.bandeja_entrada[indice-1]
+            print(f"\n{email['Remitente']} | [{email['Fecha']}]\nAsunto: {email['Asunto']}\n{email['Cuerpo']}")
+            email['Leído'] = True
+        else: 
+            print('Email no encontrado.')
 
-    # Esto seria una pila bien utilizada???
+    #Función para mostrar los emails no leidos primero
+    def mostrar_emails_noleidos(self):
+        no_leidos = []
+        leidos = []
+        for email in self.bandeja_entrada:
+            if not email['Leído']:
+                no_leidos.append(email)
+            else:
+                leidos.append(email)
+        print('\nFiltro: No leídos primero.')
+        for i,email in enumerate(no_leidos + leidos, start = 1):
+            print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
+            
     # Función para mostrar todos los emails por fecha (del último al primero)
     def mostrar_emails_por_fecha(self):
-        if not self.bandeja_entrada:
-            print('Bandeja de entrada vacía.')
-        else:
-            print('Emails en bandeja de entrada (ordenados por fecha):')
-            for mensaje in reversed(self.bandeja_entrada):
-                print(f'Email de {mensaje["Remitente"]} - {mensaje["Hora"]}: {mensaje["Contenido"]}')
+        print('\nFiltro: Por Fecha.')
+        for i,email in enumerate(sorted(self.bandeja_entrada, key=lambda e: e['Fecha'], reverse = True), start = 1):
+            print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
 
-    
+    #Función para mostrar la bandeja de entrada
+    def mostrar_bandeja_entrada(self):
+        for i,email in enumerate(self.bandeja_entrada):
+            print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
+
+    #Función para mostrar la bandeja de salida
+    def msotrar_bandeja_salida(self):
+        for i,email in enumerate(self.bandeja_salida,start=1):
+            print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
+
+    def abrir_app_email(self,central):
+        while True:
+            print('\n---EMAIL---')
+            print('\n1. ✏️  Redactar\n2. 📥 Recibidos\n3. ➡️  Enviados\n4. Salir')
+            opcion = input('Seleccione una opción: ')
+            if opcion == '1':
+                self.enviar_email(central)
+            elif opcion == '2':
+                self.mostrar_bandeja_entrada()
+                print('\nAplicar filtro:\n1. No leídos primero\n2. Por fecha\n3. Abrir email\n4. Volver')
+                subopcion = input('Seleccione una opción: ')
+                if subopcion == '1':
+                    self.mostrar_emails_noleidos()
+                elif subopcion == '2':
+                    self.mostrar_emails_por_fecha()
+                elif subopcion == '3':
+                    try:
+                        indice = int(input('Seleccione un email: '))
+                        self.abrir_un_email(indice)
+                    except ValueError:
+                        print('Error: Ingrese un número de email válido.')
+                elif subopcion == '4':
+                    continue
+                else:
+                    print('Opción inválida. Intente nuevamente.')
+                    continue
+            elif opcion == '3':
+                self.msotrar_bandeja_salida()
+                try:
+                    indice = int(input('\nSeleccione un email: '))
+                    self.abrir_un_email(indice)
+                except ValueError:
+                    print('Error: Ingrese un número de email válido.')
+            elif opcion == '4':
+                print('Saliendo de Email...')
+                break
