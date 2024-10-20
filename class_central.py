@@ -1,5 +1,4 @@
-import datetime
-from class_mensajeria import SMS
+from datetime import datetime
 
 # Clase Central
 class Central:
@@ -9,7 +8,7 @@ class Central:
 
     # Para verificar si un celular está disponible (encendido y con red móvil activa)
     def verif_disponibilidad(self, numero):
-        celu = self.ids_registrados.get(numero)
+        celu = self.celulares_registrados.get(numero)
         if celu and celu.prendido and celu.red_movil:
             return True
         print(f'{numero} no se encuentra disponible.')
@@ -29,7 +28,7 @@ class Central:
                 destino_celu = self.celulares_registrados[num_destino]
 
                 remitente_celu.sms.enviar_sms(num_destino,texto)
-                destino_celu.sms.recibir_mensaje(num_remitente,texto)
+                destino_celu.sms.recibir_sms(num_remitente,texto)
 
                 self.registros.append({
                     'Tipo': 'SMS',
@@ -41,8 +40,15 @@ class Central:
             else:
                 print('Error: Verificar conexión a la red móvil.')
         else:
-            print('Error: el número destinatario no está registrado.')
+            print('Error: El número destinatario no está registrado.')
         return False
-
+    
+    def obtener_celu_por_id(self,id):
+        celular = self.ids_registrados.get(id)
+        if celular:
+            return celular
+        else:
+            print('Error: celular no encontrado.')
+            return None
 
 

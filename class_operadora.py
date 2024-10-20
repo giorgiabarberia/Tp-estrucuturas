@@ -9,6 +9,7 @@ import string
 class Operadora:
     def __init__(self,nombre):
         self.nombre = nombre
+        self.central = Central()
 
     @staticmethod
     def crear_numero_aleatorio() -> str:
@@ -22,7 +23,7 @@ class Operadora:
         caracteres = string.ascii_letters + string.digits
         id = ''.join(random.choice(caracteres) for _ in range(longitud))
         while True:
-            if id not in Celular.id_usados:
+            if id not in Central.ids_registrados:
                 return id
 
     def registrar_celular(self):
@@ -56,7 +57,8 @@ class Operadora:
         celular = Celular(self,id,nombre,modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
         Central.ids_registrados[celular.id] = celular
         Central.celulares_registrados[celular.numero] = celular
-        
+        celular.asignar_mensajeria(self.central)
+
     def eliminar_celular(self,numero):
         if numero in Central.celulares_registrados:
             cel = Central.celulares_registrados[numero]
@@ -66,3 +68,8 @@ class Operadora:
             print(f'Celular {numero} eliminado con éxito.')
         else:
             print(f'Error: No se encontró el celular {numero}, no estaba registrado en la central,\nEs posible que ya haya sido eliminado')
+
+    def registrar_celu_autom(self,celular:Celular):
+        Central.ids_registrados[celular.id] = celular
+        Central.celulares_registrados[celular.numero] = celular
+        celular.asignar_mensajeria(self.central)

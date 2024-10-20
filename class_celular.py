@@ -31,9 +31,10 @@ class Celular:
         self.red_movil = False
         self.datos = False
         self.en_llamada = False
-        self.sms = SMS(numero)  
-        self.email = Email(direcc_email)  ## 
+        self.sms = None
+        self.email = None
         self.agenda_contactos = {}
+        self.email = Email(self.direcc_email)
         
         Celular.mails_usados.add(direcc_email)
         
@@ -42,6 +43,9 @@ class Celular:
                 f'Sistema operativo: {self.sist_op}\nCapacidad de memoria RAM: {self.ram}\n'
                 f'Capacidad de almacenamiento: {self.almacenamiento}\nNúmero telefónico: {self.numero}')
     
+    def asignar_mensajeria(self,central):
+        self.sms = SMS(self.id,central)
+
     #agrega contacto a la agenda_contactos (nombre:num)
     def agendar_contacto(self):
         nombre = input('Nombre del contacto: ')
@@ -227,6 +231,9 @@ class Celular:
                 break
             else:
                 print("Opción Inválida. Por favor, intente nuevamente.")
+
+    def abrir_app_sms(self):
+        self.sms.ejecutar_sms()
 
     #menu para todo lo que se pueda hacer con email
     def abrir_app_email(self):
