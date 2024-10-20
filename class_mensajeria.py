@@ -184,7 +184,6 @@ class Email():
             
     # Función para mostrar todos los emails por fecha (del último al primero)
     def mostrar_emails_por_fecha(self):
-<<<<<<< HEAD
         print('\nFiltro: Por Fecha.')
         self.bandeja_entrada = sorted(self.bandeja_entrada, key=lambda e: e['Fecha'], reverse = True)
         for i,email in enumerate(self.bandeja_entrada, start = 1):
@@ -243,7 +242,7 @@ class Email():
                 break
             else:
                 print('Opción inválida. Intente nuevamente.')
-=======
+
         if not self.bandeja_entrada:
             print('Bandeja de entrada vacía.')
         else:
@@ -251,4 +250,4 @@ class Email():
             for mensaje in reversed(self.bandeja_entrada):
                 print(f'Email de {mensaje["Remitente"]} - {mensaje["Hora"]}: {mensaje["Contenido"]}')
 #hola
->>>>>>> 7f6f155 (Descripción de los cambios locales/usr/local/bin/python3)
+

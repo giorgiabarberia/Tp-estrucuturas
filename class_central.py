@@ -57,4 +57,29 @@ class Central:
                 return celular
         return None
 
+##Inicia el proceso de llamada entre dos celulares
+def llamar (self,num_remitente):
+        if self.verif_disponibilidad(num_remitente):
+            remitente_celu = self.celulares_registrados[num_remitente]
+            num_destino = remitente_celu.telefono.realizar_llamada()
+            if self.celular_registrado(num_destino):
+                if self.verif_disponibilidad(num_destino):
+                    destino_celu = self.celulares_registrados[num_destino]
+
+                    remitente_celu.telefono.realizar_llamada()
+                    contestar = destino_celu.telefono.recibir_llamada(num_remitente)
+
+                    if contestar == 'si':
+                        hora_inicio = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+                        hora_fin = None
+                        colgar = False
+                        while not colgar:
+                            print('Llamada en curso...')
+                            colgar = destino_celu.telefono.colgar()
+                        hora_fin = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+
+                    if contestar == 'no':
+                        pass
+
+
 

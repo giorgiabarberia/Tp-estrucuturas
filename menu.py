@@ -51,9 +51,11 @@ def menu_principal():
                             elif eleccion == '2':
                                 print("Has seleccionado Mensajería SMS.")
                                 # Agrega aquí el código para manejar Mensajería SMS
+                                celular.abrir_app_sms()
                             elif eleccion == '3':
                                 print("Has seleccionado e-mail.")
                                 # Agrega aquí el código para manejar e-mail
+                                celular.abrir_app_email()
                             elif eleccion == '4':
                                 print("Has seleccionado Teléfono.")
                                 # Agrega aquí el código para manejar Teléfono
