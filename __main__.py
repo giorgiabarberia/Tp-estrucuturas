@@ -7,7 +7,7 @@ central = Central()
 
 # Crear celulares
 celular1 = Celular(1, "Juan", "Galaxy S21", "Android", "11.0", "8GB", "128GB", "1234567890", "juan@example.com")
-celular2 = Celular(2, "Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "0987654321", "")
+celular2 = Celular(2, "Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "0987654321", "ana@example.com")
 
 # Registrar los celulares en la central
 operadora.registrar_celu_autom(celular1)
@@ -17,12 +17,15 @@ operadora.registrar_celu_autom(celular2)
 celular1.prender_celular()
 celular2.prender_celular()
 
-# # Agregar contactos
-# celular1.agendar_contacto()
-# celular2.agendar_contacto()
+# Agregar contactos
+celular1.agendar_contacto()
+celular2.agendar_contacto()
 
-# # Enviar un SMS desde Juan a Ana
-# celular1.abrir_app_sms()
-# celular2.abrir_app_sms()
+# Enviar un SMS desde Juan a Ana
+celular1.abrir_app_sms()
+celular2.abrir_app_sms()
 
+print('CELULAR 1')
 celular1.abrir_app_email()
+print('CELULAR 2')
+celular2.abrir_app_email()

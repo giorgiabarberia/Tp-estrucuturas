@@ -76,7 +76,7 @@ class SMS():
     def ejecutar_sms(self):
         numero = None
         while True:
-            print('\n---SMS---')
+            print('\n-----SMS-----')
             for numero in self.chats.keys():
                 nombre = self.obtener_nombre_o_num(numero)
                 print(f'📞 {nombre}')
@@ -141,7 +141,7 @@ class Email():
             'Fecha': self.obtener_fecha_actual(),
             'Leído': False  #Se marca como no leído por defecto
         }
-        self.bandeja_salida.append(mensaje) 
+        self.bandeja_salida.appendleft(mensaje) 
 
         celu_destino = central.obtener_celu_por_email(destino)
         if celu_destino:    #Aclaración: podemos enviar un mail a una dirección que no exista, pero a esta nunca le va a llegar el mail
@@ -157,13 +157,13 @@ class Email():
             'Fecha': self.obtener_fecha_actual(),
             'Leído': False  #Se marca como no leído
         }
-        self.bandeja_entrada.append(mensaje)
+        self.bandeja_entrada.appendleft(mensaje)
 
     #función para abrir un email y marcarlo como leído
-    def abrir_un_email(self, indice):
-        if 1 <= indice <= len(self.bandeja_entrada):
-            email = self.bandeja_entrada[indice-1]
-            print(f"\n{email['Remitente']} | [{email['Fecha']}]\nAsunto: {email['Asunto']}\n{email['Cuerpo']}")
+    def abrir_un_email(self, indice, bandeja):
+        if 1 <= indice <= len(bandeja):
+            email = bandeja[indice-1]
+            print(f"\n📧 {email['Remitente']} | [{email['Fecha']}]\nAsunto: {email['Asunto']}\n{email['Cuerpo']}")
             email['Leído'] = True
         else: 
             print('Email no encontrado.')
@@ -178,58 +178,67 @@ class Email():
             else:
                 leidos.append(email)
         print('\nFiltro: No leídos primero.')
-        for i,email in enumerate(no_leidos + leidos, start = 1):
+        self.bandeja_entrada = no_leidos + leidos
+        for i,email in enumerate(self.bandeja_entrada, start = 1):
             print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
             
     # Función para mostrar todos los emails por fecha (del último al primero)
     def mostrar_emails_por_fecha(self):
         print('\nFiltro: Por Fecha.')
-        for i,email in enumerate(sorted(self.bandeja_entrada, key=lambda e: e['Fecha'], reverse = True), start = 1):
+        self.bandeja_entrada = sorted(self.bandeja_entrada, key=lambda e: e['Fecha'], reverse = True)
+        for i,email in enumerate(self.bandeja_entrada, start = 1):
             print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
 
-    #Función para mostrar la bandeja de entrada
-    def mostrar_bandeja_entrada(self):
-        for i,email in enumerate(self.bandeja_entrada):
+    #Función para mostrar la bandeja 
+    def mostrar_bandeja(self,bandeja):
+        for i,email in enumerate(bandeja,start=1):
             print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
 
-    #Función para mostrar la bandeja de salida
-    def msotrar_bandeja_salida(self):
-        for i,email in enumerate(self.bandeja_salida,start=1):
-            print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
-
-    def abrir_app_email(self,central):
+    def ejecutar_email(self,central):
         while True:
-            print('\n---EMAIL---')
+            print('\n-----EMAIL-----')
             print('\n1. ✏️  Redactar\n2. 📥 Recibidos\n3. ➡️  Enviados\n4. Salir')
             opcion = input('Seleccione una opción: ')
             if opcion == '1':
                 self.enviar_email(central)
             elif opcion == '2':
-                self.mostrar_bandeja_entrada()
-                print('\nAplicar filtro:\n1. No leídos primero\n2. Por fecha\n3. Abrir email\n4. Volver')
-                subopcion = input('Seleccione una opción: ')
-                if subopcion == '1':
-                    self.mostrar_emails_noleidos()
-                elif subopcion == '2':
-                    self.mostrar_emails_por_fecha()
-                elif subopcion == '3':
-                    try:
-                        indice = int(input('Seleccione un email: '))
-                        self.abrir_un_email(indice)
-                    except ValueError:
-                        print('Error: Ingrese un número de email válido.')
-                elif subopcion == '4':
-                    continue
-                else:
-                    print('Opción inválida. Intente nuevamente.')
-                    continue
+                print('\n---Bandeja de entrada---')
+                self.mostrar_bandeja(self.bandeja_entrada)
+                while True:
+                    print('\n1. Aplicar filtro: No leídos primero\n2. Aplicar filtro: Por fecha\n3. Abrir email\n4. Volver')
+                    subopcion = input('Seleccione una opción: ')
+                    if subopcion == '1':
+                        self.mostrar_emails_noleidos()
+                    elif subopcion == '2':
+                        self.mostrar_emails_por_fecha()
+                    elif subopcion == '3':
+                        try:
+                            indice = int(input('Seleccione un email: '))
+                            self.abrir_un_email(indice,self.bandeja_entrada)
+                        except ValueError:
+                            print('Error: Ingrese un número de email válido.')
+                    elif subopcion == '4':
+                        break
+                    else:
+                        print('Opción inválida. Intente nuevamente.')
             elif opcion == '3':
-                self.msotrar_bandeja_salida()
-                try:
-                    indice = int(input('\nSeleccione un email: '))
-                    self.abrir_un_email(indice)
-                except ValueError:
-                    print('Error: Ingrese un número de email válido.')
+                print('\n---Bandeja de salida---')
+                self.mostrar_bandeja(self.bandeja_salida)
+                while True:
+                    print('\n1. Abrir un email\n2. Volver')
+                    subopcion = input('Selecciona una opción: ')
+                    if subopcion == '1':
+                        try:
+                            indice = int(input('\nSeleccione un email: '))
+                            self.abrir_un_email(indice,self.bandeja_salida)
+                        except ValueError:
+                            print('Error: Ingrese un número de email válido.')
+                    elif subopcion == '2':
+                        break
+                    else: 
+                        print('Opción inválida. Intente nuevamente.')
             elif opcion == '4':
                 print('Saliendo de Email...')
                 break
+            else:
+                print('Opción inválida. Intente nuevamente.')

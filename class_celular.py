@@ -45,6 +45,7 @@ class Celular:
     
     def asignar_mensajeria(self,central):
         self.sms = SMS(self.id,central)
+    
 
     #agrega contacto a la agenda_contactos (nombre:num)
     def agendar_contacto(self):
@@ -232,9 +233,10 @@ class Celular:
             else:
                 print("Opción Inválida. Por favor, intente nuevamente.")
 
+    #menu para todo lo que se pueda hacer con sms
     def abrir_app_sms(self):
         self.sms.ejecutar_sms()
 
     #menu para todo lo que se pueda hacer con email
     def abrir_app_email(self):
-        self.email.abrir_app_email(central)
+        self.email.ejecutar_email(central)
