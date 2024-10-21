@@ -1,5 +1,7 @@
 from class_mensajeria import SMS,Email
 from class_central import Central
+from class_app_store import AppStore
+from class_telefono import Telefono
 import validaciones 
 central = Central()
 
@@ -32,9 +34,10 @@ class Celular:
         self.datos = False
         self.en_llamada = False
         self.sms = None
-        self.email = None
+        self.telefono = None
         self.agenda_contactos = {}
         self.email = Email(self.direcc_email)
+        self.apps = AppStore()   ## Crea la instancia de app store para este celular
         
         Celular.mails_usados.add(direcc_email)
         
@@ -45,6 +48,7 @@ class Celular:
     
     def asignar_mensajeria(self,central):
         self.sms = SMS(self.id,central)
+        self.telefono = Telefono(self.id,central)
     
 
     #agrega contacto a la agenda_contactos (nombre:num)
@@ -240,3 +244,6 @@ class Celular:
     #menu para todo lo que se pueda hacer con email
     def abrir_app_email(self):
         self.email.ejecutar_email(central)
+
+    def abrir_app_telefono(self):
+        self.telefono.ejecutar_telefono()

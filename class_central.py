@@ -57,29 +57,52 @@ class Central:
                 return celular
         return None
 
-##Inicia el proceso de llamada entre dos celulares
-def llamar (self,num_remitente):
-        if self.verif_disponibilidad(num_remitente):
-            remitente_celu = self.celulares_registrados[num_remitente]
-            num_destino = remitente_celu.telefono.realizar_llamada()
-            if self.celular_registrado(num_destino):
-                if self.verif_disponibilidad(num_destino):
-                    destino_celu = self.celulares_registrados[num_destino]
+    ##Inicia el proceso de llamada entre dos celulares
+    def llamar (self,num_remitente,num_destino):
+        if not self.verif_disponibilidad(num_remitente):
+            print(f'Error: El celular no está disponible.')
+            return False
+        remitente_celu = self.celulares_registrados[num_remitente]
+        if remitente_celu.en_llamada:
+            print('Error: Ya estás en una llamada.')
+            return False
+        if not self.celular_registrado(num_destino):
+            print(f'Error: El número {num_destino} no está registrado.')
+            return False
+        if not self.verif_disponibilidad(num_destino):
+            print(f'Error: El número {num_destino} no está disponible.')
+            return False
+        
+        destino_celu = self.celulares_registrados[num_destino]
+        if destino_celu.en_llamada:
+            print(f'Error: {num_destino} se encuentra ocupado')
+            return False
+        
+        print(f'Llamando a {num_destino}...')
 
-                    remitente_celu.telefono.realizar_llamada()
-                    contestar = destino_celu.telefono.recibir_llamada(num_remitente)
-
-                    if contestar == 'si':
-                        hora_inicio = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-                        hora_fin = None
-                        colgar = False
-                        while not colgar:
-                            print('Llamada en curso...')
-                            colgar = destino_celu.telefono.colgar()
-                        hora_fin = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-
-                    if contestar == 'no':
-                        pass
+        if destino_celu.telefono.recibir_llamada(num_remitente):
+            print(f'Llamada aceptada por {num_destino}')
+            remitente_celu.en_llamada = True
+            destino_celu.en_llamada = True
+            remitente_celu.telefono.llamada_activa = num_destino
+            destino_celu.telefono.llamada_activa = num_remitente
+            
+            hora_inicio = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+            colgar = False
+            while not colgar:
+                colgar = remitente_celu.telefono.colgar(destino_celu)
+            hora_fin = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+            
+            remitente_celu.telefono.llamada_activa = None
+            destino_celu.telefono.llamada_activa = None
+            remitente_celu.en_llamada = False
+            destino_celu.en_llamada = False
+            print(f'Llamada finalizada.')
+            return hora_inicio,hora_fin #esto no va
+        else:
+            print('Llamada rachazada.')
+            return False
+       
 
 
 

@@ -6,3 +6,11 @@
 # el usuario. Esto mejora la experiencia de usuario al interactuar con su bandeja de entrada y salida.
 
 #Asumimos que las aplicaciones como telefono, sms y email no se puede descargar
+
+## Asumimos que para eliminar las apps, la opción surge apenas entrás al celular porque en un celular,
+# las aplicaciones se borran al mantenerlas apretadas, sin entrar a ellas. Esto lo interpretamos como
+# que eliminar la app será una opcion para el usuario a penas entra al celular. 
+
+## Si no está descargada ninguna app, no aparece la opcion eliminar en el celular por lo asumido
+# anteriormente con eliminaer apps. Como interpretamos esta funcion del celular como mantenerla apretada,
+# si no hay ninguna app no hay ninguna que se pueda mantener apretada. 

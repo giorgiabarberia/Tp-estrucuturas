@@ -2,6 +2,7 @@ from class_operadora import Operadora
 from class_central import Central
 from class_celular import Celular
 from class_app_store import AppStore
+from aplicaciones import Spotify,Tetris,Salud,Twitter
 import validaciones
 import funciones_menu
 
@@ -42,7 +43,7 @@ def menu_principal():
                     else:
                         ## El celular está desbloqueado, acá van sus funciones (apps)
                         while True:
-                            funciones_menu.mostrar_submenu_celular()
+                            funciones_menu.mostrar_submenu_celular(celular)
                             eleccion = input("Seleccione una opción: ")
 
                             if eleccion == '1':
@@ -59,24 +60,28 @@ def menu_principal():
                             elif eleccion == '4':
                                 print("Has seleccionado Teléfono.")
                                 # Agrega aquí el código para manejar Teléfono
+                                celular.abrir_app_telefono()
                             elif eleccion == '5':
                                 print("Has seleccionado App Store.")
-                                # Agrega aquí el código para manejar App Store
+                                celular.apps.mostrar_apps()
                             elif eleccion == '6':
                                 print("Has seleccionado Configuración.")
-                                # Agrega aquí el código para manejar Configuración
-                            elif AppStore.apps_descargadas.get('Spotify', False) and eleccion == '7':
+                                celular.configuacion()
+                            elif celular.apps.apps_descargadas and eleccion == '7':
+                                print("Has seleccionado Eliminar App.")
+                                funciones_menu.menu_eliminar_app(celular)
+                            elif celular.apps.apps_descargadas.get('Spotify', False) and eleccion == '8':
                                 print("Has seleccionado Abrir Spotify.")
-                                # Agrega aquí el código para manejar Spotify
-                            elif AppStore.apps_descargadas.get('Tetris', True) and eleccion == '8':
+                                Spotify.ejecutar()
+                            elif celular.apps.apps_descargadas.get('Tetris', True) and eleccion == '9':
                                 print("Has seleccionado Abrir Tetris.")
-                                # Agrega aquí el código para manejar Tetris
-                            elif AppStore.apps_descargadas.get('Salud', True) and eleccion == '9':
+                                Tetris.menu_tetris()
+                            elif celular.apps.apps_descargadas.get('Salud', True) and eleccion == '10':
                                 print("Has seleccionado Abrir Salud.")
-                                # Agrega aquí el código para manejar Salud
-                            elif AppStore.apps_descargadas.get('Instagram', True) and eleccion == '10':
-                                print("Has seleccionado Abrir Instagram.")
-                                # Agrega aquí el código para manejar Instagram
+                                Salud.menu_salud()
+                            elif celular.apps.apps_descargadas.get('Instagram', True) and eleccion == '11':
+                                print("Has seleccionado Abrir Twitter.")
+                                Twitter.menu_twitter()
                             elif eleccion == '0':
                                 print("Saliendo del menú.")
                                 break

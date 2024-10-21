@@ -25,7 +25,7 @@ def preguntar_numero_celular():
             numero = input('Ingrese nuevamente el número del celular al que quiere acceder: ')
     return numero
 
-def mostrar_submenu_celular():
+def mostrar_submenu_celular(celular):
     print("\nMenú:")
     print("1. Contactos")
     print("2. Mensajería SMS")
@@ -33,12 +33,40 @@ def mostrar_submenu_celular():
     print("4. Teléfono")
     print("5. App Store")
     print("6. Configuración")
-    if AppStore.apps_descargadas.get('Spotify', True):
-        print("7. Abrir Spotify")
-    if AppStore.apps_descargadas.get('Tetris', True):
-        print("8. Abrir Tetris")
-    if AppStore.apps_descargadas.get('Salud', True):
-        print("9. Abrir Salud")
-    if AppStore.apps_descargadas.get('Instagram', True):
-        print("10. Abrir Instagram")
+    if celular.apps.apps_descargadas: 
+        print("7. Eliminar app")
+    if celular.apps.apps_descargadas.get('Spotify', True):
+        print("8. Abrir Spotify")
+    if celular.apps.apps_descargadas.get('Tetris', True):
+        print("9. Abrir Tetris")
+    if celular.apps.apps_descargadas.get('Salud', True):
+        print("10. Abrir Salud")
+    if celular.apps.apps_descargadas.get('Instagram', True):
+        print("11. Abrir Twitter")
     print("0. Salir")
+
+
+## Borrar aplicacion
+def menu_eliminar_app(celular):
+    while True:
+        print("\nAplicaciones disponibles para eliminar:")
+        apps_descargadas = [app for app, descargada in celular.apps.apps_descargadas.items() if descargada]
+        if not apps_descargadas:
+            print("No hay aplicaciones descargadas disponibles para eliminar.")
+            break
+        for idx, app in enumerate(apps_descargadas, start=1):
+            print(f"{idx}. {app}")
+        
+        eleccion = input("\nIngrese el número de la aplicación que desea eliminar (o 'salir' para terminar): ")
+        
+        if eleccion.lower() == 'salir':
+            print("Saliendo del menú de eliminación de aplicaciones.")
+            break
+        
+        if not eleccion.isdigit() or not (1 <= int(eleccion) <= len(apps_descargadas)):
+            print("Elección inválida. Por favor, intente de nuevo.")
+            continue
+        
+        indice = int(eleccion) - 1
+        app_seleccionada = apps_descargadas[indice]
+        celular.apps.eliminar_app(app_seleccionada)
