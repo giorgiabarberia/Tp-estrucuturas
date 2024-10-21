@@ -24,7 +24,7 @@ class Spotify:
             if opcion == '1':
                 self.mostrar_canciones()
             elif opcion == '2':
-                print("Saliendo de Spotify Simulado. ¡Hasta luego!")
+                print("Saliendo de Spotify. ¡Hasta luego!")
                 break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
@@ -121,3 +121,6 @@ class Twitter:
                 break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
+                
+tetris = Tetris()
+tetris.menu_tetris()
