@@ -8,10 +8,12 @@ central = Central()
 # Crear celulares
 celular1 = Celular(1, "Juan", "Galaxy S21", "Android", "11.0", "8GB", "128GB", "1234567890", "juan@example.com")
 celular2 = Celular(2, "Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "0987654321", "ana@example.com")
+celular3 = Celular(3,"Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "1122334455", "anaa@example.com")
 
 # Registrar los celulares en la central
 operadora.registrar_celu_autom(celular1)
 operadora.registrar_celu_autom(celular2)
+operadora.registrar_celu_autom(celular3)
 
 # Prender los celulares
 celular1.prender_celular()
@@ -33,3 +35,5 @@ print('celu 1')
 celular1.abrir_app_telefono()
 print('celu 2')
 celular2.abrir_app_telefono()
+print('celu 1')
+celular1.abrir_app_telefono()

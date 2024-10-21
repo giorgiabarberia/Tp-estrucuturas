@@ -20,7 +20,7 @@ class SMS():
 
     #Devuelve el nombre de contacto de un número o el número si no está agendado
     def obtener_nombre_o_num(self,numero):
-        for nombre, num in self.celular.contactos.agenda_contactos.items():
+        for num, nombre in self.celular.contactos.agenda_contactos.items():
             if num == numero:
                 return nombre
         return numero
@@ -28,17 +28,22 @@ class SMS():
     #Se agrega el mensaje en el chat del que lo envía 
     def enviar_sms(self, num_destino, texto):
         if num_destino not in self.chats:
-            self.bandeja_entrada[num_destino] = deque()   #Pila para los mensajes en un chat
+            self.chats[num_destino] = deque()   #Pila para los mensajes en un chat
         mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
-        self.bandeja_entrada[num_destino].append(mensaje)
+        self.chats[num_destino].append(mensaje)
 
     #Se agrega el mensaje en el chat del que lo recibe
     def recibir_sms(self, num_remitente, texto):
-        if num_remitente not in self.chats:
-            self.bandeja_entrada[num_remitente] = deque()     #Pila para los mensajes en un chat
         mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
-        self.bandeja_entrada[num_remitente].append(mensaje)
-    
+        if self.celular.prendido:
+            if num_remitente not in self.chats:
+                self.chats[num_remitente] = deque()     #Pila para los mensajes en un chat
+            self.chats[num_remitente].append(mensaje)
+        else:
+            if num_remitente not in self.bandeja_entrada:
+                self.bandeja_entrada[num_remitente] = deque()
+            self.bandeja_entrada[num_remitente].append(mensaje)
+
     #Muestra todos los mensajes con una persona (con un índice)
     def mostrar_chat(self,numero):
         nombre = self.obtener_nombre_o_num(numero)
@@ -70,7 +75,12 @@ class SMS():
             print('No se puede enviar un mensaje vacío.')
 
     def actualizar_chats(self):
-        self.chats = self.bandeja_entrada
+        if self.bandeja_entrada:
+            for num_remitente, mensajes in self.bandeja_entrada.items():
+                if num_remitente not in self.chats:
+                    self.chats[num_remitente] = deque()
+                self.chats[num_remitente].extend(mensajes)
+            self.bandeja_entrada.clear()
 
     #todo en sms 
     def ejecutar_sms(self):
@@ -91,7 +101,7 @@ class SMS():
                     print(f'\nError: No se encontró el contacto {nombre}')
                     continue
                 self.mostrar_chat(numero)
-            elif opcion == '2': ###VALIDAR QUE EL NUMERO EXISTA
+            elif opcion == '2': 
                 numero = input('\nAbrir chat con: ').strip()
                 self.mostrar_chat(numero)
             elif opcion == '3':

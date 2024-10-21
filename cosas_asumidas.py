@@ -14,3 +14,6 @@
 ## Si no está descargada ninguna app, no aparece la opcion eliminar en el celular por lo asumido
 # anteriormente con eliminaer apps. Como interpretamos esta funcion del celular como mantenerla apretada,
 # si no hay ninguna app no hay ninguna que se pueda mantener apretada. 
+
+## Al agendar un contacto, te deja agendar lo que quieras como número, porque así sucede en los celulares.
+# Luego, al intentar mandarle algo a ese número se le dirá al usuario que no existe. 

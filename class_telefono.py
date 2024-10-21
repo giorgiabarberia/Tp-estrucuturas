@@ -15,64 +15,73 @@ class Telefono():
         self.llamada_activa_con = None
 
     def realizar_llamada(self):   
-        num_destino = input('Ingrese el número al que desea llamar: ') 
+        num_destino = input('\nIngrese el número al que desea llamar: ') 
         if self.central.llamar(self.num_remitente,num_destino):
             self.celular.en_llamada = True
         
     def ver_llamadas_entrantes(self):
-        if not self.llamadas_entrantes:
-            print('No hay llamadas entrantes.')
-            return None
         print('\nLlamadas entrantes:')
+        if len(self.llamadas_entrantes)==0:
+            return None
         for i, celu in enumerate(self.llamadas_entrantes,start=1):
-            print(f'{i}. {celu.numero}')
+            print(f'{i}. 📲 {celu.numero}')
 
     def contestar_llamada(self):
         llamada = int(input('Contestar: '))
         if 1<=llamada<=len(self.llamadas_entrantes):
             self.celular.en_llamada = True
-            celu_remitente = self.llamadas_entrantes.pop(llamada-1)
+            celu_remitente = self.llamadas_entrantes[llamada-1]
             self.llamada_activa_con = celu_remitente
             celu_remitente.telefono.llamada_activa_con = self.celular
-
+            del self.llamadas_entrantes[llamada-1]
+            print(f'Llamada en curso con {celu_remitente.numero}...')
+        else:
+            print('Selección inválida.')
 
     def colgar(self):
-        if self.celular.en_llamada:
-            self.celular.en_llamada = False
-        else:
-            print('No hay llamada en curso.')
+        if not self.celular.en_llamada:
+            print('\nNo hay llamada en curso.')
             return False
+        celu_destino = self.llamada_activa_con
+        if celu_destino:
+            self.celular.en_llamada = False
+            celu_destino.en_llamada = False
+            self.llamada_activa_con = None
+            celu_destino.telefono.llamada_activa_con = None
+            print('\nLlamada finalizada.')
+        else:
+            self.celular.en_llamada = False
         
     def ejecutar_telefono(self):
         while True:
-            print('-----TELÉFONO------')
-            print('1. Realizar llamada\n2. Finalizar llamada\n3. Ver llamadas entrantes\n4. Salir')
+            print('\n-----TELÉFONO------')
+            print('1. 📞 Realizar llamada\n2. ☎️  Finalizar llamada\n3. 📲 Ver llamadas entrantes\n4. Salir')
             opcion = input('Seleccione una opción: ').strip()
 
             if opcion == '1':
                 self.realizar_llamada()
 
             elif opcion == '2':
-                if self.celular.en_llamada:
-                    self.colgar()
-                else:
-                    print('Error: No hay llamada en curso para finalizar.')
+                self.colgar()
 
             elif opcion == '3':
                 while True:
-                    if self.ver_llamadas_entrantes():
-                        print('\n1. Contestar llamada\n2. Volver')
-                        subopcion = input('Seleccione una opción: ').strip()
-                        if subopcion == '1':
+                    self.ver_llamadas_entrantes()
+                    print('\n1. Contestar llamada\n2. Volver')
+                    subopcion = input('Seleccione una opción: ').strip()
+                    if subopcion == '1':
+                        try:
                             self.contestar_llamada()
-                        elif subopcion == '2':
-                            break
-                        else:
-                            print('Opción inválida. Intente nuevamente.')
+                        except ValueError:
+                            print('\nOpción inválida. Ingresa el número de llamada.')
+                    elif subopcion == '2':
+                        break
+                    else:
+                        print('\nOpción inválida. Intente nuevamente.')
 
             elif opcion == '4':
-                print('Saliendo de Teléfono...')
+                print('\nSaliendo de Teléfono...')
                 break
 
             else:
-                print('Opción inválida. Intente nuevamente.')
+                print('\nOpción inválida. Intente nuevamente.')

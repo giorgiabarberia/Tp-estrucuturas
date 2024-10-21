@@ -3,6 +3,7 @@ from class_central import Central
 from class_celular import Celular
 from class_app_store import AppStore
 from aplicaciones import Spotify,Tetris,Salud,Twitter
+from class_contactos import Contactos
 import validaciones
 import funciones_menu
 
@@ -48,18 +49,16 @@ def menu_principal():
 
                             if eleccion == '1':
                                 print("Has seleccionado Contactos.")
-                                # Agrega aquí el código para manejar Contactos
+                                celular.contactos.menu_contactos()
                             elif eleccion == '2':
                                 print("Has seleccionado Mensajería SMS.")
                                 # Agrega aquí el código para manejar Mensajería SMS
                                 celular.abrir_app_sms()
                             elif eleccion == '3':
                                 print("Has seleccionado e-mail.")
-                                # Agrega aquí el código para manejar e-mail
                                 celular.abrir_app_email()
                             elif eleccion == '4':
                                 print("Has seleccionado Teléfono.")
-                                # Agrega aquí el código para manejar Teléfono
                                 celular.abrir_app_telefono()
                             elif eleccion == '5':
                                 print("Has seleccionado App Store.")

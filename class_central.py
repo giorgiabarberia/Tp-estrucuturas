@@ -81,7 +81,7 @@ class Central:
         
         print(f'Llamando a {num_destino}...')
         hora_inicio = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-        destino_celu.telefono.llamadas_entrantes.append(f'{remitente_celu}')
+        destino_celu.telefono.llamadas_entrantes.append(remitente_celu)
         return True
         
        
