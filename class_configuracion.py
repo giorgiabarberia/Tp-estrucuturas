@@ -4,6 +4,10 @@ import validaciones
 class Configuracion:
     def __init__(self,nombre):
         self.nombre = nombre
+        self.contraseña = None
+        self.bloqueo = True
+        self.red_movil = False
+        self.datos = False
     
     ## función de configuración
     def configuracion(self): 
@@ -91,3 +95,46 @@ class Configuracion:
                 print('Lo lamentamos, no podrás cambiar tu código')
         else:
             self.actualizar_codigo()
+            
+       
+    ## Activar la red movil
+    def activar_red_movil(self):
+        if self.red_movil:
+            print('La red movil ya está activa.')
+        else:
+            print('Activando red movil...')
+            self.red_movil = True
+    
+    ## Desactiva la red movil
+    def desactivar_red_movil(self):
+        if not self.red_movil:
+            print('La red movil ya está desactivada.')
+        else:
+            print('Desactivando red movil...')
+            self.red_movil = False
+        
+    ## Activar datos
+    def activar_datos(self):
+        if self.datos:
+            print('Los datos celulares ya están activados')
+        else:
+            print('Activando datos...')
+            self.datos = True
+        
+    ## Desactivar datos
+    def desactivar_datos(self):
+        if not self.datos:
+            print('Los datos celulares ya están desactivados')
+        else:
+            print('Desactivando datos...')
+            self.datos = False
+    
+    ## validar que el usuario sepa cual es su contraseña actual
+    def validar_contraseña_actual(self) -> str:
+        while True:
+            ingreso = input('Ingrese la contraseña actual: ')
+            if ingreso == self.contraseña:
+                return ingreso
+            print('Contraseña incorrecta.')
+            if not validaciones.desea_continuar():
+                return ''
