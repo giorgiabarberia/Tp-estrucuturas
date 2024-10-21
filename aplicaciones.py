@@ -1,3 +1,4 @@
+
 class Spotify:
     def __init__(self):
         self.canciones = [
@@ -14,8 +15,8 @@ class Spotify:
 
     def mostrar_canciones(self):
         print("\nLista de canciones disponibles ♫♬♪♩𝄞:")
-        for idx, cancion in enumerate(self.canciones, start=1):
-            print(f"{idx}. {cancion}")
+        for cancion in self.canciones:
+            print(cancion)
 
     def ejecutar(self):
         while True:
@@ -29,27 +30,22 @@ class Spotify:
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
 
-
 ## HAY que probar si funciona bien
 class Tetris:
-    def __init__(self):
-        self.grid = [[0] * 10 for _ in range(20)]  # Una cuadrícula de 20 filas por 10 columnas
-        self.current_piece = self.generate_piece()
-
-    def generate_piece(self):
-        # Generar una pieza simplificada (por ejemplo, una pieza cuadrada 2x2)
-        return [[1, 1], [1, 1]]
-
-    def display_grid(self):
-        for row in self.grid:
-            print(" ".join(str(cell) for cell in row))
-
-    def place_piece(self):
-        # Colocar la pieza en la parte superior de la cuadrícula
-        piece = self.current_piece
-        for r in range(len(piece)):
-            for c in range(len(piece[r])):
-                self.grid[r][c + 4] = piece[r][c]  # Colocar la pieza en la columna central
+    def entrada_tetris():
+        print("*************************************")
+        print("*       ¡Bienvenido a Tetris!       *")
+        print("*************************************")
+        print("\nControles:")
+        print(" - Izquierda: 'a'")
+        print(" - Derecha: 'd'")
+        print(" - Rotar: 'w'")
+        print(" - Bajar rápido: 's'")
+        print(" - Pausar: 'p'\n")
+        print("Tablero de Tetris:")
+        for _ in range(20):  # 20 filas
+            print("|          |")  # 10 columnas vacías
+        print("------------")  # Base del tablero
 
     def menu_tetris(self):
         while True:
@@ -60,16 +56,12 @@ class Tetris:
             opcion = input("Seleccione una opción: ")
 
             if opcion == '1':
-                print("\nJugando Tetris...")
-                self.place_piece()
-                self.display_grid()
+                self.entrada_tetris
             elif opcion == '2':
                 print("Saliendo del juego...")
                 break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
-
-
 
 class Salud:
     def __init__(self):
@@ -98,16 +90,16 @@ class Salud:
 
 class Twitter:
     def __init__(self):
-        self.noticias = ["Publicación 1: ¡Hola Mundo!", "Publicación 2: Disfrutando de un día soleado", "Publicación 3: Nueva receta de cocina"]
+        self.noticias = ["Publicación 1: Muerte de Liam Payne", "Publicación 2: Vamos Racing", "Publicación 3: Lean aprobanos"]
 
     def mostrar_noticias(self):
-        print("Noticias de Instagram:")
+        print("Noticias de Twitter:")
         for noticia in self.noticias:
             print(f"- {noticia}")
 
     def menu_twitter(self):
         while True:
-            print("\nMenu Instagram:")
+            print("\nMenu Twitter:")
             print("1. Ver Noticias")
             print("2. Salir de la app")
 
@@ -121,6 +113,3 @@ class Twitter:
                 break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
-                
-tetris = Tetris()
-tetris.menu_tetris()

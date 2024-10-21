@@ -11,31 +11,34 @@ class Telefono():
             raise ValueError('Error: Celular no encontrado en la central.')
         self.num_remitente = self.celular.numero
         self.central = central
-        self.llamada_activa = None
+        self.llamadas_entrantes = deque()
+        self.llamada_activa_con = None
 
     def realizar_llamada(self):   
         num_destino = input('Ingrese el número al que desea llamar: ') 
-        self.central.llamar(self.num_remitente,num_destino)
-       
+        if self.central.llamar(self.num_remitente,num_destino):
+            self.celular.en_llamada = True
         
-    def recibir_llamada(self,num_remitente):
-        print(f'Llamada entrante del numero {num_remitente}')
-        contestar = input('¿Desea contestar? (si/no): ').strip().lower()
-        while contestar not in ['si','no']:
-            contestar = input('¿Desea contestar? (si/no): ').strip().lower()
-        if contestar == 'si':
-            return True
-        else:
-            return False
+    def ver_llamadas_entrantes(self):
+        if not self.llamadas_entrantes:
+            print('No hay llamadas entrantes.')
+            return None
+        print('\nLlamadas entrantes:')
+        for i, celu in enumerate(self.llamadas_entrantes,start=1):
+            print(f'{i}. {celu.numero}')
 
-    def colgar(self,celu_destino):
-        if self.celular.en_llamada and celu_destino.en_llamada:
-            colgar = input('¿Desea colgar? (si/no): ').strip().lower()
-            if colgar=='si':
-                print('Llamada finalizada.')
-                return True
-            else:
-                return False
+    def contestar_llamada(self):
+        llamada = int(input('Contestar: '))
+        if 1<=llamada<=len(self.llamadas_entrantes):
+            self.celular.en_llamada = True
+            celu_remitente = self.llamadas_entrantes.pop(llamada-1)
+            self.llamada_activa_con = celu_remitente
+            celu_remitente.telefono.llamada_activa_con = self.celular
+
+
+    def colgar(self):
+        if self.celular.en_llamada:
+            self.celular.en_llamada = False
         else:
             print('No hay llamada en curso.')
             return False
@@ -43,29 +46,33 @@ class Telefono():
     def ejecutar_telefono(self):
         while True:
             print('-----TELÉFONO------')
-            print('1. Realizar llamada\n2. Finalizar llamada\n3. Salir')
+            print('1. Realizar llamada\n2. Finalizar llamada\n3. Ver llamadas entrantes\n4. Salir')
             opcion = input('Seleccione una opción: ').strip()
 
             if opcion == '1':
                 self.realizar_llamada()
 
             elif opcion == '2':
-                if self.celular.en_llamada and self.llamada_activa:
-                    celu_destino = self.central.celulares_registrados[self.llamada_activa]
-                    self.colgar(celu_destino)
+                if self.celular.en_llamada:
+                    self.colgar()
                 else:
                     print('Error: No hay llamada en curso para finalizar.')
+
             elif opcion == '3':
+                while True:
+                    if self.ver_llamadas_entrantes():
+                        print('\n1. Contestar llamada\n2. Volver')
+                        subopcion = input('Seleccione una opción: ').strip()
+                        if subopcion == '1':
+                            self.contestar_llamada()
+                        elif subopcion == '2':
+                            break
+                        else:
+                            print('Opción inválida. Intente nuevamente.')
+
+            elif opcion == '4':
                 print('Saliendo de Teléfono...')
                 break
+
             else:
                 print('Opción inválida. Intente nuevamente.')
-                
-                    
-
-                        
-
-
-       
-        
-

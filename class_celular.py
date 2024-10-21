@@ -3,6 +3,7 @@ from class_central import Central
 from class_app_store import AppStore
 from class_telefono import Telefono
 from class_configuracion import Configuracion
+from class_contactos import Contactos
 import validaciones 
 central = Central()
 
@@ -31,7 +32,7 @@ class Celular:
         self.en_llamada = False
         self.sms = None
         self.telefono = None
-        self.agenda_contactos = {}
+        self.contactos = Contactos()
         self.configuracion = Configuracion(nombre)
         self.email = Email(self.direcc_email)
         self.apps = AppStore()   ## Crea la instancia de app store para este celular
@@ -47,23 +48,6 @@ class Celular:
         self.sms = SMS(self.id,central)
         self.telefono = Telefono(self.id,central)
     
-
-    #agrega contacto a la agenda_contactos (nombre:num)
-    def agendar_contacto(self):
-        nombre = input('Nombre del contacto: ')
-        numero = input('Número de teléfono: ')
-        if not validaciones.validar_telefono(numero):
-            print(f'Error: El número {numero} no es válido.')
-            return
-        if nombre in self.agenda_contactos:
-            print(f'Error: El contacto {nombre} ya existe.')
-        else:
-            self.agenda_contactos[nombre] = numero
-            print(f'Contacto {nombre} agendado con éxito.')
-
-    #devuelve el número de un contacto  
-    def buscar_num_por_nombre(self, nombre):
-        return self.agenda_contactos.get(nombre)
     
     def buscar_celu_por_email(self, email):
         for celular in central.celulares_registrados.values():

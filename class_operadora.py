@@ -54,10 +54,11 @@ class Operadora:
                 mail = input('Ingrese un mail válido, el formato del ingresado no es válido: ')
             else: 
                 mail = input('Ingrese un mail válido, el ingresado ya está en uso por otro celular: ')
-        celular = Celular(self,id,nombre,modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
+        celular = Celular(id,nombre,modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
         Central.ids_registrados[celular.id] = celular
         Central.celulares_registrados[celular.numero] = celular
         celular.asignar_mensajeria(self.central)
+        print(f'Celular registrado con éxito.\nSu número es: {celular.numero}')
 
     def eliminar_celular(self,numero):
         if numero in Central.celulares_registrados:

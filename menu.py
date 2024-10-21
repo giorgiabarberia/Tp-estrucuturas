@@ -6,7 +6,7 @@ from aplicaciones import Spotify,Tetris,Salud,Twitter
 import validaciones
 import funciones_menu
 
-operadora = Operadora()
+operadora = Operadora('Personal')
 
 ## Acá deberíamos bajar desde csv todas las listas para usar ahora y tener datos viejos. 
 
@@ -66,7 +66,7 @@ def menu_principal():
                                 celular.apps.mostrar_apps()
                             elif eleccion == '6':
                                 print("Has seleccionado Configuración.")
-                                celular.configuacion()
+                                celular.configuacion.configuacion()
                             elif celular.apps.apps_descargadas and eleccion == '7':
                                 print("Has seleccionado Eliminar App.")
                                 funciones_menu.menu_eliminar_app(celular)
@@ -100,3 +100,5 @@ def menu_principal():
         
         else:
             print("Opción no válida. Intente de nuevo.")
+
+menu_principal()

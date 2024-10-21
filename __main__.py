@@ -17,13 +17,13 @@ operadora.registrar_celu_autom(celular2)
 celular1.prender_celular()
 celular2.prender_celular()
 
-# # Agregar contactos
-# celular1.agendar_contacto()
-# celular2.agendar_contacto()
+# Agregar contactos
+celular1.contactos.agendar_contacto()
+celular2.contactos.agendar_contacto()
 
-# # Enviar un SMS desde Juan a Ana
-# celular1.abrir_app_sms()
-# celular2.abrir_app_sms()
+# Enviar un SMS desde Juan a Ana
+celular1.abrir_app_sms()
+celular2.abrir_app_sms()
 
 # print('CELULAR 1')
 # celular1.abrir_app_email()

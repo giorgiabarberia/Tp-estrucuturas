@@ -7,6 +7,7 @@ class SMS():
     def __init__(self, id_celular, central:Central):
         super().__init__()
         self.chats = {}  
+        self.bandeja_entrada = {}
         self.celular = central.obtener_celu_por_id(id_celular)
         if self.celular is None:
             raise ValueError('Error: Celular no encontrado en la central.')
@@ -19,28 +20,24 @@ class SMS():
 
     #Devuelve el nombre de contacto de un número o el número si no está agendado
     def obtener_nombre_o_num(self,numero):
-        for nombre, num in self.celular.agenda_contactos.items():
+        for nombre, num in self.celular.contactos.agenda_contactos.items():
             if num == numero:
                 return nombre
         return numero
-    
-    #A partir del nombre de contacto, devuelve el número de teléfono
-    def buscar_num_por_nombre(self, nombre):
-        return self.celular.agenda_contactos.get(nombre)
 
     #Se agrega el mensaje en el chat del que lo envía 
     def enviar_sms(self, num_destino, texto):
         if num_destino not in self.chats:
-            self.chats[num_destino] = deque()   #Pila para los mensajes en un chat
+            self.bandeja_entrada[num_destino] = deque()   #Pila para los mensajes en un chat
         mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
-        self.chats[num_destino].append(mensaje)
+        self.bandeja_entrada[num_destino].append(mensaje)
 
     #Se agrega el mensaje en el chat del que lo recibe
     def recibir_sms(self, num_remitente, texto):
         if num_remitente not in self.chats:
-            self.chats[num_remitente] = deque()     #Pila para los mensajes en un chat
+            self.bandeja_entrada[num_remitente] = deque()     #Pila para los mensajes en un chat
         mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
-        self.chats[num_remitente].append(mensaje)
+        self.bandeja_entrada[num_remitente].append(mensaje)
     
     #Muestra todos los mensajes con una persona (con un índice)
     def mostrar_chat(self,numero):
@@ -72,11 +69,16 @@ class SMS():
         else:
             print('No se puede enviar un mensaje vacío.')
 
+    def actualizar_chats(self):
+        self.chats = self.bandeja_entrada
+
     #todo en sms 
     def ejecutar_sms(self):
         numero = None
         while True:
             print('\n-----SMS-----')
+            if self.celular.prendido and self.celular.configuracion.red_movil:
+                self.actualizar_chats()
             for numero in self.chats.keys():
                 nombre = self.obtener_nombre_o_num(numero)
                 print(f'📞 {nombre}')
@@ -84,7 +86,7 @@ class SMS():
             opcion = input('Seleccione una opción: ').strip()
             if opcion == '1':
                 nombre = input('\nAbrir chat con: ').strip()
-                numero = self.buscar_num_por_nombre(nombre)
+                numero = self.celular.contactos.buscar_num_por_nombre(nombre)
                 if not numero:
                     print(f'\nError: No se encontró el contacto {nombre}')
                     continue
