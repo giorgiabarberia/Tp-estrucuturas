@@ -17,6 +17,7 @@ class Spotify:
         print("\nLista de canciones disponibles ♫♬♪♩𝄞:")
         for cancion in self.canciones:
             print(cancion)
+        print('▶︎ •၊၊||၊|။||||။‌‌‌‌‌၊|• 0:30')
 
     def ejecutar(self):
         while True:

@@ -132,7 +132,7 @@ class Configuracion:
     ## validar que el usuario sepa cual es su contraseña actual
     def validar_contraseña_actual(self) -> str:
         while True:
-            ingreso = input('Ingrese la contraseña actual: ')
+            ingreso = input('Ingrese la contraseña: ')
             if ingreso == self.contraseña:
                 return ingreso
             print('Contraseña incorrecta.')

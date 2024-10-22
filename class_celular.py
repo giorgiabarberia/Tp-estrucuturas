@@ -36,7 +36,7 @@ class Celular:
         self.configuracion = Configuracion(nombre)
         self.email = Email(self.direcc_email)
         self.apps = AppStore()   ## Crea la instancia de app store para este celular
-        
+
         Celular.mails_usados.add(direcc_email)
         
     def __str__(self):
@@ -97,5 +97,7 @@ class Celular:
     def abrir_app_email(self):
         self.email.ejecutar_email(central)
 
+    #menu para todo lo que se pueda hacer con el teléfono (llamadas)
     def abrir_app_telefono(self):
         self.telefono.ejecutar_telefono()
+

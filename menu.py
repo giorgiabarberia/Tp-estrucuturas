@@ -39,6 +39,8 @@ def menu_principal():
                 if numero in Central.celulares_registrados:
                     celular = Central.celulares_registrados[numero]
                     celular.prender_celular()
+                    if celular.configuracion.contraseña:
+                        celular.configuracion.validar_contraseña_actual()
                     if celular.bloqueo:
                         celular.apagar_celular()
                     else:
@@ -52,7 +54,6 @@ def menu_principal():
                                 celular.contactos.menu_contactos()
                             elif eleccion == '2':
                                 print("Has seleccionado Mensajería SMS.")
-                                # Agrega aquí el código para manejar Mensajería SMS
                                 celular.abrir_app_sms()
                             elif eleccion == '3':
                                 print("Has seleccionado e-mail.")
@@ -65,11 +66,11 @@ def menu_principal():
                                 celular.apps.mostrar_apps()
                             elif eleccion == '6':
                                 print("Has seleccionado Configuración.")
-                                celular.configuacion.configuacion()
+                                celular.configuracion.configuracion()
                             elif celular.apps.apps_descargadas and eleccion == '7':
                                 print("Has seleccionado Eliminar App.")
                                 funciones_menu.menu_eliminar_app(celular)
-                            elif celular.apps.apps_descargadas.get('Spotify', False) and eleccion == '8':
+                            elif celular.apps.apps_descargadas.get('Spotify', True) and eleccion == '8':
                                 print("Has seleccionado Abrir Spotify.")
                                 Spotify.ejecutar()
                             elif celular.apps.apps_descargadas.get('Tetris', True) and eleccion == '9':
@@ -78,7 +79,7 @@ def menu_principal():
                             elif celular.apps.apps_descargadas.get('Salud', True) and eleccion == '10':
                                 print("Has seleccionado Abrir Salud.")
                                 Salud.menu_salud()
-                            elif celular.apps.apps_descargadas.get('Instagram', True) and eleccion == '11':
+                            elif celular.apps.apps_descargadas.get('Twitter', True) and eleccion == '11':
                                 print("Has seleccionado Abrir Twitter.")
                                 Twitter.menu_twitter()
                             elif eleccion == '0':
