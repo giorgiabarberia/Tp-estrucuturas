@@ -1,4 +1,4 @@
-
+## No se si hacer una class aplicación
 class Spotify:
     def __init__(self):
         self.canciones = [
@@ -19,7 +19,7 @@ class Spotify:
             print(cancion)
         print('▶︎ •၊၊||၊|။||||။‌‌‌‌‌၊|• 0:30')
 
-    def ejecutar(self):
+    def menu(self):
         while True:
             self.mostrar_menu()
             opcion = input("\nIngrese el número de la opción que desea seleccionar: ")
@@ -33,6 +33,7 @@ class Spotify:
 
 ## HAY que probar si funciona bien
 class Tetris:
+    @staticmethod
     def entrada_tetris():
         print("*************************************")
         print("*       ¡Bienvenido a Tetris!       *")
@@ -43,12 +44,8 @@ class Tetris:
         print(" - Rotar: 'w'")
         print(" - Bajar rápido: 's'")
         print(" - Pausar: 'p'\n")
-        print("Tablero de Tetris:")
-        for _ in range(20):  # 20 filas
-            print("|          |")  # 10 columnas vacías
-        print("------------")  # Base del tablero
 
-    def menu_tetris(self):
+    def menu(self):
         while True:
             print("\nMenu Tetris:")
             print("1. Jugar")
@@ -57,7 +54,7 @@ class Tetris:
             opcion = input("Seleccione una opción: ")
 
             if opcion == '1':
-                self.entrada_tetris
+                self.entrada_tetris()
             elif opcion == '2':
                 print("Saliendo del juego...")
                 break
@@ -71,7 +68,7 @@ class Salud:
     def mostrar_informacion(self):
         print(self.informacion)
 
-    def menu_salud(self):
+    def menu(self):
         while True:
             print("\nMenu Salud:")
             print("1. Ver Información de Salud")
@@ -98,13 +95,13 @@ class Twitter:
         for noticia in self.noticias:
             print(f"- {noticia}")
 
-    def menu_twitter(self):
+    def menu(self):
         while True:
             print("\nMenu Twitter:")
             print("1. Ver Noticias")
             print("2. Salir de la app")
 
-            opcion = input("Seleccione una opción: ")
+            opcion = input("Sele ccione una opción: ")
 
             if opcion == '1':
                 print("\nMostrando noticias de Twitter...")

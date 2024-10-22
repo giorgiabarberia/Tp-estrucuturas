@@ -9,6 +9,10 @@ class AppStore:
             'Salud': False,
             'Twitter': False
         }
+        self.spotify = Spotify()
+        self.tetris = Tetris()
+        self.salud = Salud()
+        self.twitter = Twitter()
     
     def descargar_app(self, app):
         if app in self.apps_descargadas and not self.apps_descargadas[app]:
@@ -32,7 +36,7 @@ class AppStore:
         for app, descargada in self.apps_descargadas.items():
             estado = "Descargada" if descargada else "No descargada"
             print(f"- {app}: {estado}")
-        app_seleccionada = input("Seleccione una aplicación (o escriba 'salir' para terminar): ")
+        app_seleccionada = input("Seleccione una aplicación (o escriba 'salir' para terminar): ").capitalize()
         if app_seleccionada.lower() == 'salir':
             print("Saliendo de la AppStore.")
             return
@@ -56,7 +60,7 @@ class AppStore:
                 opcion = input("Seleccione una opción: ")
                 if opcion == '1':
                     print(f"Ingresando a {app}...")
-                    app()
+                    app.menu()
                 elif opcion == '2':
                     print("Saliendo...")
         else:

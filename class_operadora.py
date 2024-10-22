@@ -13,11 +13,8 @@ class Operadora:
 
     @staticmethod
     def crear_numero_aleatorio() -> str:
-        while True:
-            numero = ''.join(random.choice('0123456789') for _ in range(10))
-            if numero not in Central.celulares_registrados:
-                return numero
-            
+        return "11" + ''.join(random.choices("0123456789", k=8))
+
     @staticmethod
     def generar_id_unico(longitud=25) -> str:
         caracteres = string.ascii_letters + string.digits
@@ -41,13 +38,6 @@ class Operadora:
         cap_almacenamiento = input('Ingrese la capacidad de almacenamiento de su celular: ')
         cap_almacenamiento = validaciones.ingreso_no_vacio(cap_almacenamiento)
         numero = self.crear_numero_aleatorio()
-        self.nombre = nombre
-        self.modelo = modelo
-        self.sist_op = sistema_operativo
-        self.version = version
-        self.ram = cap_memoria_ram
-        self.almacenamiento = cap_almacenamiento
-        self.numero = numero
         mail = input('Ingrese su mail: ')
         while not validaciones.validar_email(mail) or mail in Celular.mails_usados:
             if not validaciones.validar_email(mail):

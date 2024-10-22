@@ -57,7 +57,7 @@ def menu_eliminar_app(celular):
         for idx, app in enumerate(apps_descargadas, start=1):
             print(f"{idx}. {app}")
         
-        eleccion = input("\nIngrese el número de la aplicación que desea eliminar (o 'salir' para terminar): ")
+        eleccion = input("\nIngrese el número de la aplicación que desea eliminar (o 'salir' para terminar): ").lower()
         
         if eleccion.lower() == 'salir':
             print("Saliendo del menú de eliminación de aplicaciones.")

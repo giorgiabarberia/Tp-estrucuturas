@@ -72,16 +72,16 @@ def menu_principal():
                                 funciones_menu.menu_eliminar_app(celular)
                             elif celular.apps.apps_descargadas.get('Spotify', True) and eleccion == '8':
                                 print("Has seleccionado Abrir Spotify.")
-                                Spotify.ejecutar()
+                                celular.apps.spotify.menu()
                             elif celular.apps.apps_descargadas.get('Tetris', True) and eleccion == '9':
                                 print("Has seleccionado Abrir Tetris.")
-                                Tetris.menu_tetris()
+                                celular.apps.tetris.menu()
                             elif celular.apps.apps_descargadas.get('Salud', True) and eleccion == '10':
                                 print("Has seleccionado Abrir Salud.")
-                                Salud.menu_salud()
+                                celular.apps.salud.menu()
                             elif celular.apps.apps_descargadas.get('Twitter', True) and eleccion == '11':
                                 print("Has seleccionado Abrir Twitter.")
-                                Twitter.menu_twitter()
+                                celular.apps.twitter.menu()
                             elif eleccion == '0':
                                 print("Saliendo del menú.")
                                 break
@@ -91,7 +91,6 @@ def menu_principal():
 
             else:
                 print('Aún no hay ningún celular registrado en la central al que pueda acceder.')
-            # Aquí puedes agregar más funciones relacionadas con el celular
 
         elif opcion == '3':
             print("Saliendo del programa.")
