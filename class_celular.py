@@ -29,6 +29,7 @@ class Celular:
         self.numero = numero
         self.direcc_email = direcc_email  ## Acá el email está dos veces, una vez como objeto y otra el mail en sí
         self.prendido = False
+        self.bloqueo = True
         self.en_llamada = False
         self.sms = None
         self.telefono = None
@@ -70,11 +71,14 @@ class Celular:
     def prender_celular(self):
         if self.prendido:
             print('El celular ya está prendido.')
+            return True
         else:
             print('Prendiendo...')
             self.prendido = True
-            self.desbloquear()
-            self.configuracion.activar_red_movil()
+            ok = self.desbloquear()
+            if ok:
+                self.configuracion.activar_red_movil()
+            return ok
             
     ## apagar el celular
     def apagar_celular(self):
@@ -88,6 +92,7 @@ class Celular:
                 self.bloqueo = False
         else:
             self.bloqueo = False
+        return not self.bloqueo
 
     #menu para todo lo que se pueda hacer con sms
     def abrir_app_sms(self):

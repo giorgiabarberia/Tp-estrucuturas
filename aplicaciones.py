@@ -18,16 +18,16 @@ class Spotify:
         for cancion in self.canciones:
             print(cancion)
         print('▶︎ •၊၊||၊|။||||။‌‌‌‌‌၊|• 0:30')
-
+        
     def menu(self):
-        while True:
+        opcion = None
+        while opcion != '2':
             self.mostrar_menu()
             opcion = input("\nIngrese el número de la opción que desea seleccionar: ")
             if opcion == '1':
                 self.mostrar_canciones()
             elif opcion == '2':
                 print("Saliendo de Spotify. ¡Hasta luego!")
-                break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
 
@@ -46,20 +46,21 @@ class Tetris:
         print(" - Pausar: 'p'\n")
 
     def menu(self):
-        while True:
+        opcion = None
+        while opcion != '2':
             print("\nMenu Tetris:")
             print("1. Jugar")
             print("2. Salir del juego")
-
+            
             opcion = input("Seleccione una opción: ")
 
             if opcion == '1':
                 self.entrada_tetris()
             elif opcion == '2':
                 print("Saliendo del juego...")
-                break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
+                
 
 class Salud:
     def __init__(self):
@@ -69,7 +70,8 @@ class Salud:
         print(self.informacion)
 
     def menu(self):
-        while True:
+        opcion = None
+        while opcion != '2':
             print("\nMenu Salud:")
             print("1. Ver Información de Salud")
             print("2. Salir de la app")
@@ -81,7 +83,6 @@ class Salud:
                 self.mostrar_informacion()
             elif opcion == '2':
                 print("Saliendo de la app.")
-                break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")
 
@@ -94,20 +95,20 @@ class Twitter:
         print("Noticias de Twitter:")
         for noticia in self.noticias:
             print(f"- {noticia}")
-
+            
     def menu(self):
-        while True:
+        opcion = None
+        while opcion != '2':
             print("\nMenu Twitter:")
             print("1. Ver Noticias")
             print("2. Salir de la app")
 
-            opcion = input("Sele ccione una opción: ")
+            opcion = input("Seleccione una opción: ")
 
             if opcion == '1':
                 print("\nMostrando noticias de Twitter...")
                 self.mostrar_noticias()
             elif opcion == '2':
                 print("Saliendo de la app.")
-                break
             else:
                 print("Opción inválida. Por favor, intente de nuevo.")

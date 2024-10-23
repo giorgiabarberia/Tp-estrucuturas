@@ -1,6 +1,5 @@
 import validaciones
-## ACA VA CONFIGURACION
-#### NINFA DIHO Q TIENE Q IR ACA
+
 class Configuracion:
     def __init__(self,nombre):
         self.nombre = nombre
@@ -8,7 +7,7 @@ class Configuracion:
         self.bloqueo = True
         self.red_movil = False
         self.datos = False
-    
+   
     ## función de configuración
     def configuracion(self): 
         opciones = {'1': 'Cambiar nombre','2': 'Cambiar código de desbloqueo','3': 'Datos','4': 'Red móvil','5': 'Salir'}
@@ -31,60 +30,69 @@ class Configuracion:
             else:
                 print("Opción Inválida. Por favor, intente nuevamente.")
                 
-    ## configuración de datos
+    # Menú configuración de datos
     def configurar_datos(self):
-        while True:
+        opciones = {
+            '1': 'Activar datos',
+            '2': 'Desactivar datos',
+            '3': 'Volver'
+        }
+        opcion = None
+        while opcion != '3':
             print("\nConfiguración de Datos:")
-            print("1. Activar datos")
-            print("2. Desactivar datos")
-            print("3. Volver")
+            for key, value in opciones.items():
+                print(f"{key}. {value}")
             opcion = input("Seleccione una opción: ").strip()
             if opcion == '1':
                 self.activar_datos()
             elif opcion == '2':
                 self.desactivar_datos()
-            elif opcion == '3':
-                break
-            else:
+            elif opcion != '3':
                 print("Opción Inválida. Por favor, intente nuevamente.")
                 
-    ## cambiar el nombre del usuario, valida que no sea muy largo y que exista     
+    # Cambiar el nombre del usuario
     def cambiar_nombre(self):
         print(f'{self.nombre}, ud. va a cambiar su nombre')
         if validaciones.desea_continuar():
-            while True:
+            nuevo = ''
+            while not (0 < len(nuevo) <= 50):
                 nuevo = input('Ingrese un nuevo nombre: ').strip()
                 if 0 < len(nuevo) <= 50:
                     self.nombre = nuevo
-                    break
-                print('Nombre inválido. Intente nuevamente.')
+                else:
+                    print('Nombre inválido. Intente nuevamente.')
+                    
     
-    ## configuración de red móvil
+    # Menú configuración de red móvil
     def configurar_red_movil(self):
-        while True:
+        opciones = {
+            '1': 'Activar red móvil',
+            '2': 'Desactivar red móvil',
+            '3': 'Volver'
+        }
+        opcion = ""
+        while opcion != '3':
             print("\nConfiguración de Red Móvil:")
-            print("1. Activar red móvil")
-            print("2. Desactivar red móvil")
-            print("3. Volver")
+            for key, value in opciones.items():
+                print(f"{key}. {value}")
             opcion = input("Seleccione una opción: ").strip()
             if opcion == '1':
                 self.activar_red_movil()
             elif opcion == '2':
                 self.desactivar_red_movil()
-            elif opcion == '3':
-                break
-            else:
+            elif opcion != '3':
                 print("Opción Inválida. Por favor, intente nuevamente.")
-                
-    ## Hace la acción de cambiar la contraseña
+            
+    # Actualizar la contraseña
     def actualizar_codigo(self):
-        while True:
+        nuevo, validar = None, None
+        while nuevo != validar or not nuevo:
             nuevo = input('Ingrese su nuevo código: ')
             validar = input('Ingrese su nuevo código nuevamente: ')
-            if nuevo and nuevo == validar:
-                self.contraseña = nuevo
-                break
-            print('No coinciden los códigos, intente nuevamente.')
+            if nuevo != validar:
+                print('No coinciden los códigos, intente nuevamente.')
+        self.contraseña = nuevo
+        
     
     ## Si el usuario ya tiene contraseña, valida que la sepa, y luego llama a actualizar_codigo  
     def cambiar_codigo(self):
@@ -138,3 +146,4 @@ class Configuracion:
             print('Contraseña incorrecta.')
             if not validaciones.desea_continuar():
                 return ''
+            

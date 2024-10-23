@@ -1,5 +1,4 @@
 import validaciones
-
 class Contactos:
     def __init__(self):
         self.agenda_contactos = {}
@@ -20,7 +19,7 @@ class Contactos:
     #Muestra la información de un contacto por numero o por nombre
     def mostrar_informacion_contacto(self, busqueda):
         resultados = [(numero, nombre) for numero, nombre in self.agenda_contactos.items() if busqueda == nombre or busqueda == numero]
-        if len(resultados) == 0:
+        if not resultados:
             print('Contacto no encontrado.')
         elif len(resultados) == 1:
             numero, nombre = resultados[0]
@@ -37,7 +36,7 @@ class Contactos:
 # Devuelve el número de un contacto por nombre
     def buscar_num_por_nombre(self, nombre):
         numeros = [numero for numero, contacto_nombre in self.agenda_contactos.items() if contacto_nombre == nombre]
-        if len(numeros) == 0:
+        if not numeros:
             return None
         elif len(numeros) == 1:
             return numeros[0]
@@ -75,6 +74,7 @@ class Contactos:
         
         if len(resultados) == 0:
             print('Contacto no encontrado.')
+            return
         elif len(resultados) == 1:
             numero, nombre = resultados[0]
         else:
@@ -84,7 +84,6 @@ class Contactos:
             seleccion = int(input('Seleccione el número correspondiente al contacto a actualizar: '))
             numero, nombre = resultados[seleccion - 1]
 
-
         nuevo_nombre = input(f'Nuevo nombre (actual: {nombre}, si lo quiere mantener presione intro): ') or nombre
         nuevo_numero = input(f'Nuevo número (actual: {numero}, si lo quiere mantener presione intro): ') or numero
         if nuevo_numero != numero and not validaciones.validar_telefono(nuevo_numero):
@@ -93,9 +92,7 @@ class Contactos:
         del self.agenda_contactos[numero]
         self.agenda_contactos[nuevo_numero] = nuevo_nombre
         print(f'Contacto actualizado: Nombre: {nuevo_nombre}, Número: {nuevo_numero}')
-
-
-    # Menú de contactos
+        
     def menu_contactos(self):
         while True:
             print("\n--- Menú de Contactos ---")
@@ -117,6 +114,6 @@ class Contactos:
                 self.actualizar_contacto()
             elif opcion == '5':
                 print("Saliendo del menú de contactos.")
-                break
+                return  # Regresa del método, saliendo del bucle
             else:
                 print("Opción no válida, por favor intente de nuevo.")

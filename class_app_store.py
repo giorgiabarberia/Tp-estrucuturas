@@ -70,6 +70,3 @@ class AppStore:
                     print("Saliendo...")
         else:
             print(f'{app} no se encuentra en AppStore.')
-            
-
-
