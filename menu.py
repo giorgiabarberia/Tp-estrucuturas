@@ -70,23 +70,23 @@ def menu_principal():
                             elif celular.apps.apps_descargadas and eleccion == '7':
                                 print("Has seleccionado Eliminar App.")
                                 funciones_menu.menu_eliminar_app(celular)
-                            elif celular.apps.apps_descargadas.get('Spotify', True) and eleccion == '8':
+                            elif celular.apps.apps_descargadas["Spotify"][0] and eleccion == '8':
                                 print("Has seleccionado Abrir Spotify.")
-                                celular.apps.spotify.menu()
-                            elif celular.apps.apps_descargadas.get('Tetris', True) and eleccion == '9':
+                                celular.apps.apps_descargadas["Spotify"][1].menu()
+                            elif celular.apps.apps_descargadas["Tetris"][0] and eleccion == '9':
                                 print("Has seleccionado Abrir Tetris.")
-                                celular.apps.tetris.menu()
-                            elif celular.apps.apps_descargadas.get('Salud', True) and eleccion == '10':
+                                celular.apps.apps_descargadas["Tetris"][1].menu()
+                            elif celular.apps.apps_descargadas["Salud"][0] and eleccion == '10':
                                 print("Has seleccionado Abrir Salud.")
-                                celular.apps.salud.menu()
-                            elif celular.apps.apps_descargadas.get('Twitter', True) and eleccion == '11':
+                                celular.apps.aplics.get('Salud').menu()
+                            elif celular.apps.apps_descargadas["Twitter"][0] and eleccion == '11':
                                 print("Has seleccionado Abrir Twitter.")
-                                celular.apps.twitter.menu()
+                                celular.apps.aplics.get('Twitter').menu()
                             elif eleccion == '0':
                                 print("Saliendo del menú.")
                                 break
                             else:
-                                print("Opción no válida. Por favor, seleccione una opción válida.")
+                                print("Opción inválida. Por favor, seleccione una opción válida.")
 
 
             else:

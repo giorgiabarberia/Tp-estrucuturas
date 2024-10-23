@@ -20,6 +20,7 @@ def preguntar_numero_celular():
     numero = input('\nIngrese el número del celular al que quiere acceder: ')
     continuar = True
     while continuar and numero not in Central.celulares_registrados:
+        print('Error, número no registrado')
         continuar = validaciones.desea_continuar()
         if continuar:
             numero = input('Ingrese nuevamente el número del celular al que quiere acceder: ')
@@ -35,31 +36,33 @@ def mostrar_submenu_celular(celular):
     print("6. ⚙️  Configuración")
     if celular.apps.apps_descargadas: 
         print("7. Eliminar app")
-    if celular.apps.apps_descargadas.get('Spotify', True):
+    if celular.apps.apps_descargadas["Spotify"][0]:
         print("8. 🎧 Abrir Spotify")
-    if celular.apps.apps_descargadas.get('Tetris', True):
+    if celular.apps.apps_descargadas["Tetris"][0]:
         print("9. 🧩 Abrir Tetris")
-    if celular.apps.apps_descargadas.get('Salud', True):
+    if celular.apps.apps_descargadas["Salud"][0]:
         print("10. ❤️‍🩹 Abrir Salud")
-    if celular.apps.apps_descargadas.get('Twitter', True):
+    if celular.apps.apps_descargadas["Twitter"][0]:
         print("11. 🐤 Abrir Twitter")
     print("0. Salir")
 
 
-## Borrar aplicacion
+# Permite al usuario eliminar aplicaciones descargadas en el celular
 def menu_eliminar_app(celular):
     while True:
         print("\nAplicaciones disponibles para eliminar:")
-        apps_descargadas = [app for app, descargada in celular.apps.apps_descargadas.items() if descargada]
+        apps_descargadas = [app for app, (descargada, _) in celular.apps.apps_descargadas.items() if descargada]
+        
         if not apps_descargadas:
             print("No hay aplicaciones descargadas disponibles para eliminar.")
             break
+        
         for idx, app in enumerate(apps_descargadas, start=1):
             print(f"{idx}. {app}")
         
         eleccion = input("\nIngrese el número de la aplicación que desea eliminar (o 'salir' para terminar): ").lower()
         
-        if eleccion.lower() == 'salir':
+        if eleccion == 'salir':
             print("Saliendo del menú de eliminación de aplicaciones.")
             break
         
@@ -70,3 +73,4 @@ def menu_eliminar_app(celular):
         indice = int(eleccion) - 1
         app_seleccionada = apps_descargadas[indice]
         celular.apps.eliminar_app(app_seleccionada)
+        
