@@ -266,4 +266,5 @@ class Email():
             print('Emails en bandeja de entrada (ordenados por fecha):')
             for mensaje in reversed(self.bandeja_entrada):
                 print(f'Email de {mensaje["Remitente"]} - {mensaje["Hora"]}: {mensaje["Contenido"]}')
+                
 
