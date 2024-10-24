@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import csv
+import numpy as np
 
-# Creo listas vacías para guardar la información del archivo csv
+# Inicializamos listas vacías para guardar la información del archivo CSV
 app = []
 category = []
 rating = []
@@ -16,8 +17,7 @@ last_updated = []
 current_ver = []
 android_ver = []
 
-# Abrir el archivo CSV
-with open('Tp-estrucuturas/Play_Store_Data.csv', 'r') as file:
+with open('Play_Store_Data.csv', 'r', encoding='utf-8') as file:
     reader = csv.reader(file)
     next(reader)  # Saltar el encabezado
     for fila in reader:
@@ -35,23 +35,49 @@ with open('Tp-estrucuturas/Play_Store_Data.csv', 'r') as file:
         current_ver.append(fila[11])
         android_ver.append(fila[12].strip())
 
-# Convertir las instalaciones a enteros
-installs = list(map(int, installs))
+##--GRAFICO TORTA Percentage of Average Installs: Free vs Paid Apps---
+ 
+installs = np.array(list(map(int, installs)))
+price = np.array(price)
 
 # Clasificar las aplicaciones en gratuitas y de pago
-installs_free = [installs[i] for i in range(len(installs)) if price[i] == 0.0]
-installs_paid = [installs[i] for i in range(len(installs)) if price[i] > 0.0]
+installs_free = installs[price == 0.0]
+installs_paid = installs[price > 0.0]
 
 # Calcular los promedios de instalaciones
-avg_installs_free = sum(installs_free) / len(installs_free) if len(installs_free) > 0 else 0
-avg_installs_paid = sum(installs_paid) / len(installs_paid) if len(installs_paid) > 0 else 0
+avg_installs_free = np.mean(installs_free) if len(installs_free) > 0 else 0
+avg_installs_paid = np.mean(installs_paid) if len(installs_paid) > 0 else 0
 
-# Visualizar los resultados con matplotlib
+# Visualizar los resultados con un gráfico de torta
 labels = ['Free Apps', 'Paid Apps']
 averages = [avg_installs_free, avg_installs_paid]
+colors = ['lightblue', 'orange']
 
-plt.bar(labels, averages, color=['blue', 'orange'])
-plt.xlabel('App Type')
-plt.ylabel('Average Installs')
-plt.title('Average Installs: Free vs Paid Apps')
+plt.pie(averages, labels=labels, autopct='%1.1f%%', colors=colors, startangle=140)
+plt.title('Percentage of Average Installs: Free vs Paid Apps')
+plt.axis('equal')  # Para que el gráfico sea circular
+plt.show()
+
+
+##--GRAFICO BARRAS: Top 5 Most Successful Categories--
+
+category = np.array(category)
+installs = np.array(list(map(int, installs)))
+
+# Encontrar las categorías únicas
+unique_categories = np.unique(category)
+
+# Sumar las instalaciones por cada categoría
+total_installs_by_category = np.array([np.sum(installs[category == cat]) for cat in unique_categories])
+
+# Obtener las 5 categorías con más instalaciones
+top_indices = np.argsort(total_installs_by_category)[-5:]  # Indices de las 5 categorías más exitosas
+top_categories = unique_categories[top_indices]
+top_installs = total_installs_by_category[top_indices]
+
+# Visualizar los resultados
+plt.barh(top_categories, top_installs, color='skyblue')
+plt.xlabel('Total Installs')
+plt.ylabel('Category')
+plt.title('Top 5 Most Successful Categories')
 plt.show()
