@@ -5,8 +5,7 @@ from class_central import Central
 # Clase SMS 
 class SMS():
     def __init__(self, id_celular, central:Central):
-        super().__init__()
-        self.chats = {}  
+        self.chats = {}
         self.bandeja_entrada = {}
         self.celular = central.obtener_celu_por_id(id_celular)
         if self.celular is None:
@@ -69,6 +68,7 @@ class SMS():
         if texto:
             if self.central.enviar_sms(self.num_remitente,num_destino,texto):
                 print('Mensaje enviado correctamente.')
+                self.central.registrar_sms(self.num_remitente,num_destino,texto)
             else:
                 print('No se pudo enviar el mensaje. Verifica disponibilidad.')
         else:

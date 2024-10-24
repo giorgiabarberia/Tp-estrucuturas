@@ -13,6 +13,8 @@ class Telefono():
         self.central = central
         self.llamadas_entrantes = deque()
         self.llamada_activa_con = None
+        self.hora_inicio_llamada = None 
+        self.hora_fin_llamada = None
 
     def realizar_llamada(self):   
         num_destino = input('\nIngrese el número al que desea llamar: ') 
@@ -35,6 +37,7 @@ class Telefono():
             celu_remitente.telefono.llamada_activa_con = self.celular
             del self.llamadas_entrantes[llamada-1]
             print(f'Llamada en curso con {celu_remitente.numero}...')
+            self.hora_inicio_llamada = datetime.now()
         else:
             print('Selección inválida.')
 
@@ -49,6 +52,11 @@ class Telefono():
             self.llamada_activa_con = None
             celu_destino.telefono.llamada_activa_con = None
             print('\nLlamada finalizada.')
+            
+            self.hora_fin_llamada = datetime.now()
+            duracion = self.hora_fin_llamada - self.hora_inicio_llamada
+            self.central.registrar_llamada(self.num_remitente, celu_destino.numero, self.hora_inicio_llamada, self.hora_fin_llamada, duracion)
+        
         else:
             self.celular.en_llamada = False
         

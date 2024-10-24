@@ -34,7 +34,7 @@ def mostrar_submenu_celular(celular):
     print("4. 📞 Teléfono")
     print("5. 📱 App Store")
     print("6. ⚙️  Configuración")
-    if celular.apps.apps_descargadas: 
+    if celular.apps.apps_descargadas:  
         print("7. Eliminar app")
     if celular.apps.apps_descargadas["Spotify"][0]:
         print("8. 🎧 Abrir Spotify")

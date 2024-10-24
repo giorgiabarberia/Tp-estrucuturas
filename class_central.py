@@ -4,7 +4,8 @@ from datetime import datetime
 class Central:
     ids_registrados = {}
     celulares_registrados = {}  # Diccionario de celulares registrados por número
-    registros = []  # log PREGUNTAR COMO SE USA (actividad, lista de registros de celualres)
+    registros_llamadas = []  # log PREGUNTAR COMO SE USA (actividad, lista de registros de celualres)
+    registros_chats = []
 
     # Para verificar si un celular está disponible (encendido y con red móvil activa)
     def verif_disponibilidad(self, numero):
@@ -29,14 +30,7 @@ class Central:
 
                 remitente_celu.sms.enviar_sms(num_destino,texto)
                 destino_celu.sms.recibir_sms(num_remitente,texto)
-                id = len(self.registros)
-                self.registros.append({
-                    'ID': id,
-                    'Tipo': 'SMS',
-                    'Remitente': num_remitente,
-                    'Destinatario': num_destino,
-                    'Fecha': datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-                })
+
                 return True
             else:
                 print('Error: Verificar conexión a la red móvil.')
@@ -44,6 +38,18 @@ class Central:
             print('Error: El número destinatario no está registrado.')
         return False
     
+    def registrar_sms (self,num_remitente,num_destino,texto):
+        id = len(self.registros_chats)
+        self.registros_chats.append({
+            'ID': id,
+            'Tipo': 'SMS',
+            'Remitente': num_remitente,
+            'Destinatario': num_destino,
+            'Texto':texto,
+            'Fecha': datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+        })
+        print('Registro de sms guardado correctamente.')
+
     def obtener_celu_por_id(self,id):
         celular = self.ids_registrados.get(id)
         if celular:
@@ -86,9 +92,24 @@ class Central:
             return False
         
         print(f'Llamando a {num_destino}...')
-        hora_inicio = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+        
         destino_celu.telefono.llamadas_entrantes.append(remitente_celu)
+
         return True
+    
+    # Función para registrar la llamada
+    def registrar_llamada(self, num_remitente, num_destino, hora_inicio, hora_fin, duracion):
+        id = len(self.registros_llamadas)
+        self.registros_llamadas.append({
+            'ID': id,
+            'Tipo': 'Llamada',
+            'Remitente': num_remitente,
+            'Destinatario': num_destino,
+            'Hora de inicio': hora_inicio.strftime('%d/%m/%Y - %H:%M:%S'),
+            'Hora de fin': hora_fin.strftime('%d/%m/%Y - %H:%M:%S'),
+            'Duración': str(duracion)
+        })
+        print('Registro de llamada guardado correctamente.')
         
        
 
