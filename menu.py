@@ -61,9 +61,12 @@ def manejar_celular():
 def celular_menu(celular):
     continuar = True
     while continuar:
+        # Apenas entras, se fija si tenes llamadas entrantes, y no te deja usar el celular hasta que decidas que hacer con ellas
+        while celular.telefono.llamadas_entrantes:
+            celular.telefono.ejecutar_llamadas_entrantes()
         funciones_menu.mostrar_submenu_celular(celular)
         eleccion = input("Seleccione una opción: ")
-
+        ## Acá poner lo de las llamadas entrantes. Que solo aparezca el menú
         if eleccion == '1':
             print("Has seleccionado Contactos.")
             celular.contactos.menu_contactos()
@@ -81,6 +84,7 @@ def celular_menu(celular):
             celular.apps.mostrar_apps()
         elif eleccion == '6':
             print("Has seleccionado Configuración.")
+            ### AGREGAR VISUALZAR INFORMACION
             celular.configuracion.configuracion()
         elif celular.apps.apps_descargadas and eleccion == '7':
             print("Has seleccionado Eliminar App.")

@@ -45,7 +45,7 @@ class Celular:
                 f'Sistema operativo: {self.sist_op}\nCapacidad de memoria RAM: {self.ram}\n'
                 f'Capacidad de almacenamiento: {self.almacenamiento}\nNúmero telefónico: {self.numero}')
     
-    def asignar_mensajeria(self,central):
+    def asignar_sms_telefono(self,central):
         self.sms = SMS(self.id,central)
         self.telefono = Telefono(self.id,central)
     

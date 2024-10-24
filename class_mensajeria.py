@@ -100,11 +100,13 @@ class SMS():
                 numero = self.celular.contactos.buscar_num_por_nombre(nombre)
                 if not numero:
                     print(f'\nError: No se encontró el contacto {nombre}')
-                    continue
-                self.mostrar_chat(numero)
+                else:
+                    self.mostrar_chat(numero)
             elif opcion == '2': 
                 numero = input('\nAbrir chat con: ').strip()
+                ###
                 self.mostrar_chat(numero)
+                
             elif opcion == '3':
                 print('\nSaliendo de SMS...')
                 break

@@ -10,9 +10,9 @@ class AppStore:
             'Twitter': (False, Twitter())
             }
     
-    # Descarga una aplicación si no está descargada
+    # Descarga una aplicación si no está descargada. 
     def descargar_app(self, app):
-        if app in self.apps_descargadas:
+        if app in self.apps_descargadas: # Validamos 2 veces por programacion defensiva, alguien puede usar la función en otro lugar más adelante y generaría error sino
             if not self.apps_descargadas[app][0]:
                 self.apps_descargadas[app] = (True, self.apps_descargadas[app][1])
                 print(f'{app} ha sido descargada.')

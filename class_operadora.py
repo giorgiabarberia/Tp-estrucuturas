@@ -46,7 +46,7 @@ class Operadora:
         celular = Celular(id,nombre,modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
         Central.ids_registrados[celular.id] = celular
         Central.celulares_registrados[celular.numero] = celular
-        celular.asignar_mensajeria(self.central)
+        celular.asignar_sms_telefono(self.central)
         print(f'Celular registrado con éxito.\nSu número es: {celular.numero}')
 
     def eliminar_celular(self,numero):

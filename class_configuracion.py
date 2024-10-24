@@ -10,7 +10,7 @@ class Configuracion:
    
     ## función de configuración
     def configuracion(self): 
-        opciones = {'1': 'Cambiar nombre','2': 'Cambiar código de desbloqueo','3': 'Datos','4': 'Red móvil','5': 'Salir'}
+        opciones = {'1': 'Cambiar nombre','2': 'Cambiar código de desbloqueo','3': 'Datos','4': 'Red móvil','5': 'Visualizar información','6': 'Salir'}
         while True:
             print("\nConfiguración:")
             for key, value in opciones.items():
@@ -24,7 +24,9 @@ class Configuracion:
                 self.configurar_datos()
             elif opcion == '4':
                 self.configurar_red_movil()
-            elif opcion == '5':
+            elif opcion == '5': #Para que aparezca la info de tu celular
+                pass ### asignarle a celular configuracion de la misma manera que hicimos con SMS, así podemos entrar en el __str__ de ese celular
+            elif opcion == '6':
                 print("Saliendo de la configuración.")
                 break
             else:
