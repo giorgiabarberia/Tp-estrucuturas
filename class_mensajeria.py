@@ -153,12 +153,17 @@ class Email():
             'Fecha': self.obtener_fecha_actual(),
             'Leído': False  #Se marca como no leído por defecto
         }
-        self.bandeja_salida.appendleft(mensaje) 
+        
+        if central.verif_mail(destino):
+            self.bandeja_salida.appendleft(mensaje) 
 
-        celu_destino = central.obtener_celu_por_email(destino)
-        if celu_destino:    #Aclaración: podemos enviar un mail a una dirección que no exista, pero a esta nunca le va a llegar el mail
-            celu_destino.email.recibir_email(self.email_remitente,destino,asunto,cuerpo)
-    
+            celu_destino = central.obtener_celu_por_email(destino)
+            if celu_destino:    #Aclaración: podemos enviar un mail a una dirección que no exista, pero a esta nunca le va a llegar el mail
+                celu_destino.email.recibir_email(self.email_remitente,destino,asunto,cuerpo)
+        
+        else:
+            print('Dirección de email no encontrada.')
+            
     #Agrega un mensaje a la bandeja de entrada
     def recibir_email(self, remitente, destino, asunto,cuerpo):
         mensaje = {
