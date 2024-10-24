@@ -1,6 +1,7 @@
 from collections import deque
 from datetime import datetime
 from class_central import Central
+from exportador import ExportadorChats
 
 # Clase SMS 
 class SMS():
@@ -123,6 +124,8 @@ class SMS():
                     except ValueError:
                         print('Error. Ingrese un número válido.')
                 elif sub_opcion == '3':
+                    exportador = ExportadorChats("registros_chats.csv")
+                    exportador.exportar(self.central.registros_chats)
                     break
                 else:
                     print('Opción inválida. Intente nuevamente.')

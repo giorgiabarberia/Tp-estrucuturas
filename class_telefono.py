@@ -2,6 +2,7 @@ from collections import deque
 from datetime import datetime
 from class_central import Central
 from validaciones import validar_telefono
+from exportador import ExportadorLlamada
 
 ##Clase Telefono
 class Telefono():
@@ -89,6 +90,8 @@ class Telefono():
 
             elif opcion == '4':
                 print('\nSaliendo de Teléfono...')
+                exportador = ExportadorLlamada("registros_llamadas.csv")
+                exportador.exportar(self.central.registros_llamadas)
                 break
 
             else:

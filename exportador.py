@@ -89,26 +89,3 @@ class ExportadorChats(Exportador):
                     print("Error desconocido")
         else:
             print("No hay datos que exportar")
-# Ejemplo de cómo usar esta clase para exportar registros de llamadas
-
-# Simulando algunos registros de llamadas
-registros_llamadas = [
-    {
-        'Remitente': '123456789',
-        'Destinatario': '987654321',
-        'Hora de inicio': '23/10/2024 - 15:30:00',
-        'Hora de fin': '23/10/2024 - 15:45:00',
-        'Duración': '00:15:00'
-    },
-    {
-        'Remitente': '123456789',
-        'Destinatario': '111222333',
-        'Hora de inicio': '23/10/2024 - 16:00:00',
-        'Hora de fin': '23/10/2024 - 16:10:00',
-        'Duración': '00:10:00'
-    }
-]
-
-# Crear una instancia de ExportadorLlamada y exportar los registros
-exportador = ExportadorLlamada("registros_llamadas.csv")
-exportador.exportar(registros_llamadas)
