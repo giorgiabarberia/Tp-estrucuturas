@@ -62,4 +62,4 @@ class Operadora:
     def registrar_celu_autom(self,celular:Celular):
         Central.ids_registrados[celular.id] = celular
         Central.celulares_registrados[celular.numero] = celular
-        celular.asignar_mensajeria(self.central)
+        celular.asignar_sms_telefono(self.central)

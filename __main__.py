@@ -1,6 +1,7 @@
 from class_celular import Celular
 from class_operadora import Operadora
 from class_central import Central
+from class_mensajeria import Email, SMS
 
 operadora = Operadora('Personal')
 central = Central()
@@ -20,10 +21,10 @@ celular1.prender_celular()
 celular2.prender_celular()
 
 # Agregar contactos
-celular1.contactos.agendar_contacto()
-celular2.contactos.agendar_contacto()
+# celular1.contactos.agendar_contacto()
+# celular2.contactos.agendar_contacto()
 
-# Enviar un SMS desde Juan a Ana
+# Enviar un email desde Juan a Ana
 celular1.abrir_app_sms()
 celular2.abrir_app_sms()
 
@@ -31,9 +32,9 @@ celular2.abrir_app_sms()
 # celular1.abrir_app_email()
 # print('CELULAR 2')
 # celular2.abrir_app_email()
-print('celu 1')
-celular1.abrir_app_telefono()
-print('celu 2')
-celular2.abrir_app_telefono()
-print('celu 1')
-celular1.abrir_app_telefono()
+#print('celu 1')
+#celular1.abrir_app_telefono()
+#print('celu 2')
+#celular2.abrir_app_telefono()
+#print('celu 1')
+#celular1.abrir_app_telefono()

@@ -5,7 +5,7 @@ from exportador import ExportadorChats
 
 # Clase SMS 
 class SMS():
-    def __init__(self, id_celular, central:Central):
+    def __init__(self, id_celular, central: Central):
         self.chats = {}
         self.bandeja_entrada = {}
         self.celular = central.obtener_celu_por_id(id_celular)
@@ -19,7 +19,7 @@ class SMS():
         return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
 
     #Devuelve el nombre de contacto de un número o el número si no está agendado
-    def obtener_nombre_o_num(self,numero):
+    def obtener_nombre_o_num(self, numero):
         for num, nombre in self.celular.contactos.agenda_contactos.items():
             if num == numero:
                 return nombre
@@ -45,31 +45,32 @@ class SMS():
             self.bandeja_entrada[num_remitente].append(mensaje)
 
     #Muestra todos los mensajes con una persona (con un índice)
-    def mostrar_chat(self,numero):
+    def mostrar_chat(self, numero):
         nombre = self.obtener_nombre_o_num(numero)
         print(f'---Chat con {nombre}---')
-        if numero not in self.chats:
-            return
-        for i,mensaje in enumerate(self.chats[numero],start=1):
-            print(f'{i}. {mensaje}')
+        if numero not in self.chats or not self.chats[numero]:
+            print('No hay mensajes en este chat.')
+        else:
+            for i, mensaje in enumerate(self.chats[numero], start=1):
+                print(f'{i}. {mensaje}')
 
     #Eliminar un mensaje a partir de su índice (se elimina sólo en el celular de la persona)
     def eliminar_mensaje(self, num_destino, num_mensaje_a_elim):
         if num_destino not in self.chats:
             print('Chat no encontrado')
-        if 1 <= num_mensaje_a_elim <= len(self.chats[num_destino]):
-            self.chats[num_destino][int(num_mensaje_a_elim)-1] = 'Mensaje eliminado' 
+        elif 1 <= num_mensaje_a_elim <= len(self.chats[num_destino]):
+            self.chats[num_destino][num_mensaje_a_elim - 1] = 'Mensaje eliminado'
             print('Mensaje eliminado correctamente.')
-        else:  
+        else:
             print('Número de mensaje inválido.')
 
     #Llama a la funcion de la central para que envie el mensaje
-    def enviar_nuevo_sms(self,num_destino):
+    def enviar_nuevo_sms(self, num_destino):
         texto = input('Mensaje: ')
         if texto:
-            if self.central.enviar_sms(self.num_remitente,num_destino,texto):
+            if self.central.enviar_sms(self.num_remitente, num_destino, texto):
                 print('Mensaje enviado correctamente.')
-                self.central.registrar_sms(self.num_remitente,num_destino,texto)
+                self.central.registrar_sms(self.num_remitente, num_destino, texto)
             else:
                 print('No se pudo enviar el mensaje. Verifica disponibilidad.')
         else:
@@ -86,7 +87,8 @@ class SMS():
     #todo en sms 
     def ejecutar_sms(self):
         numero = None
-        while True:
+        continuar = True
+        while continuar:
             print('\n-----SMS-----')
             if self.celular.prendido and self.celular.configuracion.red_movil:
                 self.actualizar_chats()
@@ -103,18 +105,17 @@ class SMS():
                 else:
                     self.mostrar_chat(numero)
             elif opcion == '2': 
-                numero = input('\nAbrir chat con: ').strip()
-                ###
+                numero = input('\nAbrir chat con: ').strip() ##
                 self.mostrar_chat(numero)
-                
             elif opcion == '3':
                 print('\nSaliendo de SMS...')
-                break
+                continuar = False
+                continue
             else:
                 print('\nOpción Inválida. Por favor intente nuevamente.')
                 continue
-
-            while True:
+            
+            while True:  ## Creo que hay un error en poner el while acá pero no probé
                 print('\n1. Enviar un mensaje\n2. Eliminar un mensaje\n3. Salir')
                 sub_opcion = input('Seleccione una opcion: ').strip()
                 if sub_opcion == '1':
@@ -161,11 +162,9 @@ class Email():
         
         if central.verif_mail(destino):
             self.bandeja_salida.appendleft(mensaje) 
-
             celu_destino = central.obtener_celu_por_email(destino)
             if celu_destino:    #Aclaración: podemos enviar un mail a una dirección que no exista, pero a esta nunca le va a llegar el mail
                 celu_destino.email.recibir_email(self.email_remitente,destino,asunto,cuerpo)
-        
         else:
             print('Dirección de email no encontrada.')
             
@@ -212,64 +211,86 @@ class Email():
             print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
 
     #Función para mostrar la bandeja 
-    def mostrar_bandeja(self,bandeja):
-        for i,email in enumerate(bandeja,start=1):
-            print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
-
+    def mostrar_bandeja(self, bandeja,nombre_bandeja):
+        if not bandeja:
+            print(f'La {nombre_bandeja} está vacía.')
+        else:
+            for i, email in enumerate(bandeja, start=1):
+                print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
+            
     def ejecutar_email(self,central):
-        while True:
+        continuar = True
+        while continuar:
             print('\n-----EMAIL-----')
             print('\n1. ✏️  Redactar\n2. 📥 Recibidos\n3. ➡️  Enviados\n4. Salir')
             opcion = input('Seleccione una opción: ')
             if opcion == '1':
                 self.enviar_email(central)
             elif opcion == '2':
-                print('\n---Bandeja de entrada---')
-                self.mostrar_bandeja(self.bandeja_entrada)
-                while True:
-                    print('\n1. Aplicar filtro: No leídos primero\n2. Aplicar filtro: Por fecha\n3. Abrir email\n4. Volver')
-                    subopcion = input('Seleccione una opción: ')
-                    if subopcion == '1':
-                        self.mostrar_emails_noleidos()
-                    elif subopcion == '2':
-                        self.mostrar_emails_por_fecha()
-                    elif subopcion == '3':
-                        try:
-                            indice = int(input('Seleccione un email: '))
-                            self.abrir_un_email(indice,self.bandeja_entrada)
-                        except ValueError:
-                            print('Error: Ingrese un número de email válido.')
-                    elif subopcion == '4':
-                        break
+                cont2 = True
+                while cont2:
+                    print('\n---Bandeja de entrada---')
+                    self.mostrar_bandeja(self.bandeja_entrada,"bandeja de entrada")
+                    if self.bandeja_entrada: # Muestra el menú solo si hay mensajes en la bandeja de entrada
+                        print('\n1. Aplicar filtro: No leídos primero\n2. Aplicar filtro: Por fecha\n3. Abrir email\n4. Volver')
+                        subopcion = input('Seleccione una opción: ')
+                        if subopcion == '1':
+                            self.mostrar_emails_noleidos()
+                        elif subopcion == '2':
+                            self.mostrar_emails_por_fecha()
+                        elif subopcion == '3':
+                            try:
+                                indice = int(input('Seleccione un email: '))
+                                self.abrir_un_email(indice,self.bandeja_entrada)
+                                cont21 = True
+                                while cont21:
+                                    volver = input("\nPresione 'V' para volver a la bandeja de entrada: ").upper()
+                                    if volver == 'V':
+                                        cont21 = False
+                            except ValueError:
+                                print('Error: Ingrese un número de email válido.')
+                        elif subopcion == '4':
+                            cont2 = False
+                        else:
+                            print('Opción inválida. Intente nuevamente.')
                     else:
-                        print('Opción inválida. Intente nuevamente.')
+                        while cont2:
+                            volver = input("\nPresione 'V' para volver al menú de email: ").upper()
+                            if volver == 'V':
+                                cont2 = False
+                        cont2 = False
             elif opcion == '3':
-                print('\n---Bandeja de salida---')
-                self.mostrar_bandeja(self.bandeja_salida)
-                while True:
-                    print('\n1. Abrir un email\n2. Volver')
-                    subopcion = input('Selecciona una opción: ')
-                    if subopcion == '1':
-                        try:
-                            indice = int(input('\nSeleccione un email: '))
-                            self.abrir_un_email(indice,self.bandeja_salida)
-                        except ValueError:
-                            print('Error: Ingrese un número de email válido.')
-                    elif subopcion == '2':
-                        break
-                    else: 
-                        print('Opción inválida. Intente nuevamente.')
+                cont3 = True
+                while cont3:
+                    print('\n---Bandeja de salida---')
+                    self.mostrar_bandeja(self.bandeja_salida,"bandeja de salida")
+                    if self.bandeja_salida:
+                        print('\n1. Abrir un email\n2. Volver')
+                        subopcion = input('Selecciona una opción: ')
+                        if subopcion == '1':
+                            try:
+                                indice = int(input('\nSeleccione un email: '))
+                                self.abrir_un_email(indice,self.bandeja_salida)
+                                cont31 = True
+                                while cont31:
+                                    volver = input("\nPresione 'V' para volver a la bandeja de salida: ").upper()
+                                    if volver == 'V':
+                                        cont31 = False
+                            except ValueError:
+                                print('Error: Ingrese un número de email válido.')
+                        elif subopcion == '2':
+                            cont3 = False
+                        else: 
+                            print('Opción inválida. Intente nuevamente.')
+                    else:
+                        while cont3:
+                            volver = input("\nPresione 'V' para volver al menú de email: ").upper()
+                            if volver == 'V':
+                                cont3 = False
+                        cont3 = False
             elif opcion == '4':
                 print('Saliendo de Email...')
-                break
+                continuar = False
             else:
-                print('Opción inválida. Intente nuevamente.')
-
-        if not self.bandeja_entrada:
-            print('Bandeja de entrada vacía.')
-        else:
-            print('Emails en bandeja de entrada (ordenados por fecha):')
-            for mensaje in reversed(self.bandeja_entrada):
-                print(f'Email de {mensaje["Remitente"]} - {mensaje["Hora"]}: {mensaje["Contenido"]}')
-                
-
+                print('Opción inválida. Intente nuevamente.')   
+    
