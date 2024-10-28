@@ -34,7 +34,7 @@ class Celular:
         self.sms = None
         self.telefono = None
         self.contactos = Contactos()
-        self.configuracion = Configuracion(nombre)
+        self.configuracion = Configuracion(self,nombre)
         self.email = Email(self.direcc_email)
         self.apps = AppStore()   ## Crea la instancia de app store para este celular
 

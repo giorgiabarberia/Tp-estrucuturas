@@ -1,8 +1,8 @@
 import validaciones
 
 class Configuracion:
-    def __init__(self,celular):
-        self.nombre = celular.nombre
+    def __init__(self,nombre,celular):
+        self.nombre = nombre
         self.celular=celular
         self.contraseña = None
         self.bloqueo = True
