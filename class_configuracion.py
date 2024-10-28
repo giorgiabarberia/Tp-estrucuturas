@@ -11,7 +11,7 @@ class Configuracion:
    
     ## función de configuración
     def configuracion(self): 
-        opciones = {'1': 'Cambiar nombre','2': 'Cambiar código de desbloqueo','3': 'Datos','4': 'Red móvil','5': 'Visualizar información','6': 'Salir'}
+        opciones = {'1': 'Cambiar nombre','2': 'Cambiar código de desbloqueo','3': 'Datos','4': 'Red móvil','5': 'Visualizar información del celular','6': 'Salir'}
         while True:
             print("\nConfiguración:")
             for key, value in opciones.items():

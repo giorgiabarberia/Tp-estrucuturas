@@ -7,7 +7,7 @@ from exportador import ExportadorChats
 class SMS():
     def __init__(self, id_celular, central: Central):
         self.chats = {}
-        self.bandeja_entrada = {}
+        self.bandeja_entrada = {} #para cuando el celular esta apagado
         self.celular = central.obtener_celu_por_id(id_celular)
         if self.celular is None:
             raise ValueError('Error: Celular no encontrado en la central.')
@@ -82,7 +82,8 @@ class SMS():
                 if num_remitente not in self.chats:
                     self.chats[num_remitente] = deque()
                 self.chats[num_remitente].extend(mensajes)
-            self.bandeja_entrada.clear()
+            self.bandeja_entrada.clear() #ya se prendio el celular
+
 
     #todo en sms 
     def ejecutar_sms(self):
@@ -107,7 +108,7 @@ class SMS():
             elif opcion == '2': 
                 numero = input('\nAbrir chat con: ').strip() ##
                 self.mostrar_chat(numero)
-            elif opcion == '3':
+            elif opcion=='3':
                 print('\nSaliendo de SMS...')
                 continuar = False
                 continue

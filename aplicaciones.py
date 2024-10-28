@@ -1,6 +1,32 @@
 ## No se si hacer una class aplicación
-class Spotify:
+
+class Aplicacion:
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def mostrar_menu(self):
+        print(f"\nMenu {self.nombre}:")
+        print("1. Ver contenido")
+        print("2. Salir de la app")
+
+    def mostrar_contenido(self):
+        raise NotImplementedError("Debe implementar este método en la subclase")
+
+    def menu(self):
+        opcion = None
+        while opcion != '2':
+            self.mostrar_menu()
+            opcion = input("\nSeleccione una opción: ")
+            if opcion == '1':
+                self.mostrar_contenido()
+            elif opcion == '2':
+                print(f"Saliendo de {self.nombre}. ¡Hasta luego!")
+            else:
+                print("Opción inválida. Por favor, intente de nuevo.")
+      
+class Spotify(Aplicacion):
     def __init__(self):
+        super().__init__("Spotify")
         self.canciones = [
             "Canción 1 - Artista A",
             "Canción 2 - Artista B",
@@ -8,33 +34,18 @@ class Spotify:
             "Canción 4 - Artista D"
         ]
 
-    def mostrar_menu(self):
-        print("\nSPOTIFY ♫♬♪♩𝄞")
-        print("1. Ver lista de canciones")
-        print("2. Salir")
-
-    def mostrar_canciones(self):
+    def mostrar_contenido(self):
         print("\nLista de canciones disponibles ♫♬♪♩𝄞:")
         for cancion in self.canciones:
             print(cancion)
         print('▶︎ •၊၊||၊|။||||။‌‌‌‌‌၊|• 0:30')
-        
-    def menu(self):
-        opcion = None
-        while opcion != '2':
-            self.mostrar_menu()
-            opcion = input("\nIngrese el número de la opción que desea seleccionar: ")
-            if opcion == '1':
-                self.mostrar_canciones()
-            elif opcion == '2':
-                print("Saliendo de Spotify. ¡Hasta luego!")
-            else:
-                print("Opción inválida. Por favor, intente de nuevo.")
 
-## HAY que probar si funciona bien
-class Tetris:
-    @staticmethod
-    def entrada_tetris():
+
+class Tetris(Aplicacion):
+    def __init__(self):
+        super().__init__("Tetris")
+
+    def mostrar_contenido(self):
         print("*************************************")
         print("*       ¡Bienvenido a Tetris!       *")
         print("*************************************")
@@ -45,70 +56,29 @@ class Tetris:
         print(" - Bajar rápido: 's'")
         print(" - Pausar: 'p'\n")
 
-    def menu(self):
-        opcion = None
-        while opcion != '2':
-            print("\nMenu Tetris:")
-            print("1. Jugar")
-            print("2. Salir del juego")
-            
-            opcion = input("Seleccione una opción: ")
 
-            if opcion == '1':
-                self.entrada_tetris()
-            elif opcion == '2':
-                print("Saliendo del juego...")
-            else:
-                print("Opción inválida. Por favor, intente de nuevo.")
-                
-
-class Salud:
+class Salud(Aplicacion):
     def __init__(self):
-        self.informacion = "Información básica de salud:\n- Mantenerse hidratado\n- Hacer ejercicio regularmente\n- Comer una dieta balanceada"
+        super().__init__("Salud")
+        self.informacion = (
+            "Información básica de salud:\n- Mantenerse hidratado\n"
+            "- Hacer ejercicio regularmente\n- Comer una dieta balanceada"
+        )
 
-    def mostrar_informacion(self):
+    def mostrar_contenido(self):
         print(self.informacion)
 
-    def menu(self):
-        opcion = None
-        while opcion != '2':
-            print("\nMenu Salud:")
-            print("1. Ver Información de Salud")
-            print("2. Salir de la app")
 
-            opcion = input("Seleccione una opción: ")
-
-            if opcion == '1':
-                print("\nMostrando información de salud...")
-                self.mostrar_informacion()
-            elif opcion == '2':
-                print("Saliendo de la app.")
-            else:
-                print("Opción inválida. Por favor, intente de nuevo.")
-
-
-class Twitter:
+class Twitter(Aplicacion):
     def __init__(self):
-        self.noticias = ["Publicación 1: Muerte de Liam Payne", "Publicación 2: Vamos Racing", "Publicación 3: Lean aprobanos"]
+        super().__init__("Twitter")
+        self.noticias = [
+            "Publicación 1: Muerte de Liam Payne",
+            "Publicación 2: Vamos Racing",
+            "Publicación 3: Lean aprobanos"
+        ]
 
-    def mostrar_noticias(self):
+    def mostrar_contenido(self):
         print("Noticias de Twitter:")
         for noticia in self.noticias:
             print(f"- {noticia}")
-            
-    def menu(self):
-        opcion = None
-        while opcion != '2':
-            print("\nMenu Twitter:")
-            print("1. Ver Noticias")
-            print("2. Salir de la app")
-
-            opcion = input("Seleccione una opción: ")
-
-            if opcion == '1':
-                print("\nMostrando noticias de Twitter...")
-                self.mostrar_noticias()
-            elif opcion == '2':
-                print("Saliendo de la app.")
-            else:
-                print("Opción inválida. Por favor, intente de nuevo.")

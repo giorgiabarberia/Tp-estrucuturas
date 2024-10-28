@@ -87,12 +87,19 @@ class Telefono:
             else:
                 print('No hay llamadas entrantes en este momento.')
                 ver_llamadas = False  # No hay llamadas entrantes
-                
+
+    def ver_historial_llamadas (self):
+        if not self.central.registros_llamadas:
+            return 'Historial de llamadas vacío.'
+        print('\n--- Historial de Llamadas ---')
+        for i, llamada in enumerate(self.central.registros_llamadas, start=1):
+            print(f"{i}. {llamada['Tipo']} - De: {llamada['Remitente']} a: {llamada['Destinatario']} - Inicio: {llamada['Hora de inicio']} - Fin: {llamada['Hora de fin']} -  Duración: {llamada['Duración']}")
+
     def ejecutar_telefono(self):
         ejecutando = True
         while ejecutando:
             print('\n------TELÉFONO------')
-            print('1. 📞 Realizar llamada\n2. ☎️  Finalizar llamada\n3. Salir')
+            print('1. 📞 Realizar llamada\n2. ☎️  Finalizar llamada\n3. 📖  Ver historial de llamadas\n4. Salir')
             opcion = input('Seleccione una opción: ').strip()
 
             if opcion == '1':
@@ -100,7 +107,9 @@ class Telefono:
 
             elif opcion == '2':
                 self.colgar()
-            elif opcion == '3':
+            elif opcion=='3':
+                self.ver_historial_llamadas()
+            elif opcion == '4':
                 print('\nSaliendo de Teléfono...')
                 exportador = ExportadorLlamada("registros_llamadas.csv")
                 exportador.exportar(self.central.registros_llamadas)
