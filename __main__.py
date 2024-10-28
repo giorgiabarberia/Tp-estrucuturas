@@ -25,8 +25,8 @@ celular2.prender_celular()
 # celular2.contactos.agendar_contacto()
 
 # Enviar un email desde Juan a Ana
-celular1.abrir_app_sms()
-celular2.abrir_app_sms()
+celular1.abrir_app_email()
+celular2.abrir_app_email()
 
 # print('CELULAR 1')
 # celular1.abrir_app_email()
