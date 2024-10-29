@@ -32,7 +32,6 @@ class Contactos:
             numero, nombre = resultados[seleccion - 1]
             print(f'Nombre: {nombre}, Número: {numero}')
     
-
 # Devuelve el número de un contacto por nombre
     def buscar_num_por_nombre(self, nombre):
         numeros = [numero for numero, contacto_nombre in self.agenda_contactos.items() if contacto_nombre == nombre]

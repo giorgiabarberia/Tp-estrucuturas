@@ -17,3 +17,7 @@
 
 ## Al agendar un contacto, te deja agendar lo que quieras como número, porque así sucede en los celulares.
 # Luego, al intentar mandarle algo a ese número se le dirá al usuario que no existe. 
+
+## En sms, es posible mandarse mensjaes a uno mismo. 
+
+## En sms, al buscar un chat, se ingresa en el mismo lugar estés buscando por contacto o por numero telefonico, ya que en la app es así.

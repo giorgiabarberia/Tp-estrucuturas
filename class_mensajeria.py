@@ -7,7 +7,7 @@ from exportador import ExportadorChats
 class SMS():
     def __init__(self, id_celular, central: Central):
         self.chats = {}
-        self.bandeja_entrada = {} #para cuando el celular esta apagado
+        self.bandeja_entrada = {}  # Para cuando el celular está apagado
         self.celular = central.obtener_celu_por_id(id_celular)
         if self.celular is None:
             raise ValueError('Error: Celular no encontrado en la central.')
@@ -18,43 +18,43 @@ class SMS():
     def obtener_hora_actual():
         return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
 
-    #Devuelve el nombre de contacto de un número o el número si no está agendado
+    # Devuelve el nombre de contacto de un número o el número si no está agendado
     def obtener_nombre_o_num(self, numero):
         for num, nombre in self.celular.contactos.agenda_contactos.items():
             if num == numero:
                 return nombre
         return numero
 
-    #Se agrega el mensaje en el chat del que lo envía 
+    # Se agrega el mensaje en el chat del que lo envía 
     def enviar_sms(self, num_destino, texto):
         if num_destino not in self.chats:
-            self.chats[num_destino] = deque()   #Pila para los mensajes en un chat
+            self.chats[num_destino] = deque()   # Pila para los mensajes en un chat
         mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
         self.chats[num_destino].append(mensaje)
 
-    #Se agrega el mensaje en el chat del que lo recibe
+    # Se agrega el mensaje en el chat del que lo recibe
     def recibir_sms(self, num_remitente, texto):
         mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
         if self.celular.prendido:
             if num_remitente not in self.chats:
-                self.chats[num_remitente] = deque()     #Pila para los mensajes en un chat
+                self.chats[num_remitente] = deque()  # Pila para los mensajes en un chat
             self.chats[num_remitente].append(mensaje)
         else:
             if num_remitente not in self.bandeja_entrada:
                 self.bandeja_entrada[num_remitente] = deque()
             self.bandeja_entrada[num_remitente].append(mensaje)
 
-    #Muestra todos los mensajes con una persona (con un índice)
+    # Muestra todos los mensajes con una persona (con un índice)
     def mostrar_chat(self, numero):
         nombre = self.obtener_nombre_o_num(numero)
-        print(f'---Chat con {nombre}---')
+        print(f'--- Chat con {nombre} ---')
         if numero not in self.chats or not self.chats[numero]:
             print('No hay mensajes en este chat.')
         else:
             for i, mensaje in enumerate(self.chats[numero], start=1):
                 print(f'{i}. {mensaje}')
 
-    #Eliminar un mensaje a partir de su índice (se elimina sólo en el celular de la persona)
+    # Eliminar un mensaje a partir de su índice (se elimina sólo en el celular de la persona)
     def eliminar_mensaje(self, num_destino, num_mensaje_a_elim):
         if num_destino not in self.chats:
             print('Chat no encontrado')
@@ -64,7 +64,7 @@ class SMS():
         else:
             print('Número de mensaje inválido.')
 
-    #Llama a la funcion de la central para que envie el mensaje
+    # Llama a la función de la central para que envíe el mensaje
     def enviar_nuevo_sms(self, num_destino):
         texto = input('Mensaje: ')
         if texto:
@@ -75,66 +75,97 @@ class SMS():
                 print('No se pudo enviar el mensaje. Verifica disponibilidad.')
         else:
             print('No se puede enviar un mensaje vacío.')
-
+            
+    # Muestra los chats existentes con el último mensaje
+    def mostrar_chats_existentes(self):
+        print('\n--- Chats Existentes ---')
+        for i, (numero, mensajes) in enumerate(self.chats.items(), start=1):
+            nombre = self.obtener_nombre_o_num(numero)
+            ultimo_mensaje = mensajes[-1]
+            remitente = 'Yo' if 'Yo:' in ultimo_mensaje else nombre
+            texto_mensaje = ultimo_mensaje.split('|')[0].split(': ')[-1]
+            fecha_hora = ultimo_mensaje.split('|')[1]
+            print(f'{i}. {nombre}: [{remitente}: {texto_mensaje} - {fecha_hora.strip()}]')
+    
     def actualizar_chats(self):
         if self.bandeja_entrada:
             for num_remitente, mensajes in self.bandeja_entrada.items():
                 if num_remitente not in self.chats:
                     self.chats[num_remitente] = deque()
                 self.chats[num_remitente].extend(mensajes)
-            self.bandeja_entrada.clear() #ya se prendio el celular
-
-
-    #todo en sms 
+            self.bandeja_entrada.clear()  # Ya se prendió el celular
+     
+    # Ejecutar la aplicación de SMS
     def ejecutar_sms(self):
-        numero = None
         continuar = True
         while continuar:
-            print('\n-----SMS-----')
+            print('\n----- SMS -----')
             if self.celular.prendido and self.celular.configuracion.red_movil:
                 self.actualizar_chats()
-            for numero in self.chats.keys():
-                nombre = self.obtener_nombre_o_num(numero)
-                print(f'📞 {nombre}')
-            print('\nElegir chat de SMS:\n1. Por nombre de contacto\n2. Por número telefónico\n3. Salir')
-            opcion = input('Seleccione una opción: ').strip()
-            if opcion == '1':
-                nombre = input('\nAbrir chat con: ').strip()
-                numero = self.celular.contactos.buscar_num_por_nombre(nombre)
-                if not numero:
-                    print(f'\nError: No se encontró el contacto {nombre}')
-                else:
-                    self.mostrar_chat(numero)
-            elif opcion == '2': 
-                numero = input('\nAbrir chat con: ').strip() ##
-                self.mostrar_chat(numero)
-            elif opcion=='3':
-                print('\nSaliendo de SMS...')
-                continuar = False
-                continue
+            if self.chats:
+                self.mostrar_chats_existentes()
+                print('\n📞 Opciones:')
+                print('1. Elegir chat por indice: ')
+                print('2. Abrir nuevo chat: ')
+                print('3. Salir')
             else:
-                print('\nOpción Inválida. Por favor intente nuevamente.')
-                continue
-            
-            while True:  ## Creo que hay un error en poner el while acá pero no probé
-                print('\n1. Enviar un mensaje\n2. Eliminar un mensaje\n3. Salir')
-                sub_opcion = input('Seleccione una opcion: ').strip()
-                if sub_opcion == '1':
-                    self.enviar_nuevo_sms(numero)
-                elif sub_opcion == '2':
-                    try:
-                        num_mensaje_a_elim = int(input('Número del mensaje que desea eliminar: '))
-                        self.eliminar_mensaje(numero,num_mensaje_a_elim)
-                    except ValueError:
-                        print('Error. Ingrese un número válido.')
-                elif sub_opcion == '3':
-                    exportador = ExportadorChats("registros_chats.csv")
-                    exportador.exportar(self.central.registros_chats)
-                    break
-                else:
-                    print('Opción inválida. Intente nuevamente.')
+                print('\nNo hay chats existentes.')
+                print('\n📞 Opciones:')
+                print('1. Abrir nuevo chat')
+                print('2. Salir')
                 
+            opcion = input('Seleccione una opción: ').strip()
 
+            if opcion == '1' and self.chats:
+                chat_num = input('Ingrese el indice del chat: ').strip()
+                if chat_num.isdigit() and 1 <= int(chat_num) <= len(self.chats):
+                    numero = list(self.chats.keys())[int(chat_num) - 1]
+                    self.mostrar_y_manejar_chat(numero)
+                else:
+                    print('Número de chat inválido.')
+            elif (opcion == '2' and self.chats) or (opcion == '1' and not self.chats):
+                destino = input('Ingrese el número o nombre del contacto: ').strip()
+                if destino in self.celular.contactos.agenda_contactos.values():
+                    numero = self.celular.contactos.buscar_num_por_nombre(destino)
+                    self.mostrar_y_manejar_chat(numero)
+                elif destino in self.central.celulares_registrados.keys():
+                    self.mostrar_y_manejar_chat(destino)
+                else:
+                    print('Número o contacto inválido.')
+            elif (opcion == '3' and self.chats) or (opcion == '2' and not self.chats):
+                print('Saliendo de SMS...')
+                continuar = False
+            else:
+                print('Opción inválida. Intente nuevamente.')
+
+    # Mostrar y manejar chat
+    def mostrar_y_manejar_chat(self, numero):
+        continuar = True
+        while continuar:
+            self.mostrar_chat(numero)
+            print('\nOpciones:')
+            print('1. Mandar nuevo mensaje')
+            if numero in self.chats:
+                print('2. Eliminar mensaje')
+            print('3. Salir')
+            sub_opcion = input('Seleccione una opción: ').strip()
+            
+            if sub_opcion == '1':
+                self.enviar_nuevo_sms(numero)
+            elif sub_opcion == '2' and numero in self.chats:
+                try:
+                    num_mensaje_a_elim = int(input('Número del mensaje que desea eliminar: '))
+                    self.eliminar_mensaje(numero, num_mensaje_a_elim)
+                except ValueError:
+                    print('Error. Ingrese un número válido.')
+            elif sub_opcion == '3':
+                continuar = False
+                exportador = ExportadorChats("registros_chats.csv")
+                exportador.exportar(self.central.registros_chats)
+            else:
+                print('Opción inválida. Intente nuevamente.')
+                
+                
 #Clase Email 
 class Email():
     def __init__(self, direcc_email):

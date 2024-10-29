@@ -7,9 +7,9 @@ operadora = Operadora('Personal')
 central = Central()
 
 # Crear celulares
-celular1 = Celular(1, "Juan", "Galaxy S21", "Android", "11.0", "8GB", "128GB", "1234567890", "juan@example.com")
-celular2 = Celular(2, "Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "0987654321", "ana@example.com")
-celular3 = Celular(3,"Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "1122334455", "anaa@example.com")
+celular1 = Celular(1, "Juan", "Galaxy S21", "Android", "11.0", "8GB", "128GB", "1130087090", "juan@example.com")
+celular2 = Celular(2, "Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "1141790650", "ana@example.com")
+celular3 = Celular(3,"Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "1100004444", "anaa@example.com")
 
 # Registrar los celulares en la central
 operadora.registrar_celu_autom(celular1)
@@ -19,14 +19,16 @@ operadora.registrar_celu_autom(celular3)
 # Prender los celulares
 celular1.prender_celular()
 celular2.prender_celular()
+celular3.prender_celular()
 
-# Agregar contactos
-# celular1.contactos.agendar_contacto()
-# celular2.contactos.agendar_contacto()
+
+celular1.contactos.agendar_contacto()
+celular1.contactos.agendar_contacto()
 
 # Enviar un email desde Juan a Ana
-celular1.abrir_app_email()
-celular2.abrir_app_email()
+celular1.abrir_app_sms()
+celular2.abrir_app_sms()
+celular3.abrir_app_sms()
 
 # print('CELULAR 1')
 # celular1.abrir_app_email()

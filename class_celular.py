@@ -34,16 +34,14 @@ class Celular:
         self.sms = None
         self.telefono = None
         self.contactos = Contactos()
-        self.configuracion = Configuracion(self,nombre)
+        self.configuracion = Configuracion(self,nombre,numero)
         self.email = Email(self.direcc_email)
         self.apps = AppStore()   ## Crea la instancia de app store para este celular
 
         Celular.mails_usados.add(direcc_email)
         
     def __str__(self):
-        return (f'Celular de {self.nombre}\nModelo: {self.modelo}\n'
-                f'Sistema operativo: {self.sist_op}\nCapacidad de memoria RAM: {self.ram}\n'
-                f'Capacidad de almacenamiento: {self.almacenamiento}\nNúmero telefónico: {self.numero}')
+        return (f'Celular de {self.nombre}\nModelo: {self.modelo}\nSistema operativo: {self.sist_op}\nCapacidad de memoria RAM: {self.ram}\nCapacidad de almacenamiento: {self.almacenamiento}\nNúmero telefónico: {self.numero}')
     
     def asignar_sms_telefono(self,central):
         self.sms = SMS(self.id,central)
