@@ -2,7 +2,7 @@ from collections import deque
 from datetime import datetime
 from class_central import Central
 from exportador import ExportadorChats
-from class_pilacola import Nodo,Pila,Cola
+from class_listaenlazada import Nodo,ListaEnlazada
 
 
 # Clase SMS 
@@ -30,21 +30,21 @@ class SMS():
     # Se agrega el mensaje en el chat del que lo envía 
     def enviar_sms(self, num_destino, texto):
         if num_destino not in self.chats:
-            self.chats[num_destino] = Pila()   # Pila para los mensajes en un chat
+            self.chats[num_destino] = ListaEnlazada()   # Cola para los mensajes en un chat
         mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
-        self.chats[num_destino].apilar(mensaje)
+        self.chats[num_destino].agregarFinal(Nodo(mensaje))
 
     # Se agrega el mensaje en el chat del que lo recibe
     def recibir_sms(self, num_remitente, texto):
         mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
         if self.celular.prendido:
             if num_remitente not in self.chats:
-                self.chats[num_remitente] = Pila()  # Pila para los mensajes en un chat
-            self.chats[num_remitente].apilar(mensaje)
+                self.chats[num_remitente] = ListaEnlazada() # Cola para los mensajes en un chat
+            self.chats[num_remitente].agregarFinal(Nodo(mensaje))
         else:
             if num_remitente not in self.bandeja_entrada:
-                self.bandeja_entrada[num_remitente] = Pila()
-            self.bandeja_entrada[num_remitente].apilar(mensaje)
+                self.bandeja_entrada[num_remitente] = ListaEnlazada()
+            self.bandeja_entrada[num_remitente].agregarFinal(Nodo(mensaje))
 
     # Muestra todos los mensajes con una persona (con un índice)
     def mostrar_chat(self, numero):
@@ -61,8 +61,14 @@ class SMS():
         if num_destino not in self.chats:
             print('Chat no encontrado')
         elif 1 <= num_mensaje_a_elim <= len(self.chats[num_destino]):
-            self.chats[num_destino][num_mensaje_a_elim - 1] = 'Mensaje eliminado'
-            print('Mensaje eliminado correctamente.')
+            # Recorremos la lista enlazada hasta llegar al índice deseado
+            aux = self.chats[num_destino].inicio
+            for _ in range(num_mensaje_a_elim - 1):
+                aux = aux.siguiente
+            # Al llegar al nodo deseado, lo modificamos
+            if aux:
+                aux.dato = 'Mensaje eliminado'
+                print('Mensaje eliminado correctamente.')
         else:
             print('Número de mensaje inválido.')
 
@@ -93,9 +99,9 @@ class SMS():
         if self.bandeja_entrada:
             for num_remitente, mensajes in self.bandeja_entrada.items():
                 if num_remitente not in self.chats:
-                    self.chats[num_remitente] = Pila()
-                while not mensajes.esVacia():  # Si mensajes es una instancia de Pila
-                    self.chats[num_remitente].apilar(mensajes.desapilar())
+                    self.chats[num_remitente] = ListaEnlazada()
+                # Transferir todos los mensajes a la cola de chats
+                self.chats[num_remitente].extend(mensajes)
             self.bandeja_entrada.clear()  # Ya se prendió el celular
      
     # Ejecutar la aplicación de SMS
@@ -172,8 +178,8 @@ class SMS():
 #Clase Email 
 class Email():
     def __init__(self, direcc_email):
-        self.bandeja_entrada = Pila()
-        self.bandeja_salida = Pila()
+        self.bandeja_entrada = deque() #Pila para la bandeja de entrada
+        self.bandeja_salida = deque() #Pila para la bandeja de salida
         self.email_remitente = direcc_email
 
     @staticmethod
@@ -196,7 +202,7 @@ class Email():
         }
         
         if central.verif_mail(destino):
-            self.bandeja_salida.apilar(mensaje) 
+            self.bandeja_salida.append(mensaje) 
             celu_destino = central.obtener_celu_por_email(destino)
             if celu_destino:    #Aclaración: podemos enviar un mail a una dirección que no exista, pero a esta nunca le va a llegar el mail
                 celu_destino.email.recibir_email(self.email_remitente,destino,asunto,cuerpo)
@@ -213,7 +219,7 @@ class Email():
             'Fecha': self.obtener_fecha_actual(),
             'Leído': False  #Se marca como no leído
         }
-        self.bandeja_entrada.apilar(mensaje)
+        self.bandeja_entrada.append(mensaje)
 
     #función para abrir un email y marcarlo como leído
     def abrir_un_email(self, indice, bandeja):
