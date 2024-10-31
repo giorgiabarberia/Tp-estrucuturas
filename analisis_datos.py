@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import csv
 import numpy as np
+from datetime import datetime
 
 # Inicializamos listas vacías para guardar la información del archivo CSV
 app = []
@@ -54,7 +55,7 @@ averages = [avg_installs_free, avg_installs_paid]
 colors = ['lightblue', 'orange']
 
 plt.pie(averages, labels=labels, autopct='%1.1f%%', colors=colors, startangle=140)
-plt.title('Percentage of Average Installs: Free vs Paid Apps')
+plt.title('Porcentaje de descargas promedio: Free vs Paid Apps')
 plt.axis('equal')  # Para que el gráfico sea circular
 plt.show()
 
@@ -77,7 +78,72 @@ top_installs = total_installs_by_category[top_indices]
 
 # Visualizar los resultados
 plt.barh(top_categories, top_installs, color='skyblue')
-plt.xlabel('Total Installs')
-plt.ylabel('Category')
-plt.title('Top 5 Most Successful Categories')
+plt.xlabel('Total de instalaciones')
+plt.ylabel('Categoría')
+plt.title('Las 5 categorías más exitoras')
+plt.show()
+
+
+
+
+# Histograma de la distribución de ratings
+ratings = np.array(rating)
+
+plt.hist(ratings, bins=20, color='purple', edgecolor='black')
+plt.xlabel('Rating')
+plt.ylabel('número de apps')
+plt.title('Distribución de ratings')
+plt.grid(axis='y', linestyle='--')
+plt.show()
+
+
+##--GRAFICO: Box Plot de la distribución de ratings por género en la categoría 'GAME'---
+
+# Filtrar aplicaciones de la categoría 'GAME'
+game_indices = [i for i in range(len(category)) if category[i] == 'GAME']
+game_genres = np.array([genres[i] for i in game_indices])
+game_ratings = np.array([rating[i] for i in game_indices])
+
+# Encontrar los géneros únicos dentro de la categoría 'GAME'
+unique_game_genres = np.unique(game_genres)
+
+# Crear una lista de ratings por género y filtrar géneros sin ratings
+ratings_by_genre = [game_ratings[game_genres == genre] for genre in unique_game_genres if len(game_ratings[game_genres == genre]) > 0]
+valid_genres = [genre for genre in unique_game_genres if len(game_ratings[game_genres == genre]) > 0]
+
+plt.boxplot(ratings_by_genre, labels=valid_genres, patch_artist=True, notch=True)
+plt.xlabel('Género')
+plt.ylabel('Rating')
+plt.title('Distribución de ratings por género en la categoría GAME')
+plt.xticks(rotation=40)
+plt.grid(True)
+plt.show()
+
+
+
+##--GRAFICO: Promedio de Reviews según última actualización---
+
+# Convertir las fechas a un formato manejable
+def parse_date(date_str):
+    try:
+        return datetime.strptime(date_str, "%B %d, %Y")
+    except ValueError:
+        return datetime.strptime("January 1, 1970", "%B %d, %Y")  # Fecha por defecto en caso de error
+
+dates = np.array([parse_date(date) for date in last_updated])
+
+# Ordenar por fecha
+sorted_indices = np.argsort(dates)
+sorted_dates = dates[sorted_indices]
+sorted_reviews = np.array(reviews)[sorted_indices]
+
+# Agrupar y calcular el promedio de reviews por mes
+unique_months = np.unique(sorted_dates.astype('datetime64[M]'))
+avg_reviews_per_month = np.array([np.mean(sorted_reviews[sorted_dates.astype('datetime64[M]') == month]) for month in unique_months])
+
+plt.plot(unique_months, avg_reviews_per_month, marker='o', linestyle='-', color='blue')
+plt.xlabel('Month')
+plt.ylabel('Average Reviews')
+plt.title('Average Reviews Over Time')
+plt.grid(True)
 plt.show()
