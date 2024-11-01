@@ -18,6 +18,14 @@ last_updated = []
 current_ver = []
 android_ver = []
 
+# Función para convertir el tamaño a megabytes (MB)
+def convert_size(size_str):
+    if 'M' in size_str:
+        return float(size_str.replace('M', '').strip()) 
+    elif 'k' in size_str:
+        return float(size_str.replace('k', '').strip()) / 1024  # Convertir a MB los que están en k
+    return ''  # Para tamaños que no son válidos (cuando dice "Varies with device")
+
 with open('Play_Store_Data.csv', 'r', encoding='utf-8') as file:
     reader = csv.reader(file)
     next(reader)  # Saltar el encabezado
@@ -26,7 +34,9 @@ with open('Play_Store_Data.csv', 'r', encoding='utf-8') as file:
         category.append(fila[1])
         rating.append(float(fila[2]) if fila[2] != 'NaN' else 0.0)  # Manejo de NaN
         reviews.append(int(fila[3]))
-        size.append(fila[4])
+        valor_size = convert_size(fila[4]) # Paso size a un dato manejable
+        if valor_size is not None:  # Ignorar valores no válidos
+            size.append(valor_size)
         installs.append(fila[5].replace('+', '').replace(',', ''))  # Limpio formato de installs
         tipo.append(fila[6])
         price.append(float(fila[7].replace('$', '')) if fila[7] != 'Free' else 0.0)  # Manejo precio
@@ -35,115 +45,155 @@ with open('Play_Store_Data.csv', 'r', encoding='utf-8') as file:
         last_updated.append(fila[10])
         current_ver.append(fila[11])
         android_ver.append(fila[12].strip())
+        
+        
+##--GRAFICO de DISPERSION (usamos logaritmo): cantidad de installs según tamaño de la dating app
+dating_indices = [i for i, genre in enumerate(genres) if 'dating' in genre.lower() and size[i] != ""]
 
-##--GRAFICO TORTA Percentage of Average Installs: Free vs Paid Apps---
- 
-installs = np.array(list(map(int, installs)))
-price = np.array(price)
+# Obtener los valores de size e installs correspondientes
+dating_sizes = np.array([size[i] for i in dating_indices])
+dating_installs = np.array([int(installs[i]) for i in dating_indices])
 
-# Clasificar las aplicaciones en gratuitas y de pago
-installs_free = installs[price == 0.0]
-installs_paid = installs[price > 0.0]
-
-# Calcular los promedios de instalaciones
-avg_installs_free = np.mean(installs_free) if len(installs_free) > 0 else 0
-avg_installs_paid = np.mean(installs_paid) if len(installs_paid) > 0 else 0
-
-# Visualizar los resultados con un gráfico de torta
-labels = ['Free Apps', 'Paid Apps']
-averages = [avg_installs_free, avg_installs_paid]
-colors = ['lightblue', 'orange']
-
-plt.pie(averages, labels=labels, autopct='%1.1f%%', colors=colors, startangle=140)
-plt.title('Porcentaje de descargas promedio: Free vs Paid Apps')
-plt.axis('equal')  # Para que el gráfico sea circular
+# Graficar los datos
+plt.tight_layout() # Ajusto tamaño a los ejes
+plt.scatter(dating_sizes, dating_installs, alpha=0.65) # Ajusto tamaño de los puntos, para que se vean mejor
+plt.title("Dating Apps: tamaño vs. cantidad de installs", fontsize=14)
+plt.xlabel("Size (MB)", fontsize=12)
+plt.ylabel("Cantidad de installs (10^7)", fontsize=12)
+plt.yscale('log')  # Escala logarítmica para los ejes Y
+plt.grid(True)  # Agrego la grilla
 plt.show()
 
 
-##--GRAFICO BARRAS: Top 5 Most Successful Categories--
 
+##--GRAFICO BARRAS: Top 5 categorás más exitosas--
 category = np.array(category)
 installs = np.array(list(map(int, installs)))
+ratings = np.array(rating)
 
-# Encontrar las categorías únicas
-unique_categories = np.unique(category)
+# Filtrar categorías con un rating promedio mayor a 3.5 
+valid_categories = [cat for cat in np.unique(category) if np.mean(ratings[category == cat]) > 3.5]
+valid_categories = np.array(valid_categories)
 
 # Sumar las instalaciones por cada categoría
-total_installs_by_category = np.array([np.sum(installs[category == cat]) for cat in unique_categories])
+total_installs_by_category = np.array([np.sum(installs[category == cat]) for cat in valid_categories])
 
 # Obtener las 5 categorías con más instalaciones
 top_indices = np.argsort(total_installs_by_category)[-5:]  # Indices de las 5 categorías más exitosas
-top_categories = unique_categories[top_indices]
+top_categories = valid_categories[top_indices]
 top_installs = total_installs_by_category[top_indices]
 
+# Crear colores diferentes para cada barra
+colors = ['skyblue', 'salmon', 'lightgreen', 'orange', 'lightcoral']
+
 # Visualizar los resultados
-plt.barh(top_categories, top_installs, color='skyblue')
-plt.xlabel('Total de instalaciones')
-plt.ylabel('Categoría')
-plt.title('Las 5 categorías más exitoras')
+plt.figure(figsize=(13, 5))  # Aumentar el tamaño del gráfico, para que se vean los ejes
+bars = plt.barh(top_categories, top_installs, color=colors)
+plt.xlabel('Total de Installs (en 10^10)', fontsize=12)
+plt.ylabel('Categoría', fontsize=12)
+plt.title('Top 5 categorías de Apps más exitosas', fontsize=14)
 plt.show()
 
 
 
-
-# Histograma de la distribución de ratings
+##--HISTOGRAMA: distribución de ratings ---
 ratings = np.array(rating)
 
-plt.hist(ratings, bins=20, color='purple', edgecolor='black')
-plt.xlabel('Rating')
-plt.ylabel('número de apps')
-plt.title('Distribución de ratings')
-plt.grid(axis='y', linestyle='--')
+# Filtrar ratings que son mayores a 0
+filtered_ratings = ratings[ratings > 0]
+
+# Histograma de la distribución de ratings
+plt.tight_layout() # Ajusto tamaño a los ejes
+plt.hist(filtered_ratings, bins=20, color='purple', edgecolor='black', alpha=0.7)  # Agregar transparencia
+plt.xlabel('Rating', fontsize=12)
+plt.ylabel('Number of apps', fontsize=12)
+plt.title('Distribución de Ratings', fontsize=14)
+plt.grid(axis='y', linestyle='--', alpha=0.7) 
 plt.show()
 
 
-##--GRAFICO: Box Plot de la distribución de ratings por género en la categoría 'GAME'---
+
+
+
+##--GRAFICO DE DISPERSION: distribución de ratings por género en la categoría 'GAME'---
 
 # Filtrar aplicaciones de la categoría 'GAME'
 game_indices = [i for i in range(len(category)) if category[i] == 'GAME']
 game_genres = np.array([genres[i] for i in game_indices])
 game_ratings = np.array([rating[i] for i in game_indices])
 
+# Crear un filtro para ignorar ratings que son cero
+non_zero_ratings_indices = game_ratings > 0
+filtered_game_genres = game_genres[non_zero_ratings_indices]
+filtered_game_ratings = game_ratings[non_zero_ratings_indices]
+
 # Encontrar los géneros únicos dentro de la categoría 'GAME'
-unique_game_genres = np.unique(game_genres)
+unique_game_genres = np.unique(filtered_game_genres)
 
-# Crear una lista de ratings por género y filtrar géneros sin ratings
-ratings_by_genre = [game_ratings[game_genres == genre] for genre in unique_game_genres if len(game_ratings[game_genres == genre]) > 0]
-valid_genres = [genre for genre in unique_game_genres if len(game_ratings[game_genres == genre]) > 0]
+# Crear un gráfico de dispersión
+plt.figure(figsize=(12, 6))
 
-plt.boxplot(ratings_by_genre, labels=valid_genres, patch_artist=True, notch=True)
-plt.xlabel('Género')
-plt.ylabel('Rating')
-plt.title('Distribución de ratings por género en la categoría GAME')
-plt.xticks(rotation=40)
+# Colorear los puntos según el género
+colors = plt.cm.get_cmap('tab10', len(unique_game_genres))  # Obtener una paleta de colores
+
+for idx, genre in enumerate(unique_game_genres):
+    ratings_for_genre = filtered_game_ratings[filtered_game_genres == genre]
+    if len(ratings_for_genre) >= 2:  # Filtrar géneros con al menos 2 ratings
+        plt.scatter([genre] * len(ratings_for_genre), ratings_for_genre, color=colors(idx), alpha=0.6, label=genre)
+
+# Configurar el gráfico
+plt.xlabel('Género', fontsize=11)
+plt.ylabel('Rating', fontsize=11)
+plt.title('Distribución de rating por genero en la categoría "GAME"', fontsize=13)
+plt.xticks(rotation=90)
 plt.grid(True)
+
+# Mostrar el gráfico
+plt.tight_layout()
 plt.show()
 
 
 
-##--GRAFICO: Promedio de Reviews según última actualización---
 
-# Convertir las fechas a un formato manejable
-def parse_date(date_str):
-    try:
-        return datetime.strptime(date_str, "%B %d, %Y")
-    except ValueError:
-        return datetime.strptime("January 1, 1970", "%B %d, %Y")  # Fecha por defecto en caso de error
+## GRAFICO DE LINEA: Cantidad de instalaciones según año de la última update---
 
-dates = np.array([parse_date(date) for date in last_updated])
+# Función para convertir las fechas a un formato manejable
+def date_format(date_str):
+    return datetime.strptime(date_str, "%B %d, %Y")
+
+# Convertir las fechas y los datos a arrays
+dates = np.array([date_format(date) for date in last_updated])
 
 # Ordenar por fecha
 sorted_indices = np.argsort(dates)
 sorted_dates = dates[sorted_indices]
-sorted_reviews = np.array(reviews)[sorted_indices]
+sorted_installs = np.array(installs)[sorted_indices]
+sorted_ratings = np.array(rating)[sorted_indices]  # Asegúrate de tener los ratings ordenados
 
-# Agrupar y calcular el promedio de reviews por mes
-unique_months = np.unique(sorted_dates.astype('datetime64[M]'))
-avg_reviews_per_month = np.array([np.mean(sorted_reviews[sorted_dates.astype('datetime64[M]') == month]) for month in unique_months])
+# Agrupar y calcular el promedio de installs y ratings por año
+years = sorted_dates.astype('datetime64[Y]').astype(int) + 1970
+unique_years = np.unique(years)
 
-plt.plot(unique_months, avg_reviews_per_month, marker='o', linestyle='-', color='blue')
-plt.xlabel('Month')
-plt.ylabel('Average Reviews')
-plt.title('Average Reviews Over Time')
-plt.grid(True)
+avg_installs_per_year = np.array([np.average(sorted_installs[years == year]) for year in unique_years])
+avg_ratings_per_year = np.array([np.average(sorted_ratings[years == year][sorted_ratings[years == year] > 0]) for year in unique_years])  # Filtrar ratings > 0
+
+# Crear la figura y el eje principal
+fig, ax1 = plt.subplots()
+
+# Graficar el promedio de instalaciones
+ax1.plot(unique_years, avg_installs_per_year, marker='o', linestyle='-', color='blue', label='Average Installs')
+ax1.set_xlabel('Año de la última actualización')
+ax1.set_ylabel('Installs promedio (10^7)', color='blue')
+ax1.tick_params(axis='y', labelcolor='blue')
+ax1.grid(True)
+
+# Crear el segundo eje
+ax2 = ax1.twinx()
+ax2.plot(unique_years, avg_ratings_per_year, marker='o', linestyle='-', color='orange', label='Average Ratings')
+ax2.set_ylabel('Rating promedio', color='orange')
+ax2.tick_params(axis='y', labelcolor='orange')
+
+# Añadir título y leyendas
+plt.title('Installs (en 10^7) y ratings promedio por año de última actualización')
+fig.tight_layout()  # Para ajustar bien los ejes
 plt.show()
