@@ -19,7 +19,7 @@ current_ver = []
 android_ver = []
 
 # Función para convertir el tamaño a megabytes (MB)
-def convert_size(size_str):
+def transformar_tamaño(size_str):
     if 'M' in size_str:
         return float(size_str.replace('M', '').strip()) 
     elif 'k' in size_str:
@@ -28,15 +28,14 @@ def convert_size(size_str):
 
 with open('Play_Store_Data.csv', 'r', encoding='utf-8') as file:
     reader = csv.reader(file)
-    next(reader)  # Saltar el encabezado
+    next(reader)  # Saltar encabezado
     for fila in reader:
         app.append(fila[0])
         category.append(fila[1])
         rating.append(float(fila[2]) if fila[2] != 'NaN' else 0.0)  # Manejo de NaN
         reviews.append(int(fila[3]))
-        valor_size = convert_size(fila[4]) # Paso size a un dato manejable
-        if valor_size is not None:  # Ignorar valores no válidos
-            size.append(valor_size)
+        valor_size = transformar_tamaño(fila[4]) # Paso size a un dato manejable
+        size.append(valor_size)
         installs.append(fila[5].replace('+', '').replace(',', ''))  # Limpio formato de installs
         tipo.append(fila[6])
         price.append(float(fila[7].replace('$', '')) if fila[7] != 'Free' else 0.0)  # Manejo precio
@@ -47,76 +46,72 @@ with open('Play_Store_Data.csv', 'r', encoding='utf-8') as file:
         android_ver.append(fila[12].strip())
         
         
+        
 ##--GRAFICO de DISPERSION (usamos logaritmo): cantidad de installs según tamaño de la dating app
-dating_indices = [i for i, genre in enumerate(genres) if 'dating' in genre.lower() and size[i] != ""]
+dating_indices = [i for i, genre in enumerate(genres) if 'dating' in genre.lower() and size[i] != "" and rating[i] > 2.8]
 
-# Obtener los valores de size e installs correspondientes
+# Obtener los valores de size e installs de cada app
 dating_sizes = np.array([size[i] for i in dating_indices])
 dating_installs = np.array([int(installs[i]) for i in dating_indices])
 
 # Graficar los datos
-plt.tight_layout() # Ajusto tamaño a los ejes
-plt.scatter(dating_sizes, dating_installs, alpha=0.65) # Ajusto tamaño de los puntos, para que se vean mejor
-plt.title("Dating Apps: tamaño vs. cantidad de installs", fontsize=14)
+plt.scatter(dating_sizes, dating_installs, alpha=0.4) # Ajusto tamaño de los puntos, para que se vean mejor
+plt.title("Dating Apps: tamaño vs. cantidad de installs, en escala logaritmica", fontsize=14)
 plt.xlabel("Size (MB)", fontsize=12)
-plt.ylabel("Cantidad de installs (10^7)", fontsize=12)
+plt.ylabel("Cantidad de installs", fontsize=12)
 plt.yscale('log')  # Escala logarítmica para los ejes Y
 plt.grid(True)  # Agrego la grilla
 plt.show()
 
 
 
-##--GRAFICO BARRAS: Top 5 categorás más exitosas--
+##--GRAFICO BARRAS: Top 5 categorás más demandadas--
 category = np.array(category)
 installs = np.array(list(map(int, installs)))
 ratings = np.array(rating)
 
 # Filtrar categorías con un rating promedio mayor a 3.5 
-valid_categories = [cat for cat in np.unique(category) if np.mean(ratings[category == cat]) > 3.5]
+valid_categories = [cat for cat in np.unique(category) if np.mean(ratings[category == cat]) > 3.7]
 valid_categories = np.array(valid_categories)
 
-# Sumar las instalaciones por cada categoría
+# Sumar instalaciones por categoría
 total_installs_by_category = np.array([np.sum(installs[category == cat]) for cat in valid_categories])
 
-# Obtener las 5 categorías con más instalaciones
+# Obtener  5 categorías con más instalaciones
 top_indices = np.argsort(total_installs_by_category)[-5:]  # Indices de las 5 categorías más exitosas
 top_categories = valid_categories[top_indices]
 top_installs = total_installs_by_category[top_indices]
 
-# Crear colores diferentes para cada barra
+# Colores diferentes para cada barra
 colors = ['skyblue', 'salmon', 'lightgreen', 'orange', 'lightcoral']
 
-# Visualizar los resultados
+# Visualizar resultados
 plt.figure(figsize=(13, 5))  # Aumentar el tamaño del gráfico, para que se vean los ejes
 bars = plt.barh(top_categories, top_installs, color=colors)
 plt.xlabel('Total de Installs (en 10^10)', fontsize=12)
 plt.ylabel('Categoría', fontsize=12)
-plt.title('Top 5 categorías de Apps más exitosas', fontsize=14)
+plt.title('Top 5 categorías de Apps más demandadas', fontsize=14)
 plt.show()
 
 
 
-##--HISTOGRAMA: distribución de ratings ---
+##--HISTOGRAMA: distribución de ratings para la categoría sports---
 ratings = np.array(rating)
 
-# Filtrar ratings que son mayores a 0
-filtered_ratings = ratings[ratings > 0]
+# Filtro ratings: deben ser mayores a 0 y de la categoría sports
+filtered_ratings1 = ratings[category == "SPORTS"]
+filtered_ratings2 = filtered_ratings1[filtered_ratings1 > 0]
 
 # Histograma de la distribución de ratings
-plt.tight_layout() # Ajusto tamaño a los ejes
-plt.hist(filtered_ratings, bins=20, color='purple', edgecolor='black', alpha=0.7)  # Agregar transparencia
-plt.xlabel('Rating', fontsize=12)
-plt.ylabel('Number of apps', fontsize=12)
-plt.title('Distribución de Ratings', fontsize=14)
+plt.hist(filtered_ratings2, bins=25, color='purple', edgecolor='black', alpha=0.7)  # Agregar transparencia
+plt.xlabel('Rating', fontsize=11)
+plt.ylabel('Cantidad de apps (en 10^7)', fontsize=11)
+plt.title('Distribución de Ratings para la categoría "SPORTS"', fontsize=13)
 plt.grid(axis='y', linestyle='--', alpha=0.7) 
 plt.show()
 
 
-
-
-
 ##--GRAFICO DE DISPERSION: distribución de ratings por género en la categoría 'GAME'---
-
 # Filtrar aplicaciones de la categoría 'GAME'
 game_indices = [i for i in range(len(category)) if category[i] == 'GAME']
 game_genres = np.array([genres[i] for i in game_indices])
@@ -138,8 +133,7 @@ colors = plt.cm.get_cmap('tab10', len(unique_game_genres))  # Obtener una paleta
 
 for idx, genre in enumerate(unique_game_genres):
     ratings_for_genre = filtered_game_ratings[filtered_game_genres == genre]
-    if len(ratings_for_genre) >= 2:  # Filtrar géneros con al menos 2 ratings
-        plt.scatter([genre] * len(ratings_for_genre), ratings_for_genre, color=colors(idx), alpha=0.6, label=genre)
+    plt.scatter([genre] * len(ratings_for_genre), ratings_for_genre, color=colors(idx), alpha=0.6, label=genre)
 
 # Configurar el gráfico
 plt.xlabel('Género', fontsize=11)
@@ -155,14 +149,10 @@ plt.show()
 
 
 
-## GRAFICO DE LINEA: Cantidad de instalaciones según año de la última update---
-
-# Función para convertir las fechas a un formato manejable
-def date_format(date_str):
-    return datetime.strptime(date_str, "%B %d, %Y")
+## GRAFICO DE LINEA DE DOS EJES: Cantidad de instalaciones y rating promedio según año de la última update---
 
 # Convertir las fechas y los datos a arrays
-dates = np.array([date_format(date) for date in last_updated])
+dates = np.array([datetime.strptime(date, "%B %d, %Y") for date in last_updated])
 
 # Ordenar por fecha
 sorted_indices = np.argsort(dates)
