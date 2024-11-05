@@ -96,7 +96,6 @@ class Configuracion:
                 print('No coinciden los códigos, intente nuevamente.')
         self.contraseña = nuevo
         
-    
     ## Si el usuario ya tiene contraseña, valida que la sepa, y luego llama a actualizar_codigo  
     def cambiar_codigo(self):
         if self.contraseña:

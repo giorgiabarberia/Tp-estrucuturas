@@ -22,7 +22,6 @@ class Telefono:
         if self.central.llamar(self.num_remitente, num_destino):
             self.celular.en_llamada = True
             print(f'Llamando a {num_destino}...')
-        #### else: error....
         
     def ver_llamadas_entrantes(self):
         if not self.llamadas_entrantes:
@@ -42,8 +41,6 @@ class Telefono:
         celu_remitente.telefono.llamada_activa_con = self.celular
         print(f'Llamada en curso con {celu_remitente.numero}...')
         self.hora_inicio_llamada = datetime.now()
-        
-            
 
     def colgar(self):
         if not self.celular.en_llamada:
@@ -101,7 +98,7 @@ class Telefono:
             print('\n------TELÉFONO------')
             print('1. 📞 Realizar llamada\n2. ☎️  Finalizar llamada\n3. 📖  Ver historial de llamadas\n4. Salir')
             opcion = input('Seleccione una opción: ').strip()
-
+            
             if opcion == '1':
                 self.realizar_llamada()
 

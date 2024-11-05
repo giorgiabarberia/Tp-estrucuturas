@@ -33,7 +33,7 @@ class Celular:
         self.en_llamada = False
         self.sms = None
         self.telefono = None
-        self.contactos = Contactos()
+        self.contactos = Contactos() 
         self.configuracion = Configuracion(nombre,numero)
         self.email = Email(self.direcc_email)
         self.apps = AppStore()   ## Crea la instancia de app store para este celular
@@ -46,7 +46,6 @@ class Celular:
     def asignar_sms_telefono(self,central):
         self.sms = SMS(self.id,central)
         self.telefono = Telefono(self.id,central)
-    
     
     def buscar_celu_por_email(self, email):
         for celular in central.celulares_registrados.values():
@@ -63,7 +62,6 @@ class Celular:
             cls.mails_usados.remove(mail)
         except:
             print('No se eliminaron el mail de su celular porque no se encontraba registrado.')
-        
         
     ## prendo el celular, y al prenderlo se ejecuta la funcion desbloquear
     def prender_celular(self):

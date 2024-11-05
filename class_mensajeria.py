@@ -30,7 +30,7 @@ class SMS():
     # Se agrega el mensaje en el chat del que lo envía 
     def enviar_sms(self, num_destino, texto):
         if num_destino not in self.chats:
-            self.chats[num_destino] = ListaEnlazada()   # Cola para los mensajes en un chat
+            self.chats[num_destino] = ListaEnlazada()   #Lista enlazada para los mensajes en un chat
         mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
         self.chats[num_destino].agregarFinal(Nodo(mensaje))
 
@@ -39,7 +39,7 @@ class SMS():
         mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
         if self.celular.prendido:
             if num_remitente not in self.chats:
-                self.chats[num_remitente] = ListaEnlazada() # Cola para los mensajes en un chat
+                self.chats[num_remitente] = ListaEnlazada() #Lista enlazada para los mensajes en un chat
             self.chats[num_remitente].agregarFinal(Nodo(mensaje))
         else:
             if num_remitente not in self.bandeja_entrada:

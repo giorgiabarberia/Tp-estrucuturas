@@ -11,6 +11,10 @@ celular1 = Celular(1, "Juan", "Galaxy S21", "Android", "11.0", "8GB", "128GB", "
 celular2 = Celular(2, "Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "1141790650", "ana@example.com")
 celular3 = Celular(3,"Ana", "iPhone 13", "iOS", "14.0", "6GB", "256GB", "1100004444", "anaa@example.com")
 
+""" def registrar_celu_autom(self,celular:Celular):
+        Central.ids_registrados[celular.id] = celular
+        Central.celulares_registrados[celular.numero] = celular
+        celular.asignar_sms_telefono(self.central) """
 # Registrar los celulares en la central
 operadora.registrar_celu_autom(celular1)
 operadora.registrar_celu_autom(celular2)

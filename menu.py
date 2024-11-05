@@ -84,7 +84,6 @@ def celular_menu(celular):
             celular.apps.mostrar_apps()
         elif eleccion == '6':
             print("Has seleccionado Configuración.")
-            ### AGREGAR VISUALZAR INFORMACION
             celular.configuracion.configuracion()
         elif celular.apps.apps_descargadas and eleccion == '7':
             print("Has seleccionado Eliminar App.")

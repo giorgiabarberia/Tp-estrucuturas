@@ -59,7 +59,3 @@ class Operadora:
         else:
             print(f'Error: No se encontró el celular {numero}, no estaba registrado en la central,\nEs posible que ya haya sido eliminado')
 
-    def registrar_celu_autom(self,celular:Celular):
-        Central.ids_registrados[celular.id] = celular
-        Central.celulares_registrados[celular.numero] = celular
-        celular.asignar_sms_telefono(self.central)
