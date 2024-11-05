@@ -26,6 +26,7 @@ def preguntar_numero_celular():
             numero = input('Ingrese nuevamente el número del celular al que quiere acceder: ')
     return numero
 
+# Submenú celular, hay opciones que solo se muestran si las apps correspondientes están descargadas. 
 def mostrar_submenu_celular(celular):
     print("\n-----Menú-----")
     print("1. 📖 Contactos")
@@ -69,7 +70,7 @@ def menu_eliminar_app(celular):
 
         if not eleccion.isdigit() or not (1 <= int(eleccion) <= len(apps_descargadas)):
             print("Elección inválida. Por favor, intente de nuevo.")
-            continue  # Continúa al inicio del while
+            continue 
 
         indice = int(eleccion) - 1
         app_seleccionada = apps_descargadas[indice]

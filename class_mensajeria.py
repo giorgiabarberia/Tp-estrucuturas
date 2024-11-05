@@ -163,7 +163,7 @@ class SMS():
                 self.enviar_nuevo_sms(numero)
             elif sub_opcion == '2' and numero in self.chats:
                 try:
-                    num_mensaje_a_elim = int(input('Número del mensaje que desea eliminar: '))
+                    num_mensaje_a_elim = int(input('Indice del mensaje que desea eliminar: '))
                     self.eliminar_mensaje(numero, num_mensaje_a_elim)
                 except ValueError:
                     print('Error. Ingrese un número válido.')
@@ -200,12 +200,14 @@ class Email():
             'Fecha': self.obtener_fecha_actual(),
             'Leído': False  #Se marca como no leído por defecto
         }
-        
-        if central.verif_mail(destino):
-            self.bandeja_salida.append(mensaje) 
-            celu_destino = central.obtener_celu_por_email(destino)
-            if celu_destino:    #Aclaración: podemos enviar un mail a una dirección que no exista, pero a esta nunca le va a llegar el mail
+        if central.verif_mail(destino): # Verifica que el email exista
+            if asunto or cuerpo:
+                self.bandeja_salida.append(mensaje) 
+                celu_destino = central.obtener_celu_por_email(destino)
                 celu_destino.email.recibir_email(self.email_remitente,destino,asunto,cuerpo)
+                print('¡Email enviado!')
+            else:
+                print('No puedes enviar un email sin ningún contenido.')
         else:
             print('Dirección de email no encontrada.')
             

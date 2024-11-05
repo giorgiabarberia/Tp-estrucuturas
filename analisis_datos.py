@@ -55,11 +55,12 @@ dating_sizes = np.array([size[i] for i in dating_indices])
 dating_installs = np.array([int(installs[i]) for i in dating_indices])
 
 # Graficar los datos
-plt.scatter(dating_sizes, dating_installs, alpha=0.4) # Ajusto tamaño de los puntos, para que se vean mejor
+plt.figure(figsize=(10, 5))
+plt.scatter(dating_sizes, dating_installs, alpha=0.3) # Ajusto tamaño de los puntos, para que se vea mejor
 plt.title("Dating Apps: tamaño vs. cantidad de installs, en escala logaritmica", fontsize=14)
 plt.xlabel("Size (MB)", fontsize=12)
 plt.ylabel("Cantidad de installs", fontsize=12)
-plt.yscale('log')  # Escala logarítmica para los ejes Y
+plt.yscale('log')  # Escala logarítmica para los ejes Y, para que se lea la data mejor
 plt.grid(True)  # Agrego la grilla
 plt.show()
 
@@ -158,7 +159,7 @@ dates = np.array([datetime.strptime(date, "%B %d, %Y") for date in last_updated]
 sorted_indices = np.argsort(dates)
 sorted_dates = dates[sorted_indices]
 sorted_installs = np.array(installs)[sorted_indices]
-sorted_ratings = np.array(rating)[sorted_indices]  # Asegúrate de tener los ratings ordenados
+sorted_ratings = np.array(rating)[sorted_indices]  
 
 # Agrupar y calcular el promedio de installs y ratings por año
 years = sorted_dates.astype('datetime64[Y]').astype(int) + 1970
@@ -167,7 +168,7 @@ unique_years = np.unique(years)
 avg_installs_per_year = np.array([np.average(sorted_installs[years == year]) for year in unique_years])
 avg_ratings_per_year = np.array([np.average(sorted_ratings[years == year][sorted_ratings[years == year] > 0]) for year in unique_years])  # Filtrar ratings > 0
 
-# Crear la figura y el eje principal
+# Crear gráfico
 fig, ax1 = plt.subplots()
 
 # Graficar el promedio de instalaciones
@@ -183,7 +184,7 @@ ax2.plot(unique_years, avg_ratings_per_year, marker='o', linestyle='-', color='o
 ax2.set_ylabel('Rating promedio', color='orange')
 ax2.tick_params(axis='y', labelcolor='orange')
 
-# Añadir título y leyendas
+# Titulo y mostrar
 plt.title('Installs (en 10^7) y ratings promedio por año de última actualización')
 fig.tight_layout()  # Para ajustar bien los ejes
 plt.show()

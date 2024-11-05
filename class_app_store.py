@@ -39,7 +39,7 @@ class AppStore:
         for app, (descargada, _) in self.apps_descargadas.items():
             estado = "Descargada" if descargada else "No descargada"
             print(f"- {app}: {estado}")  
-        ####
+
         app_seleccionada = input("Seleccione una aplicación (o escriba 'salir' para terminar): ").capitalize()
         if app_seleccionada.lower() == 'salir':
             print("Saliendo de la AppStore.")

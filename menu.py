@@ -4,7 +4,6 @@ from class_celular import Celular
 from class_app_store import AppStore
 from aplicaciones import Spotify, Tetris, Salud, Twitter
 from class_contactos import Contactos
-import validaciones
 import funciones_menu
 
 operadora = Operadora('Personal')
@@ -15,23 +14,20 @@ def menu_principal():
     while continuar:
         funciones_menu.mostrar_menu()
         opcion = input("Seleccione una opción: ")
-        
         if opcion == '1':
             submenu_operadora()
-        
         elif opcion == '2':
             if Central.celulares_registrados:
                 manejar_celular()
             else:
                 print('Aún no hay ningún celular registrado en la central al que pueda acceder.')
-
         elif opcion == '3':
             print("Saliendo del programa.")
-            continuar = False  # Cambiar la condición para salir del bucle
-
+            continuar = False 
         else:
             print("Opción no válida. Intente de nuevo.")
 
+# Menú de la operadora
 def submenu_operadora():
     continuar = True
     while continuar:
@@ -102,13 +98,13 @@ def celular_menu(celular):
             celular.apps.apps_descargadas["Twitter"][1].menu()
         elif eleccion == '0':
             print("Saliendo del menú.")
-            continuar = False  # Cambiar la condición para salir del bucle
+            continuar = False 
         elif eleccion == "00":
             print("Apagando el celular y saliendo del menú")
             celular.prendido = False
             celular.bloqueo = True
             celular.configuracion.desactivar_red_movil()
-            continuar = False  # Cambiar la condición para salir del bucle
+            continuar = False 
         else:
             print("Opción inválida. Por favor, seleccione una opción válida.")
 

@@ -1,7 +1,6 @@
 from collections import deque
 from datetime import datetime
 from class_central import Central
-import validaciones 
 from exportador import ExportadorLlamada
 
 ## Clase Telefono

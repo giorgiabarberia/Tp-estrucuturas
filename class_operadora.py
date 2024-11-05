@@ -10,10 +10,15 @@ class Operadora:
         self.nombre = nombre
         self.central = Central()
 
+    # Función para generar un número de celular válido, que no esté ya en la central
     @staticmethod
     def crear_numero_aleatorio() -> str:
-        return "11" + ''.join(random.choices("0123456789", k=8))
+        numero = "11" + ''.join(random.choices("0123456789", k=8))
+        while numero in Central.celulares_registrados:
+            numero = "11" + ''.join(random.choices("0123456789", k=8))
+        return numero
 
+    # Función para generar un ID para los celulares que sea único. 
     @staticmethod
     def generar_id_unico(longitud=25) -> str:
         caracteres = string.ascii_letters + string.digits
@@ -52,7 +57,7 @@ class Operadora:
     def eliminar_celular(self,numero):
         if numero in Central.celulares_registrados:
             cel = Central.celulares_registrados[numero]
-            mail = cel.direcc_email ## O nose si poner email, depende como resolvamos eso
+            mail = cel.direcc_email 
             del Central.celulares_registrados[numero]
             Celular.eliminar_mail_celular(mail)
             print(f'Celular {numero} eliminado con éxito.')
