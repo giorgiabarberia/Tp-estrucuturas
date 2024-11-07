@@ -12,7 +12,6 @@ class Central:
         celu = self.celulares_registrados.get(numero)
         if celu and celu.prendido and celu.configuracion.red_movil:
             return True
-        print(f'{numero} no se encuentra disponible.')
         return False
     
     # Para validar que el numero destinatario este registrado en la central
@@ -26,7 +25,6 @@ class Central:
             if self.verif_disponibilidad(num_remitente):
                 remitente_celu = self.celulares_registrados[num_remitente]
                 destino_celu = self.celulares_registrados[num_destino]
-
                 remitente_celu.sms.enviar_sms(num_destino, texto)
                 destino_celu.sms.recibir_sms(num_remitente, texto)
 

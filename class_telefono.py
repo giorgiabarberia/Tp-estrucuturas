@@ -18,9 +18,13 @@ class Telefono:
 
     def realizar_llamada(self):   
         num_destino = input('\nIngrese el número al que desea llamar: ')
+        if self.celular.en_llamada==True:
+            print ('No puede llamar, usted ya se encuentra en una llamada.')
+            return
         if self.central.llamar(self.num_remitente, num_destino):
             self.celular.en_llamada = True
             print(f'Llamando a {num_destino}...')
+
         
     def ver_llamadas_entrantes(self):
         if not self.llamadas_entrantes:
@@ -58,6 +62,7 @@ class Telefono:
             self.central.registrar_llamada(self.num_remitente, celu_destino.numero, self.hora_inicio_llamada, self.hora_fin_llamada, duracion)
         else:
             self.celular.en_llamada = False
+            print('Llamada finalizada')
         
     def ejecutar_llamadas_entrantes(self):
         ver_llamadas = True
@@ -103,8 +108,10 @@ class Telefono:
 
             elif opcion == '2':
                 self.colgar()
+
             elif opcion=='3':
                 self.ver_historial_llamadas()
+
             elif opcion == '4':
                 print('\nSaliendo de Teléfono...')
                 exportador = ExportadorLlamada("registros_llamadas.csv")

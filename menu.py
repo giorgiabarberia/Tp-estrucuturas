@@ -5,7 +5,7 @@ from class_app_store import AppStore
 from aplicaciones import Spotify, Tetris, Salud, Twitter
 from class_contactos import Contactos
 import funciones_menu
-
+import csv
 
 
 # Función principal del menú
@@ -81,7 +81,7 @@ def celular_menu(celular):
         elif eleccion == '6':
             print("Has seleccionado Configuración.")
             celular.configuracion.configuracion()
-        elif celular.apps.apps_descargadas and eleccion == '7':
+        elif True in [valor[0] for valor in celular.apps.apps_descargadas.values()] and eleccion == '7':
             print("Has seleccionado Eliminar App.")
             funciones_menu.menu_eliminar_app(celular)
         elif celular.apps.apps_descargadas["Spotify"][0] and eleccion == '8':
@@ -108,10 +108,34 @@ def celular_menu(celular):
         else:
             print("Opción inválida. Por favor, seleccione una opción válida.")
 
-
+def cargar_celulares():
+    try:
+        with open('celulares.csv', "r", newline='') as archivo:
+            lector = csv.DictReader(archivo)
+            for fila in lector:
+                # Crear una instancia de Celular para cada fila
+                print(fila)
+                celular = Celular(
+                    id=fila['id'],
+                    nombre=fila['nombre'],
+                    modelo=fila['modelo'],
+                    sistema_operativo=fila['sistema_operativo'],
+                    version=fila['version'],
+                    cap_memoria_ram=fila['cap_memoria_ram'],
+                    cap_almacenamiento=fila['cap_almacenamiento'],
+                    numero=fila['numero'],
+                    direcc_email=fila['mail']
+                )
+                Central.ids_registrados[celular.id] = celular
+                Central.celulares_registrados[celular.numero] = celular
+    except FileNotFoundError:
+        print("Error: El archivo no existe.")
+    except IOError:
+        print("Error al leer el archivo.")
 
 # Función principal
 def main():
+    cargar_celulares()
     operadora = Operadora('Personal')
     menu_principal(operadora)
 

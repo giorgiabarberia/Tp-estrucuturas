@@ -96,20 +96,30 @@ plt.show()
 
 
 
-##--HISTOGRAMA: distribución de ratings para la categoría sports---
+##--HISTOGRAMA: distribución de ratings para la categoría sports y para la categoría health and fittness---
 ratings = np.array(rating)
+categories = np.array(category)
 
-# Filtro ratings: deben ser mayores a 0 y de la categoría sports
-filtered_ratings1 = ratings[category == "SPORTS"]
-filtered_ratings2 = filtered_ratings1[filtered_ratings1 > 0]
+# Filtrando ratings para la categoría SPORTS
+filtered_ratings_sports = ratings[categories == "SPORTS"]
+filtered_ratings_sports = filtered_ratings_sports[filtered_ratings_sports > 0]
 
-# Histograma de la distribución de ratings
-plt.hist(filtered_ratings2, bins=25, color='purple', edgecolor='black', alpha=0.7)  # Agregar transparencia
-plt.xlabel('Rating', fontsize=11)
-plt.ylabel('Cantidad de apps (en 10^7)', fontsize=11)
-plt.title('Distribución de Ratings para la categoría "SPORTS"', fontsize=13)
-plt.grid(axis='y', linestyle='--', alpha=0.7) 
+# Filtrando ratings para la categoría HEALTH_AND_FITNESS
+filtered_ratings_health = ratings[categories == "HEALTH_AND_FITNESS"]
+filtered_ratings_health = filtered_ratings_health[filtered_ratings_health > 0]
+
+# Crear histograma
+plt.hist(filtered_ratings_sports, bins=25, color='purple', edgecolor='black', alpha=0.7, label='SPORTS')
+plt.hist(filtered_ratings_health, bins=25, color='green', edgecolor='black', alpha=0.7, label='HEALTH_AND_FITNESS')
+
+# Mostrar
+plt.xlabel('Rating', fontsize=12)
+plt.ylabel('Cantidad de apps', fontsize=12)
+plt.title('Ratings para las categorías "SPORTS" y "HEALTH_AND_FITNESS"', fontsize=12)
+plt.legend()
+plt.grid(axis='y', linestyle='--', alpha=0.10)
 plt.show()
+
 
 
 ##--GRAFICO DE DISPERSION: distribución de ratings por género en la categoría 'GAME'---

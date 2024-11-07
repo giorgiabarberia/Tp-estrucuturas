@@ -1,9 +1,10 @@
-
 from class_celular import Celular
 from class_central import Central
 import validaciones
 import random
 import string
+import csv
+from io import FileIO
 
 class Operadora:
     def __init__(self,nombre):
@@ -26,7 +27,28 @@ class Operadora:
         while True:
             if id not in Central.ids_registrados:
                 return id
-
+                   
+    def guardar_celular(celular):
+        try:
+            with open('celulares.csv', "a", newline='') as archivo:  
+                escritor = csv.writer(archivo)
+                
+                lista = [
+                    celular.id,
+                    celular.configuracion.nombre,
+                    celular.modelo,
+                    celular.sist_op,
+                    celular.version,
+                    celular.ram,
+                    celular.almacenamiento,
+                    celular.numero,
+                    celular.direcc_email
+                ]
+                escritor.writerow(lista)  
+        except IOError:
+            print("Error al exportar archivo")
+            raise IOError('Error al exportar el archivo')
+        
     def registrar_celular(self):
         id = self.generar_id_unico()
         nombre = input('Ingrese su nombre: ')
@@ -49,10 +71,35 @@ class Operadora:
             else: 
                 mail = input('Ingrese un mail válido, el ingresado ya está en uso por otro celular: ')
         celular = Celular(id,nombre,modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
+        Operadora.guardar_celular(celular)
         Central.ids_registrados[celular.id] = celular
         Central.celulares_registrados[celular.numero] = celular
         celular.asignar_sms_telefono(self.central)
         print(f'Celular registrado con éxito.\nSu número es: {celular.numero}')
+
+    def borrar_de_csv(numero):
+        """Elimina un registro del archivo celulares.csv basado en el número de celular."""
+        try:
+            # Leer todos los registros excepto el que queremos eliminar
+            celulares_actualizados = []
+            with open('celulares.csv', "r", newline='') as archivo:
+                lector = csv.reader(archivo)
+                encabezado = next(lector)  # Leer el encabezado
+                for fila in lector:
+                    # Comparar `numero` en el archivo con el `numero` a eliminar
+                    if fila[7] != numero:  # Suponiendo que `numero` está en la columna 8 (índice 7)
+                        celulares_actualizados.append(fila)
+
+            # Sobreescribir el archivo con los registros actualizados
+            with open('celulares.csv', "w", newline='') as archivo:
+                escritor = csv.writer(archivo)
+                escritor.writerow(encabezado)  # Escribir encabezado
+                escritor.writerows(celulares_actualizados)  # Escribir datos sin el celular eliminado
+
+        except FileNotFoundError:
+            print("Error: No se encontró el archivo 'celulares.csv'.")
+        except IOError:
+            print("Error al modificar el archivo 'celulares.csv'.")
 
     def eliminar_celular(self,numero):
         if numero in Central.celulares_registrados:
@@ -63,4 +110,4 @@ class Operadora:
             print(f'Celular {numero} eliminado con éxito.')
         else:
             print(f'Error: No se encontró el celular {numero}, no estaba registrado en la central,\nEs posible que ya haya sido eliminado')
-
+        Operadora.borrar_de_csv(numero)

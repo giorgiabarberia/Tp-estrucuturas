@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 # Función que valida que un número de teléfono sea válido
 def validar_telefono(celular: str) -> bool:
@@ -20,3 +21,6 @@ def ingreso_no_vacio(variable):
 def validar_email(email: str) -> bool:
     patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(patron, email) is not None
+
+def obtener_fecha_actual():
+        return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')

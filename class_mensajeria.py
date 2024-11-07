@@ -3,7 +3,7 @@ from datetime import datetime
 from class_central import Central
 from exportador import ExportadorChats
 from class_listaenlazada import Nodo,ListaEnlazada
-
+import validaciones
 
 # Clase SMS 
 class SMS():
@@ -16,10 +16,6 @@ class SMS():
         self.num_remitente = self.celular.numero
         self.central = central
 
-    @staticmethod
-    def obtener_hora_actual():
-        return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-
     # Devuelve el nombre de contacto de un número o el número si no está agendado
     def obtener_nombre_o_num(self, numero):
         for num, nombre in self.celular.contactos.agenda_contactos.items():
@@ -31,12 +27,12 @@ class SMS():
     def enviar_sms(self, num_destino, texto):
         if num_destino not in self.chats:
             self.chats[num_destino] = ListaEnlazada()   #Lista enlazada para los mensajes en un chat
-        mensaje = f'Yo: {texto} | [{self.obtener_hora_actual()}]'
+        mensaje = f'Yo: {texto} | [{validaciones.obtener_fecha_actual()}]'
         self.chats[num_destino].agregarFinal(Nodo(mensaje))
 
     # Se agrega el mensaje en el chat del que lo recibe
     def recibir_sms(self, num_remitente, texto):
-        mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{self.obtener_hora_actual()}]'
+        mensaje = f'{self.obtener_nombre_o_num(num_remitente)}: {texto} | [{validaciones.obtener_fecha_actual()}]'
         if self.celular.prendido:
             if num_remitente not in self.chats:
                 self.chats[num_remitente] = ListaEnlazada() #Lista enlazada para los mensajes en un chat
@@ -67,7 +63,7 @@ class SMS():
                 aux = aux.siguiente
             # Al llegar al nodo deseado, lo modificamos
             if aux:
-                aux.dato = 'Mensaje eliminado'
+                aux.dato = f'Mensaje eliminado | [{self.obtener_hora_actual()}]'
                 print('Mensaje eliminado correctamente.')
         else:
             print('Número de mensaje inválido.')
@@ -88,13 +84,17 @@ class SMS():
     def mostrar_chats_existentes(self):
         print('\n--- Chats Existentes ---')
         for i, (numero, mensajes) in enumerate(self.chats.items(), start=1):
-            nombre = self.obtener_nombre_o_num(numero)
+            nombre = 'Yo' if numero == self.num_remitente else self.obtener_nombre_o_num(numero)
             ultimo_mensaje = mensajes.obtener_ultimo()
-            remitente = 'Yo' if 'Yo:' in ultimo_mensaje else nombre
+            remitente = 'Yo' 
+            if 'Yo:' in ultimo_mensaje or numero == self.num_remitente:
+                remitente = 'Yo'
+            else: 
+                remitente = nombre
             texto_mensaje = ultimo_mensaje.split('|')[0].split(': ')[-1]
-            fecha_hora = ultimo_mensaje.split('|')[1]
-            print(f'{i}. {nombre}: [{remitente}: {texto_mensaje} - {fecha_hora.strip()}]')
-    
+            fecha_hora = ultimo_mensaje.split('|')[1].strip()
+            print(f'{i}. {nombre} - [{remitente}: {texto_mensaje} - {fecha_hora} ]')
+
     def actualizar_chats(self):
         if self.bandeja_entrada:
             for num_remitente, mensajes in self.bandeja_entrada.items():
@@ -182,10 +182,6 @@ class Email():
         self.bandeja_salida = deque() #Pila para la bandeja de salida
         self.email_remitente = direcc_email
 
-    @staticmethod
-    def obtener_fecha_actual():
-        return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
-
     #Agrega un email a la bandeja de salida y a la bandeja de entrada de quien lo recibe 
     def enviar_email(self,central:Central):
         print('\nMensaje nuevo')
@@ -197,7 +193,7 @@ class Email():
             'Destino': destino,
             'Asunto': asunto,
             'Cuerpo': cuerpo,
-            'Fecha': self.obtener_fecha_actual(),
+            'Fecha': validaciones.obtener_fecha_actual(),
             'Leído': False  #Se marca como no leído por defecto
         }
         if central.verif_mail(destino): # Verifica que el email exista
@@ -218,7 +214,7 @@ class Email():
             'Destino': destino,
             'Asunto': asunto,
             'Cuerpo': cuerpo,
-            'Fecha': self.obtener_fecha_actual(),
+            'Fecha': validaciones.obtener_fecha_actual(),
             'Leído': False  #Se marca como no leído
         }
         self.bandeja_entrada.append(mensaje)

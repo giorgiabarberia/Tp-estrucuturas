@@ -35,15 +35,18 @@ class AppStore:
     
     # Muestra el estado de todas las aplicaciones disponibles
     def mostrar_apps(self):
-        print("\nAplicaciones disponibles:")
-        for app, (descargada, _) in self.apps_descargadas.items():
-            estado = "Descargada" if descargada else "No descargada"
-            print(f"- {app}: {estado}")  
+        continuar = True
+        app_seleccionada = ''
+        while app_seleccionada not in self.apps_descargadas and continuar:
+            print("\nAplicaciones disponibles:")
+            for app, (descargada, _) in self.apps_descargadas.items():
+                estado = "Descargada" if descargada else "No descargada"
+                print(f"- {app}: {estado}")  
 
-        app_seleccionada = input("Seleccione una aplicación (o escriba 'salir' para terminar): ").capitalize()
-        if app_seleccionada.lower() == 'salir':
-            print("Saliendo de la AppStore.")
-            return
+            app_seleccionada = input("Seleccione una aplicación (o escriba 'salir' para terminar): ").capitalize()
+            if app_seleccionada.lower() == 'salir':
+                print("Saliendo de la AppStore.")
+                continuar = False
         self.seleccionar_app(app_seleccionada)
 
     # Selecciona una aplicación para descargar o ingresar

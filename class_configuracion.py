@@ -1,9 +1,9 @@
 import validaciones
 
 class Configuracion:
-    def __init__(self,nombre,numero):
+    def __init__(self,nombre,celular):
         self.nombre = nombre
-        self.numero = numero
+        self.celular=celular
         self.contraseña = None
         self.bloqueo = True
         self.red_movil = False
@@ -26,7 +26,8 @@ class Configuracion:
             elif opcion == '4':
                 self.configurar_red_movil()
             elif opcion == '5': #Para que aparezca la info de tu celular
-                self.celular.__str__() 
+                print('Los datos de su celular son: ')
+                print(self.celular) 
             elif opcion == '6':
                 print("Saliendo de la configuración.")
                 break
