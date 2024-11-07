@@ -6,16 +6,16 @@ from aplicaciones import Spotify, Tetris, Salud, Twitter
 from class_contactos import Contactos
 import funciones_menu
 
-operadora = Operadora('Personal')
+
 
 # Función principal del menú
-def menu_principal():
+def menu_principal(operadora):
     continuar = True
     while continuar:
         funciones_menu.mostrar_menu()
         opcion = input("Seleccione una opción: ")
         if opcion == '1':
-            submenu_operadora()
+            submenu_operadora(operadora)
         elif opcion == '2':
             if Central.celulares_registrados:
                 manejar_celular()
@@ -28,7 +28,7 @@ def menu_principal():
             print("Opción no válida. Intente de nuevo.")
 
 # Menú de la operadora
-def submenu_operadora():
+def submenu_operadora(operadora):
     continuar = True
     while continuar:
         funciones_menu.mostrar_submenu_operadora()
@@ -108,4 +108,13 @@ def celular_menu(celular):
         else:
             print("Opción inválida. Por favor, seleccione una opción válida.")
 
-menu_principal()
+
+
+# Función principal
+def main():
+    operadora = Operadora('Personal')
+    menu_principal(operadora)
+
+# Asegúrate de que el código se ejecute solo una vez
+if __name__ == "__main__":
+    main()

@@ -49,3 +49,11 @@ class ListaEnlazada:
         while aux is not None:
             yield aux.dato
             aux = aux.siguiente
+            
+    def obtener_ultimo(self):
+        if self.esVacia():
+            return None
+        aux = self.inicio
+        while aux.siguiente is not None:
+            aux = aux.siguiente
+        return aux.dato        

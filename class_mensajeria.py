@@ -89,7 +89,7 @@ class SMS():
         print('\n--- Chats Existentes ---')
         for i, (numero, mensajes) in enumerate(self.chats.items(), start=1):
             nombre = self.obtener_nombre_o_num(numero)
-            ultimo_mensaje = mensajes[-1]
+            ultimo_mensaje = mensajes.obtener_ultimo()
             remitente = 'Yo' if 'Yo:' in ultimo_mensaje else nombre
             texto_mensaje = ultimo_mensaje.split('|')[0].split(': ')[-1]
             fecha_hora = ultimo_mensaje.split('|')[1]

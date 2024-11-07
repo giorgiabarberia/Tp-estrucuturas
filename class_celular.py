@@ -5,17 +5,18 @@ from class_telefono import Telefono
 from class_configuracion import Configuracion
 from class_contactos import Contactos
 import validaciones 
-central = Central()
+
 
 class Celular:
     mails_usados = set()
+    central = Central()
     
     def __init__(self, id: int, nombre: str, modelo: str, sistema_operativo: str, version: str, cap_memoria_ram: str, cap_almacenamiento: str, numero: str, direcc_email: str):
         if not validaciones.validar_telefono(numero):
             raise ValueError(f'Error: el número de teléfono {numero} no es válido.')
-        if id in Central.ids_registrados.keys():
+        if id in Celular.central.ids_registrados.keys():
             raise ValueError(f'Error: el id ingresado ya está en uso.')
-        if numero in Central.celulares_registrados.keys():
+        if numero in Celular.central.celulares_registrados.keys():
             raise ValueError(f'Error: el número de teléfono ya está en uso.')
         if direcc_email in Celular.mails_usados:
             raise ValueError(f'Error: el mail ya está en uso.')
@@ -48,7 +49,7 @@ class Celular:
         self.telefono = Telefono(self.id,central)
     
     def buscar_celu_por_email(self, email):
-        for celular in central.celulares_registrados.values():
+        for celular in Celular.central.celulares_registrados.values():
             if celular.direcc_email == email:
                 return celular
         print(f"No se encontró ningún celular registrado con el email {email}.")
@@ -96,7 +97,7 @@ class Celular:
 
     #menu para todo lo que se pueda hacer con email
     def abrir_app_email(self):
-        self.email.ejecutar_email(central)
+        self.email.ejecutar_email(Celular.central)
 
     #menu para todo lo que se pueda hacer con el teléfono (llamadas)
     def abrir_app_telefono(self):
