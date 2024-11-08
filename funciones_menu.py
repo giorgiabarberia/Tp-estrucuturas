@@ -1,6 +1,9 @@
 import validaciones
 from class_central import Central
 from class_app_store import AppStore
+from class_celular import Celular
+from class_operadora import Operadora
+import csv
 ## 1er menu que se muestra, opciones generales
 def mostrar_menu():
     print("\n-----MENÚ PRINCIPAL-----")
@@ -39,12 +42,12 @@ def mostrar_submenu_celular(celular):
         print("7. 👺Eliminar app")
     if celular.apps.apps_descargadas["Spotify"][0]:
         print("8. 🎧 Abrir Spotify")
-    if celular.apps.apps_descargadas["Tetris"][0]:
-        print("9. 🧩 Abrir Tetris")
-    if celular.apps.apps_descargadas["Salud"][0]:
-        print("10. ❤️‍🩹 Abrir Salud")
-    if celular.apps.apps_descargadas["Twitter"][0]:
-        print("11. 🐤 Abrir Twitter")
+    if celular.apps.apps_descargadas["Goodreads"][0]:
+        print("9. 🧩 Abrir Goodreads")
+    if celular.apps.apps_descargadas["Calculadora"][0]:
+        print("10. ❤️‍🩹 Abrir Calculadora")
+    if celular.apps.apps_descargadas["Reloj"][0]:
+        print("11. 🐤 Abrir Reloj")
     print("0. Salir y dejar el celular prendido (puede recibir llamados)")
     print("00. Salir y apagar el celular")
 
@@ -75,4 +78,30 @@ def menu_eliminar_app(celular):
         indice = int(eleccion) - 1
         app_seleccionada = apps_descargadas[indice]
         celular.apps.eliminar_app(app_seleccionada)
+        
+        
+def cargar_celulares():
+    try:
+        with open('celulares.csv', "r", newline='') as archivo:
+            lector = csv.DictReader(archivo)
+            for fila in lector:
+                # Crea 1 instancia de Celular para cada fila
+                celular = Celular(
+                    id=fila['id'],
+                    nombre=fila['nombre'],
+                    modelo=fila['modelo'],
+                    sistema_operativo=fila['sistema_operativo'],
+                    version=fila['version'],
+                    cap_memoria_ram=fila['cap_memoria_ram'],
+                    cap_almacenamiento=fila['cap_almacenamiento'],
+                    numero=fila['numero'],
+                    direcc_email=fila['mail']
+                )
+                Operadora.central.ids_registrados[celular.id] = celular
+                Operadora.central.celulares_registrados[celular.numero] = celular
+                celular.asignar_sms_telefono(Operadora.central)
+    except FileNotFoundError:
+        print("Error: El archivo no existe.")
+    except IOError:
+        print("Error al leer el archivo.")
         

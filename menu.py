@@ -2,7 +2,7 @@ from class_operadora import Operadora
 from class_central import Central
 from class_celular import Celular
 from class_app_store import AppStore
-from aplicaciones import Spotify, Tetris, Salud, Twitter
+from aplicaciones import Spotify, Goodreads, Calculadora, Reloj
 from class_contactos import Contactos
 import funciones_menu
 import csv
@@ -86,16 +86,16 @@ def celular_menu(celular):
             funciones_menu.menu_eliminar_app(celular)
         elif celular.apps.apps_descargadas["Spotify"][0] and eleccion == '8':
             print("Has seleccionado Abrir Spotify.")
-            celular.apps.apps_descargadas["Spotify"][1].menu()
-        elif celular.apps.apps_descargadas["Tetris"][0] and eleccion == '9':
-            print("Has seleccionado Abrir Tetris.")
-            celular.apps.apps_descargadas["Tetris"][1].menu()
-        elif celular.apps.apps_descargadas["Salud"][0] and eleccion == '10':
-            print("Has seleccionado Abrir Salud.")
-            celular.apps.apps_descargadas["Salud"][1].menu()
-        elif celular.apps.apps_descargadas["Twitter"][0] and eleccion == '11':
-            print("Has seleccionado Abrir Twitter.")
-            celular.apps.apps_descargadas["Twitter"][1].menu()
+            celular.apps.apps_descargadas["Spotify"][1].ejecutar_menu()
+        elif celular.apps.apps_descargadas["Goodreads"][0] and eleccion == '9':
+            print("Has seleccionado Abrir Goodreads.")
+            celular.apps.apps_descargadas["Goodreads"][1].ejecutar_menu()
+        elif celular.apps.apps_descargadas["Calculadora"][0] and eleccion == '10':
+            print("Has seleccionado Abrir Calculadora.")
+            celular.apps.apps_descargadas["Calculadora"][1].ejecutar_menu()
+        elif celular.apps.apps_descargadas["Reloj"][0] and eleccion == '11':
+            print("Has seleccionado Abrir Reloj.")
+            celular.apps.apps_descargadas["Reloj"][1].ejecutar_menu()
         elif eleccion == '0':
             print("Saliendo del menú.")
             continuar = False 
@@ -108,37 +108,14 @@ def celular_menu(celular):
         else:
             print("Opción inválida. Por favor, seleccione una opción válida.")
 
-def cargar_celulares():
-    try:
-        with open('celulares.csv', "r", newline='') as archivo:
-            lector = csv.DictReader(archivo)
-            for fila in lector:
-                # Crear una instancia de Celular para cada fila
-                print(fila)
-                celular = Celular(
-                    id=fila['id'],
-                    nombre=fila['nombre'],
-                    modelo=fila['modelo'],
-                    sistema_operativo=fila['sistema_operativo'],
-                    version=fila['version'],
-                    cap_memoria_ram=fila['cap_memoria_ram'],
-                    cap_almacenamiento=fila['cap_almacenamiento'],
-                    numero=fila['numero'],
-                    direcc_email=fila['mail']
-                )
-                Central.ids_registrados[celular.id] = celular
-                Central.celulares_registrados[celular.numero] = celular
-    except FileNotFoundError:
-        print("Error: El archivo no existe.")
-    except IOError:
-        print("Error al leer el archivo.")
+
 
 # Función principal
 def main():
-    cargar_celulares()
+    funciones_menu.cargar_celulares()
     operadora = Operadora('Personal')
     menu_principal(operadora)
 
-# Asegúrate de que el código se ejecute solo una vez
+# Ejecución del código
 if __name__ == "__main__":
     main()

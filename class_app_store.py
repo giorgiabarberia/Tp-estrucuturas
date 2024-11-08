@@ -1,13 +1,12 @@
-import validaciones
-from aplicaciones import Spotify, Salud, Twitter, Tetris
+from aplicaciones import Spotify, Goodreads, Calculadora, Reloj
 
 class AppStore:
     def __init__(self):
         self.apps_descargadas = {
             'Spotify': (False, Spotify()),
-            'Tetris': (False, Tetris()),
-            'Salud': (False, Salud()),
-            'Twitter': (False, Twitter())
+            'Goodreads': (False, Goodreads()),
+            'Calculadora': (False, Calculadora()),
+            'Reloj': (False, Reloj())
             }
     
     # Descarga una aplicación si no está descargada. 
@@ -43,7 +42,7 @@ class AppStore:
                 estado = "Descargada" if descargada else "No descargada"
                 print(f"- {app}: {estado}")  
 
-            app_seleccionada = input("Seleccione una aplicación (o escriba 'salir' para terminar): ").capitalize()
+            app_seleccionada = input("Escriba el nombre de una aplicación (o escriba 'salir' para terminar): ").capitalize()
             if app_seleccionada.lower() == 'salir':
                 print("Saliendo de la AppStore.")
                 continuar = False

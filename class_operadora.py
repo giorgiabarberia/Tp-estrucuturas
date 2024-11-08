@@ -7,15 +7,16 @@ import csv
 from io import FileIO
 
 class Operadora:
+    central = Celular.central
+    
     def __init__(self,nombre):
         self.nombre = nombre
-        self.central = Central()
 
     # Función para generar un número de celular válido, que no esté ya en la central
     @staticmethod
     def crear_numero_aleatorio() -> str:
         numero = "11" + ''.join(random.choices("0123456789", k=8))
-        while numero in Central.celulares_registrados:
+        while numero in Operadora.central.celulares_registrados:
             numero = "11" + ''.join(random.choices("0123456789", k=8))
         return numero
 
@@ -25,7 +26,7 @@ class Operadora:
         caracteres = string.ascii_letters + string.digits
         id = ''.join(random.choice(caracteres) for _ in range(longitud))
         while True:
-            if id not in Central.ids_registrados:
+            if id not in Operadora.central.ids_registrados:
                 return id
                    
     def guardar_celular(celular):
@@ -71,10 +72,10 @@ class Operadora:
             else: 
                 mail = input('Ingrese un mail válido, el ingresado ya está en uso por otro celular: ')
         celular = Celular(id,nombre,modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
-        Operadora.guardar_celular(celular)
-        Central.ids_registrados[celular.id] = celular
-        Central.celulares_registrados[celular.numero] = celular
-        celular.asignar_sms_telefono(self.central)
+        self.guardar_celular(celular)
+        Operadora.central.ids_registrados[celular.id] = celular
+        Operadora.central.celulares_registrados[celular.numero] = celular
+        celular.asignar_sms_telefono(Operadora.central)
         print(f'Celular registrado con éxito.\nSu número es: {celular.numero}')
 
     def borrar_de_csv(numero):
@@ -102,12 +103,12 @@ class Operadora:
             print("Error al modificar el archivo 'celulares.csv'.")
 
     def eliminar_celular(self,numero):
-        if numero in Central.celulares_registrados:
-            cel = Central.celulares_registrados[numero]
+        if numero in Operadora.central.celulares_registrados:
+            cel = Operadora.central.celulares_registrados[numero]
             mail = cel.direcc_email 
-            del Central.celulares_registrados[numero]
+            del Operadora.central.celulares_registrados[numero]
             Celular.eliminar_mail_celular(mail)
             print(f'Celular {numero} eliminado con éxito.')
         else:
             print(f'Error: No se encontró el celular {numero}, no estaba registrado en la central,\nEs posible que ya haya sido eliminado')
-        Operadora.borrar_de_csv(numero)
+        self.borrar_de_csv(numero)
