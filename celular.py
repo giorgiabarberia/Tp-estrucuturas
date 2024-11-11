@@ -1,9 +1,9 @@
-from class_mensajeria import SMS,Email
-from class_central import Central
-from class_app_store import AppStore
-from class_telefono import Telefono
-from class_configuracion import Configuracion
-from class_contactos import Contactos
+from mensajeria import SMS,Email
+from central import Central
+from app_store import AppStore
+from telefono import Telefono
+from configuracion import Configuracion
+from contactos import Contactos
 import validaciones 
 
 
@@ -19,7 +19,7 @@ class Celular:
         if numero in Celular.central.celulares_registrados.keys():
             raise ValueError(f'Error: el número de teléfono ya está en uso.')
         if direcc_email in Celular.mails_usados:
-            raise ValueError(f'Error: el mail ya está en uso.')
+            raise ValueError(f'Error: el email ya está en uso.')
 
         self.id = id
         self.modelo = modelo
@@ -28,7 +28,7 @@ class Celular:
         self.ram = cap_memoria_ram
         self.almacenamiento = cap_almacenamiento
         self.numero = numero
-        self.direcc_email = direcc_email  ## Acá el email está dos veces, una vez como objeto y otra el mail en sí
+        self.direcc_email = direcc_email  ## Acá el email está dos veces, una vez como objeto y otra el email en sí
         self.prendido = False
         self.bloqueo = True
         self.en_llamada = False
@@ -56,13 +56,13 @@ class Celular:
         return None
     
     ## Se llama esta funcion cuando desde class operadora se elimina un celular, porque una vez que se elimina
-    # se pueden volver a usar el mail en otro. 
+    # se pueden volver a usar el email en otro. 
     @classmethod
     def eliminar_mail_celular(cls,mail):
         try:
             cls.mails_usados.remove(mail)
         except:
-            print('No se eliminaron el mail de su celular porque no se encontraba registrado.')
+            print('No se eliminaron el email de su celular porque no se encontraba registrado.')
         
     ## prendo el celular, y al prenderlo se ejecuta la funcion desbloquear
     def prender_celular(self):

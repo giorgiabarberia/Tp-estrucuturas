@@ -1,6 +1,6 @@
 from collections import deque
 from datetime import datetime
-from class_central import Central
+from central import Central
 from exportador import ExportadorLlamada
 
 ## Clase Telefono
@@ -60,6 +60,8 @@ class Telefono:
             self.hora_fin_llamada = datetime.now()
             duracion = self.hora_fin_llamada - self.hora_inicio_llamada
             self.central.registrar_llamada(self.num_remitente, celu_destino.numero, self.hora_inicio_llamada, self.hora_fin_llamada, duracion)
+            exportador = ExportadorLlamada("registros_llamadas.csv")
+            exportador.exportar(self.central.registros_llamadas)
         else:
             self.celular.en_llamada = False
             print('Llamada finalizada')
@@ -70,7 +72,7 @@ class Telefono:
             self.ver_llamadas_entrantes()
             if self.llamadas_entrantes:
                 celu_remitente = self.llamadas_entrantes[0]  # Siempre toma la primera llamada en la cola
-                print(f'\n📲Llamada de {celu_remitente.numero} está esperando.')
+                print(f'\n📲 Llamada de {celu_remitente.numero} está esperando.')
                         
                 # Opciones para la primera llamada en la cola
                 print('\n1. Atender\n2. Colgar sin atender\n3. Volver')
@@ -114,9 +116,6 @@ class Telefono:
 
             elif opcion == '4':
                 print('\nSaliendo de Teléfono...')
-                exportador = ExportadorLlamada("registros_llamadas.csv")
-                exportador.exportar(self.central.registros_llamadas)
                 ejecutando = False
-
             else:
                 print('Opción inválida. Intente nuevamente.')

@@ -1,10 +1,11 @@
-from class_operadora import Operadora
-from class_central import Central
-from class_celular import Celular
-from class_app_store import AppStore
+from operadora import Operadora
+from central import Central
+from celular import Celular
+from app_store import AppStore
 from aplicaciones import Spotify, Goodreads, Calculadora, Reloj
-from class_contactos import Contactos
+from contactos import Contactos
 import funciones_menu
+import analisis_datos
 import csv
 
 

@@ -1,8 +1,8 @@
 from collections import deque
 from datetime import datetime
-from class_central import Central
+from central import Central
 from exportador import ExportadorChats
-from class_listaenlazada import Nodo,ListaEnlazada
+from listaenlazada import Nodo,ListaEnlazada
 import validaciones
 
 # Clase SMS 

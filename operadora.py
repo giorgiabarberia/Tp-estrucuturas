@@ -1,5 +1,5 @@
-from class_celular import Celular
-from class_central import Central
+from celular import Celular
+from central import Central
 import validaciones
 import random
 import string
@@ -28,7 +28,8 @@ class Operadora:
         while True:
             if id not in Operadora.central.ids_registrados:
                 return id
-                   
+    
+    @staticmethod           
     def guardar_celular(celular):
         try:
             with open('celulares.csv', "a", newline='') as archivo:  
@@ -72,7 +73,7 @@ class Operadora:
             else: 
                 mail = input('Ingrese un mail válido, el ingresado ya está en uso por otro celular: ')
         celular = Celular(id,nombre,modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
-        self.guardar_celular(celular)
+        Operadora.guardar_celular(celular)
         Operadora.central.ids_registrados[celular.id] = celular
         Operadora.central.celulares_registrados[celular.numero] = celular
         celular.asignar_sms_telefono(Operadora.central)

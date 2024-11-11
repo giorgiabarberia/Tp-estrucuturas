@@ -1,8 +1,8 @@
 import validaciones
-from class_central import Central
-from class_app_store import AppStore
-from class_celular import Celular
-from class_operadora import Operadora
+from central import Central
+from app_store import AppStore
+from celular import Celular
+from operadora import Operadora
 import csv
 ## 1er menu que se muestra, opciones generales
 def mostrar_menu():
@@ -43,11 +43,11 @@ def mostrar_submenu_celular(celular):
     if celular.apps.apps_descargadas["Spotify"][0]:
         print("8. 🎧 Abrir Spotify")
     if celular.apps.apps_descargadas["Goodreads"][0]:
-        print("9. 🧩 Abrir Goodreads")
+        print("9. 📚 Abrir Goodreads")
     if celular.apps.apps_descargadas["Calculadora"][0]:
-        print("10. ❤️‍🩹 Abrir Calculadora")
+        print("10. 🧮 Abrir Calculadora")
     if celular.apps.apps_descargadas["Reloj"][0]:
-        print("11. 🐤 Abrir Reloj")
+        print("11. 🕑 Abrir Reloj")
     print("0. Salir y dejar el celular prendido (puede recibir llamados)")
     print("00. Salir y apagar el celular")
 

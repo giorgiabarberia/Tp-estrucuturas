@@ -1,5 +1,6 @@
 import validaciones
 
+
 class Configuracion:
     def __init__(self,nombre,celular):
         self.nombre = nombre
@@ -122,6 +123,8 @@ class Configuracion:
             print('La red movil ya está desactivada.')
         else:
             print('Desactivando red movil...')
+            if self.celular.en_llamada:
+                self.celular.telefono.colgar()
             self.red_movil = False
         
     ## Activar datos

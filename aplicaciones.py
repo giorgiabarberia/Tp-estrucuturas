@@ -2,6 +2,9 @@ import time
 import datetime
 
 class Aplicacion:
+    def __init__(self, nombre):
+        self.nombre = nombre
+        
     def mostrar_menu(self):
         raise NotImplementedError("Este método debe ser implementado por las subclases")
     
@@ -11,11 +14,12 @@ class Aplicacion:
 
 class Spotify(Aplicacion):
     def __init__(self):
+        self.nombre = 'Spotify'
         self.canciones = {}
         self.playlists = {}
         self.cancion_actual = None
 
-    # Agrega una canción nueva a tu biblioteca
+    # Agregar nueva canción a tu biblioteca
     def agregar_cancion(self, id_cancion, nombre_cancion, artista):
         if id_cancion not in self.canciones:
             self.canciones[id_cancion] = {'nombre': nombre_cancion, 'artista': artista}
@@ -23,7 +27,7 @@ class Spotify(Aplicacion):
         else:
             print('El ID de la canción ya existe.')
 
-    # Elimina una canción de tu biblioteca
+    # Eliminar canción de tu biblioteca
     def eliminar_cancion(self, id_cancion):
         if id_cancion in self.canciones:
             cancion = self.canciones.pop(id_cancion)
@@ -31,7 +35,7 @@ class Spotify(Aplicacion):
         else:
             print('ID de canción no encontrado.')
 
-    # Crea una playlist
+    # Crear una playlist
     def crear_playlist(self, nombre_playlist):
         if nombre_playlist not in self.playlists:
             self.playlists[nombre_playlist] = []
@@ -39,7 +43,7 @@ class Spotify(Aplicacion):
         else:
             print(f'Error: ya existe una playlist con el nombre "{nombre_playlist}".')
 
-    # Agrega una canción a una playlist
+    # Agregar canción a una playlist
     def agregar_cancion_a_playlist(self, nombre_playlist, id_cancion):
         if nombre_playlist not in self.playlists:
             print(f'Error: la playlist "{nombre_playlist}" no existe.')
@@ -47,7 +51,6 @@ class Spotify(Aplicacion):
         if id_cancion not in self.canciones:
             print(f'Error: la canción con ID {id_cancion} no existe.')
             return
-        
         # Verifica si la canción ya está en la playlist
         if self.canciones[id_cancion] not in self.playlists[nombre_playlist]:
             self.playlists[nombre_playlist].append(self.canciones[id_cancion])
@@ -55,7 +58,7 @@ class Spotify(Aplicacion):
         else:
             print(f'La canción ya está en la playlist "{nombre_playlist}".')
 
-    # Elimina una canción de una playlist
+    # Eliminar canción de una playlist
     def eliminar_cancion_de_playlist(self, nombre_playlist, id_cancion):
         if nombre_playlist not in self.playlists:
             print(f'Error: la playlist "{nombre_playlist}" no existe.')
@@ -70,7 +73,7 @@ class Spotify(Aplicacion):
         else:
             print(f'La canción no está en la playlist "{nombre_playlist}".')
 
-    # Reproduce una canción
+    # Reproducir canción
     def reproducir_cancion(self, id_cancion):
         if id_cancion in self.canciones:
             self.cancion_actual = self.canciones[id_cancion]
@@ -108,13 +111,13 @@ class Spotify(Aplicacion):
         print("\nMenú de Spotify")
         print("1. Agregar canción")
         print("2. Eliminar canción")
-        print("3. Crear lista de reproducción")
-        print("4. Agregar canción a lista")
-        print("5. Eliminar canción de lista")
+        print("3. Crear Playlist")
+        print("4. Agregar canción a Playlist")
+        print("5. Eliminar canción de Playlist")
         print("6. Reproducir canción")
         print("7. Pausar canción")
         print("8. Listar canciones")
-        print("9. Listar listas de reproducción")
+        print("9. Listar Playlists")
         print("10. Salir")
 
     def ejecutar_menu(self):
@@ -168,6 +171,7 @@ class Spotify(Aplicacion):
 # App de libros
 class Goodreads(Aplicacion):
     def __init__(self):
+        self.nombre = 'Goodreads'
         self.libros = []
 
     def agregar_libro(self, titulo, autor, año, genero):
@@ -301,6 +305,9 @@ class Goodreads(Aplicacion):
 
 
 class Calculadora(Aplicacion):
+    def __init__(self):
+        self.nombre='Calculadora'
+        
     def sumar(self, a, b):
         return a + b
 
@@ -364,6 +371,7 @@ class Calculadora(Aplicacion):
 
 class Reloj(Aplicacion):
     def __init__(self):
+        self.nombre = 'Reloj'
         self.timer_iniciado = False
         self.inicio_timer = None
 
