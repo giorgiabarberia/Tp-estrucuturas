@@ -23,4 +23,4 @@ def validar_email(email: str) -> bool:
     return re.match(patron, email) is not None
 
 def obtener_fecha_actual():
-        return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+    return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')

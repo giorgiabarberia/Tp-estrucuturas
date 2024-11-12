@@ -63,7 +63,7 @@ class SMS():
                 aux = aux.siguiente
             # Al llegar al nodo deseado, lo modificamos
             if aux:
-                aux.dato = f'Mensaje eliminado | [{self.obtener_hora_actual()}]'
+                aux.dato = f'Mensaje eliminado | [{validaciones.obtener_fecha_actual()}]'
                 print('Mensaje eliminado correctamente.')
         else:
             print('Número de mensaje inválido.')
