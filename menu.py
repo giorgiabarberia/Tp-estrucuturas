@@ -5,8 +5,6 @@ from app_store import AppStore
 from aplicaciones import Spotify, Goodreads, Calculadora, Reloj
 from contactos import Contactos
 import funciones_menu
-import analisis_datos
-import csv
 
 
 # Función principal del menú
