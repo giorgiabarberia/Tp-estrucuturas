@@ -24,3 +24,10 @@ def validar_email(email: str) -> bool:
 
 def obtener_fecha_actual():
     return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+
+def confirmar_accion(mensaje):
+        while True:
+            respuesta = input(f"{mensaje} (sí/no): ").strip().lower()
+            if respuesta in ["sí", "no"]:
+                return respuesta == "sí"
+            print("Por favor, responde con 'sí' o 'no'.")

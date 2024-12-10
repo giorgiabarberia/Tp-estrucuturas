@@ -1,6 +1,7 @@
 import time
 import datetime
 from listaenlazada import Pila
+import validaciones
 
 class Aplicacion:
     def __init__(self, nombre):
@@ -456,33 +457,68 @@ class Notas(Aplicacion):
         self.pila_notas = Pila()
 
     def agregar_nota(self):
-        nota = input("Escribe tu nota: ")
+        titulo = input("Escribe el título de tu nota: ").strip()
+        if not titulo:
+            print("El título no puede estar vacío.")
+            return
+
+        cuerpo = input("Escribe el cuerpo de tu nota: ").strip()
+        if not cuerpo:
+            print("El cuerpo de la nota no puede estar vacío.")
+            return
+
         tiempo = datetime.datetime.now()
-        self.pila_notas.apilar(nota, tiempo)
-        print(f"Nota agregada: '{nota}' (Creada el: {tiempo.strftime('%Y-%m-%d %H:%M:%S')})")
-    
+        self.pila_notas.apilar(titulo, cuerpo, tiempo)
+        print(f"Nota agregada: '{titulo}' (Creada el: {tiempo.strftime('%Y-%m-%d %H:%M:%S')})")
+        
     def eliminar_nota(self):
-        nota_eliminada = self.pila_notas.desapilar()
-        if nota_eliminada:
-            print(f"Nota eliminada: '{nota_eliminada}'")
-    
+        if self.pila_notas.es_vacia():
+            print("La pila está vacía. No hay nada para eliminar.")
+            return
+
+        ultima_nota = self.pila_notas.cima
+        confirmar = input(f"¿Estás seguro de que deseas eliminar la última nota '{ultima_nota.titulo}'? (sí/no): ").strip().lower()
+        if confirmar == "sí":
+            self.pila_notas.desapilar()
+            print("Nota eliminada con éxito.")
+        elif confirmar == "no":
+            print("Eliminación cancelada.")
+        else:
+            print("Opción no válida. Eliminación cancelada.")
+
     def editar_nota(self):
         if self.pila_notas.es_vacia():
             print("La pila de notas está vacía.")
-        else:
-            self.ver_todas_las_notas()
-            try:
-                indice = int(input("Elige el índice de la nota que deseas editar: "))
-                nodo_a_editar = self.pila_notas.obtener_por_indice(indice)
-                if nodo_a_editar:
-                    nueva_nota = input("Escribe la nueva nota: ")
-                    nuevo_tiempo = datetime.datetime.now()
-                    nodo_a_editar.actualizar_nota(nueva_nota, nuevo_tiempo)
-                    print(f"Nota actualizada: '{nodo_a_editar}'")
-                else:
-                    print("Índice no válido.")
-            except ValueError:
-                print("Por favor, ingresa un número válido.")
+            return
+
+        self.pila_notas.mostrar_titulos()
+        try:
+            indice = int(input("Elige el índice de la nota que deseas editar: "))
+            nodo_a_editar = self.pila_notas.obtener_por_indice(indice)
+            if nodo_a_editar:
+                print(f"Título de la nota seleccionada: '{nodo_a_editar.titulo}'")
+
+                if validaciones.confirmar_accion("¿Deseas cambiar el título?"):
+                    nuevo_titulo = input("Escribe el nuevo título: ").strip()
+                    if not nuevo_titulo:
+                        print("El nuevo título no puede estar vacío.")
+                        return
+                    nodo_a_editar.titulo = nuevo_titulo
+
+                if validaciones.confirmar_accion("¿Deseas cambiar el cuerpo?"):
+                    nuevo_cuerpo = input("Escribe el nuevo cuerpo: ").strip()
+                    if not nuevo_cuerpo:
+                        print("El nuevo cuerpo no puede estar vacío.")
+                        return
+                    nodo_a_editar.cuerpo = nuevo_cuerpo
+                nodo_a_editar.tiempo = datetime.datetime.now()
+                self.pila_notas.mover_a_inicio(nodo_a_editar)
+
+                print(f"Nota actualizada y movida al inicio de la pila: '{nodo_a_editar}'")
+            else:
+                print("Índice no válido.")
+        except ValueError:
+            print("Por favor, ingresa un número válido.")
 
     def ver_ultima_nota(self):
         if self.pila_notas.es_vacia():
@@ -491,7 +527,14 @@ class Notas(Aplicacion):
             print(f"Última nota: '{self.pila_notas.cima}'")
 
     def ver_todas_las_notas(self):
-        self.pila_notas.visualizar_pila()
+        self.pila_notas.mostrar_titulos()
+        try:
+            indice = int(input("Elige el índice de la nota para ver su contenido: "))
+            nodo = self.pila_notas.obtener_por_indice(indice)
+            if nodo:
+                print(f"\n{nodo}\n")
+        except ValueError:
+            print("Por favor, ingresa un número válido.")
 
     def mostrar_menu(self):
         print("\n--- Menú de Notas ---")
@@ -506,7 +549,7 @@ class Notas(Aplicacion):
         while True:
             try:
                 opcion = int(input("Elija una opción: "))
-                if opcion in [1, 2, 3, 4, 5, 6]:
+                if opcion in {1, 2, 3, 4, 5, 6}:
                     return opcion
                 else:
                     print("Opción no válida. Debe ser 1, 2, 3, 4, 5 o 6.")
@@ -533,3 +576,5 @@ class Notas(Aplicacion):
                 print("Saliendo del programa...")
             else:
                 print("Opción no válida, por favor intente de nuevo.")
+                
+                

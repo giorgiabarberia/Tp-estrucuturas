@@ -58,19 +58,16 @@ class ListaEnlazada:
             aux = aux.siguiente
         return aux.dato    
     
-class NodoTiempo():
-    def __init__(self, nota, tiempo):
-        self.nota = nota
+class NodoTiempo:
+    def __init__(self, titulo, cuerpo, tiempo):
+        self.titulo = titulo
+        self.cuerpo = cuerpo
         self.tiempo = tiempo
         self.siguiente = None
 
-    def actualizar_nota(self, nueva_nota, nuevo_tiempo):
-        self.nota = nueva_nota
-        self.tiempo = nuevo_tiempo
-
     def __str__(self):
-        return f"{self.nota} (Última edición: {self.tiempo.strftime('%Y-%m-%d %H:%M:%S')})"
-    
+        return f"Título: {self.titulo}\nCuerpo: {self.cuerpo}\nÚltima edición: {self.tiempo.strftime('%Y-%m-%d %H:%M:%S')}"
+
 class Pila:
     def __init__(self):
         self.cima = None
@@ -78,37 +75,53 @@ class Pila:
     def es_vacia(self):
         return self.cima is None
 
-    def apilar(self, nota, tiempo):
-        nuevo_nodo = NodoTiempo(nota, tiempo)
-        nuevo_nodo.siguiente = self.cima  # El nuevo nodo apunta al nodo anterior
-        self.cima = nuevo_nodo  # Ahora la cima es el nuevo nodo
+    def apilar(self, titulo, cuerpo, tiempo):
+        nuevo_nodo = NodoTiempo(titulo, cuerpo, tiempo)
+        nuevo_nodo.siguiente = self.cima
+        self.cima = nuevo_nodo
 
     def desapilar(self):
         if self.es_vacia():
             print("La pila está vacía. No se puede desapilar.")
             return None
         nodo_eliminado = self.cima
-        self.cima = self.cima.siguiente  # Actualiza la cima al siguiente nodo
+        self.cima = self.cima.siguiente
         return nodo_eliminado
 
-    def visualizar_pila(self):
+    def mostrar_titulos(self):
         if self.es_vacia():
             print("La pila está vacía.")
             return
         nodo_iter = self.cima
-        print("Contenido de la pila:")
         indice = 0
-        while nodo_iter is not None:
-            print(f"[{indice}] {nodo_iter}")
+        print("Títulos de las notas:")
+        while nodo_iter:
+            print(f"[{indice}] {nodo_iter.titulo} (Última edición: {nodo_iter.tiempo.strftime('%Y-%m-%d %H:%M:%S')})")
             nodo_iter = nodo_iter.siguiente
             indice += 1
 
     def obtener_por_indice(self, indice):
+        if not isinstance(indice, int) or indice < 0:
+            print("El índice debe ser un número entero no negativo.")
+            return None
         nodo_iter = self.cima
         actual_indice = 0
-        while nodo_iter is not None:
+        while nodo_iter:
             if actual_indice == indice:
                 return nodo_iter
             nodo_iter = nodo_iter.siguiente
             actual_indice += 1
+        print("Índice fuera de rango.")
         return None
+    
+    def mover_a_inicio(self, nodo_a_mover):
+        if nodo_a_mover == self.cima:
+            return
+        nodo_iter = self.cima
+        while nodo_iter and nodo_iter.siguiente != nodo_a_mover:
+            nodo_iter = nodo_iter.siguiente
+
+        if nodo_iter:
+            nodo_iter.siguiente = nodo_a_mover.siguiente
+            nodo_a_mover.siguiente = self.cima
+            self.cima = nodo_a_mover

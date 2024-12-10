@@ -4,65 +4,35 @@ from app_store import AppStore
 from telefono import Telefono
 from configuracion import Configuracion
 from contactos import Contactos
+from dispositivo import Dispositivo
 import validaciones 
 
-
 class Celular:
-    mails_usados = set()
-    central = Central()
-    
-    def __init__(self, id: int, nombre: str, modelo: str, sistema_operativo: str, version: str, cap_memoria_ram: str, cap_almacenamiento: str, numero: str, direcc_email: str):
+    central = Central(Dispositivo)
+
+    def __init__(self, nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id, numero):
+        super().__init__(nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento)
         if not validaciones.validar_telefono(numero):
             raise ValueError(f'Error: el número de teléfono {numero} no es válido.')
         if id in Celular.central.ids_registrados.keys():
             raise ValueError(f'Error: el id ingresado ya está en uso.')
         if numero in Celular.central.celulares_registrados.keys():
             raise ValueError(f'Error: el número de teléfono ya está en uso.')
-        if direcc_email in Celular.mails_usados:
-            raise ValueError(f'Error: el email ya está en uso.')
-
         self.id = id
-        self.modelo = modelo
-        self.sist_op = sistema_operativo
-        self.version = version
-        self.ram = cap_memoria_ram
-        self.almacenamiento = cap_almacenamiento
         self.numero = numero
-        self.direcc_email = direcc_email  ## Acá el email está dos veces, una vez como objeto y otra el email en sí
         self.prendido = False
         self.bloqueo = True
         self.en_llamada = False
         self.sms = None
         self.telefono = None
         self.contactos = Contactos() 
-        self.configuracion = Configuracion(nombre,self)
-        self.email = Email(self.direcc_email)
-        self.apps = AppStore()   ## Crea la instancia de app store para este celular
-
-        Celular.mails_usados.add(direcc_email)
-        
+    
     def __str__(self):
         return (f'Celular de {self.configuracion.nombre}\nModelo: {self.modelo}\nSistema operativo: {self.sist_op}\nCapacidad de memoria RAM: {self.ram}\nCapacidad de almacenamiento: {self.almacenamiento}\nNúmero telefónico: {self.numero}')
     
     def asignar_sms_telefono(self,central):
         self.sms = SMS(self.id,central)
         self.telefono = Telefono(self.id,central)
-    
-    def buscar_celu_por_email(self, email):
-        for celular in Celular.central.celulares_registrados.values():
-            if celular.direcc_email == email:
-                return celular
-        print(f"No se encontró ningún celular registrado con el email {email}.")
-        return None
-    
-    ## Se llama esta funcion cuando desde class operadora se elimina un celular, porque una vez que se elimina
-    # se pueden volver a usar el email en otro. 
-    @classmethod
-    def eliminar_mail_celular(cls,mail):
-        try:
-            cls.mails_usados.remove(mail)
-        except:
-            print('No se eliminaron el email de su celular porque no se encontraba registrado.')
         
     ## prendo el celular, y al prenderlo se ejecuta la funcion desbloquear
     def prender_celular(self):
@@ -95,11 +65,45 @@ class Celular:
     def abrir_app_sms(self):
         self.sms.ejecutar_sms()
 
-    #menu para todo lo que se pueda hacer con email
-    def abrir_app_email(self):
-        self.email.ejecutar_email(Celular.central)
-
     #menu para todo lo que se pueda hacer con el teléfono (llamadas)
     def abrir_app_telefono(self):
         self.telefono.ejecutar_telefono()
 
+
+class CelularNuevo(Celular):
+    mails_usados = set()
+    
+    def __init__(self, nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id, numero, direcc_email):
+        super().__init__(nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id, numero)
+        if direcc_email in CelularNuevo.mails_usados:
+            raise ValueError(f'Error: el email ya está en uso.')
+        self.direcc_email = direcc_email  ## Acá el email está dos veces, una vez como objeto y otra el email en sí
+        self.email = Email(self.direcc_email)
+        self.apps = AppStore()   ## Crea la instancia de app store para este celular
+        self.configuracion = Configuracion(nombre,self)
+        CelularNuevo.mails_usados.add(direcc_email)
+    
+    def buscar_celu_por_email(self, email):
+        for celular in Celular.central.celulares_registrados.values():
+            if isinstance(celular,CelularNuevo) and celular.direcc_email == email:
+                return celular
+        print(f"No se encontró ningún celular registrado con el email {email}.")
+        return None
+    
+    ## Se llama esta funcion cuando desde class operadora se elimina un celular, porque una vez que se elimina
+    # se pueden volver a usar el email en otro. 
+    @classmethod
+    def eliminar_mail_celular(cls,mail):
+        try:
+            cls.mails_usados.remove(mail)
+        except:
+            print('No se eliminaron el email de su celular porque no se encontraba registrado.')
+
+    #menu para todo lo que se pueda hacer con email
+    def abrir_app_email(self):
+        self.email.ejecutar_email(Celular.central)
+
+#VER COMO SACARLE LA CONFIGURACION PARA QUE NO SE CONECTE A INTERNET
+class CelularAntiguo(Celular):
+    def __init__(self, nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id, numero):
+        super().__init__(nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id, numero)
