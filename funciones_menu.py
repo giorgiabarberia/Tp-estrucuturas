@@ -48,6 +48,8 @@ def mostrar_submenu_celular(celular):
         print("10. 🧮 Abrir Calculadora")
     if celular.apps.apps_descargadas["Reloj"][0]:
         print("11. 🕑 Abrir Reloj")
+    if celular.apps.apps_descargadas["Notas"][0]:
+        print("12. 📝 Abrir Notas")
     print("0. Salir y dejar el celular prendido (puede recibir llamados)")
     print("00. Salir y apagar el celular")
 

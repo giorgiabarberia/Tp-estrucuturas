@@ -95,6 +95,9 @@ def celular_menu(celular):
         elif celular.apps.apps_descargadas["Reloj"][0] and eleccion == '11':
             print("Has seleccionado Abrir Reloj.")
             celular.apps.apps_descargadas["Reloj"][1].ejecutar_menu()
+        elif celular.apps.apps_descargadas["Notas"][0] and eleccion == '12':
+            print("Has seleccionado Abrir Notas.")
+            celular.apps.apps_descargadas["Notas"][1].ejecutar_menu()
         elif eleccion == '0':
             print("Saliendo del menú.")
             continuar = False 

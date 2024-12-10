@@ -1,4 +1,4 @@
-from aplicaciones import Spotify, Goodreads, Calculadora, Reloj
+from aplicaciones import Spotify, Goodreads, Calculadora, Reloj, Notas
 
 class AppStore:
     def __init__(self):
@@ -6,7 +6,8 @@ class AppStore:
             'Spotify': (False, Spotify()),
             'Goodreads': (False, Goodreads()),
             'Calculadora': (False, Calculadora()),
-            'Reloj': (False, Reloj())
+            'Reloj': (False, Reloj()),
+            'Notas':(False, Notas())
             }
     
     # Descarga una aplicación si no está descargada. 

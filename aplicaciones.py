@@ -1,5 +1,6 @@
 import time
 import datetime
+from listaenlazada import Pila
 
 class Aplicacion:
     def __init__(self, nombre):
@@ -445,6 +446,90 @@ class Reloj(Aplicacion):
             elif opcion == 3:
                 self.parar_timer()
             elif opcion == 4:
+                print("Saliendo del programa...")
+            else:
+                print("Opción no válida, por favor intente de nuevo.")
+
+class Notas(Aplicacion):
+    def __init__(self):
+        self.nombre = 'Notas'
+        self.pila_notas = Pila()
+
+    def agregar_nota(self):
+        nota = input("Escribe tu nota: ")
+        tiempo = datetime.datetime.now()
+        self.pila_notas.apilar(nota, tiempo)
+        print(f"Nota agregada: '{nota}' (Creada el: {tiempo.strftime('%Y-%m-%d %H:%M:%S')})")
+    
+    def eliminar_nota(self):
+        nota_eliminada = self.pila_notas.desapilar()
+        if nota_eliminada:
+            print(f"Nota eliminada: '{nota_eliminada}'")
+    
+    def editar_nota(self):
+        if self.pila_notas.es_vacia():
+            print("La pila de notas está vacía.")
+        else:
+            self.ver_todas_las_notas()
+            try:
+                indice = int(input("Elige el índice de la nota que deseas editar: "))
+                nodo_a_editar = self.pila_notas.obtener_por_indice(indice)
+                if nodo_a_editar:
+                    nueva_nota = input("Escribe la nueva nota: ")
+                    nuevo_tiempo = datetime.datetime.now()
+                    nodo_a_editar.actualizar_nota(nueva_nota, nuevo_tiempo)
+                    print(f"Nota actualizada: '{nodo_a_editar}'")
+                else:
+                    print("Índice no válido.")
+            except ValueError:
+                print("Por favor, ingresa un número válido.")
+
+    def ver_ultima_nota(self):
+        if self.pila_notas.es_vacia():
+            print("La pila de notas está vacía.")
+        else:
+            print(f"Última nota: '{self.pila_notas.cima}'")
+
+    def ver_todas_las_notas(self):
+        self.pila_notas.visualizar_pila()
+
+    def mostrar_menu(self):
+        print("\n--- Menú de Notas ---")
+        print("1. Agregar una nota")
+        print("2. Eliminar la última nota")
+        print("3. Editar una nota")
+        print("4. Ver la última nota")
+        print("5. Ver todas las notas")
+        print("6. Salir")
+
+    def ingresar_opcion(self):
+        while True:
+            try:
+                opcion = int(input("Elija una opción: "))
+                if opcion in [1, 2, 3, 4, 5, 6]:
+                    return opcion
+                else:
+                    print("Opción no válida. Debe ser 1, 2, 3, 4, 5 o 6.")
+            except ValueError:
+                print("Por favor, ingrese un número válido.")
+
+    def ejecutar_menu(self):
+        opcion = 0
+        while opcion != 6:
+            self.mostrar_menu()
+            opcion = self.ingresar_opcion()
+
+            if opcion == 1:
+                self.agregar_nota()
+            elif opcion == 2:
+                self.eliminar_nota()
+            elif opcion == 3:
+                self.editar_nota()
+            elif opcion == 4:
+                self.ver_ultima_nota()
+            elif opcion == 5:
+                self.ver_todas_las_notas()
+            elif opcion == 6:
                 print("Saliendo del programa...")
             else:
                 print("Opción no válida, por favor intente de nuevo.")

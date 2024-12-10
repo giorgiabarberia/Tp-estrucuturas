@@ -56,4 +56,59 @@ class ListaEnlazada:
         aux = self.inicio
         while aux.siguiente is not None:
             aux = aux.siguiente
-        return aux.dato        
+        return aux.dato    
+    
+class NodoTiempo():
+    def __init__(self, nota, tiempo):
+        self.nota = nota
+        self.tiempo = tiempo
+        self.siguiente = None
+
+    def actualizar_nota(self, nueva_nota, nuevo_tiempo):
+        self.nota = nueva_nota
+        self.tiempo = nuevo_tiempo
+
+    def __str__(self):
+        return f"{self.nota} (Última edición: {self.tiempo.strftime('%Y-%m-%d %H:%M:%S')})"
+    
+class Pila:
+    def __init__(self):
+        self.cima = None
+
+    def es_vacia(self):
+        return self.cima is None
+
+    def apilar(self, nota, tiempo):
+        nuevo_nodo = NodoTiempo(nota, tiempo)
+        nuevo_nodo.siguiente = self.cima  # El nuevo nodo apunta al nodo anterior
+        self.cima = nuevo_nodo  # Ahora la cima es el nuevo nodo
+
+    def desapilar(self):
+        if self.es_vacia():
+            print("La pila está vacía. No se puede desapilar.")
+            return None
+        nodo_eliminado = self.cima
+        self.cima = self.cima.siguiente  # Actualiza la cima al siguiente nodo
+        return nodo_eliminado
+
+    def visualizar_pila(self):
+        if self.es_vacia():
+            print("La pila está vacía.")
+            return
+        nodo_iter = self.cima
+        print("Contenido de la pila:")
+        indice = 0
+        while nodo_iter is not None:
+            print(f"[{indice}] {nodo_iter}")
+            nodo_iter = nodo_iter.siguiente
+            indice += 1
+
+    def obtener_por_indice(self, indice):
+        nodo_iter = self.cima
+        actual_indice = 0
+        while nodo_iter is not None:
+            if actual_indice == indice:
+                return nodo_iter
+            nodo_iter = nodo_iter.siguiente
+            actual_indice += 1
+        return None
