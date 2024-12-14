@@ -90,59 +90,60 @@ def cargar_dispositivos():
         with open('dispositivos.csv', "r", newline='') as archivo:
             lector = csv.DictReader(archivo)
             for fila in lector:
-                tipo_dispositivo = fila['tipo'].lower()  # Columna tipo indica la clase a instanciar
+                tipo_dispositivo = fila.get('tipo')  # Columna tipo indica la clase a instanciar
 
-                if tipo_dispositivo == 'celular_nuevo':
+                if tipo_dispositivo == 'Celular_Nuevo':
                     dispositivo = CelularNuevo(
-                        nombre=fila['nombre'],
-                        marca=fila['marca'],
-                        modelo=fila['modelo'],
-                        sistema_operativo=fila['sistema_operativo'],
-                        version=fila['version'],
-                        memoria_ram=fila['cap_memoria_ram'],
-                        almacenamiento=fila['cap_almacenamiento'],
-                        id=fila['id'],
-                        numero=fila['numero'],
-                        direcc_email=fila['mail']
+                        id=fila.get('id'),
+                        nombre=fila.get('nombre'),
+                        modelo=fila.get('modelo'),
+                        marca=fila.get('marca'),
+                        sistema_operativo=fila.get('sistema_operativo'),
+                        version=fila.get('version'),
+                        memoria_ram=fila.get('ram'),
+                        almacenamiento=fila.get('almacenamiento'),
+                        numero=fila.get('numero'),
+                        direcc_email=fila.get('email')
                     )
 
-                elif tipo_dispositivo == 'tablet':
+                elif tipo_dispositivo == 'Tabelt':
                     dispositivo = Tablet(
-                        nombre=fila['nombre'],
-                        marca=fila['marca'],
-                        modelo=fila['modelo'],
-                        sistema_operativo=fila['sistema_operativo'],
-                        version=fila['version'],
-                        memoria_ram=fila['cap_memoria_ram'],
-                        almacenamiento=fila['cap_almacenamiento'],
-                        id=fila['id'],
-                        direcc_email=fila['mail'] 
+                        id=fila.get('id'),
+                        nombre=fila.get('nombre'),
+                        modelo=fila.get('modelo'),
+                        marca=fila.get('marca'),
+                        sistema_operativo=fila.get('sistema_operativo'),
+                        version=fila.get('version'),
+                        memoria_ram=fila.get('ram'),
+                        almacenamiento=fila.get('almacenamiento'),
+                        direcc_email=fila.get('email')
                     )
 
-                elif tipo_dispositivo == 'celular_antiguo':
+                elif tipo_dispositivo == 'Celular_Antiguo':
                     dispositivo = CelularAntiguo(
-                        nombre=fila['nombre'],
-                        marca=fila['marca'],
-                        modelo=fila['modelo'],
-                        sistema_operativo=fila['sistema_operativo'],
-                        version=fila['version'],
-                        memoria_ram=fila['cap_memoria_ram'],
-                        almacenamiento=fila['cap_almacenamiento'],
-                        id=fila['id'],
-                        numero=fila['numero']
+                        id=fila.get('id'),
+                        nombre=fila.get('nombre'),
+                        modelo=fila.get('modelo'),
+                        marca=fila.get('marca'),
+                        sistema_operativo=fila.get('sistema_operativo'),
+                        version=fila.get('version'),
+                        memoria_ram=fila.get('ram'),
+                        almacenamiento=fila.get('almacenamiento'),
+                        numero=fila.get('numero'),
                     )
 
                 else:
                     print(f"Tipo de dispositivo desconocido: {fila['tipo']}")
                     continue
 
+                # Se gurda en operadora
                 Operadora.central.ids_registrados[dispositivo.id] = dispositivo
                 if isinstance(dispositivo, Celular):  # Solo Celular y derivados tienen números
                     Operadora.central.celulares_registrados[dispositivo.numero] = dispositivo
                     dispositivo.asignar_sms_telefono(Operadora.central)
+            
 
     except FileNotFoundError:
         print("Error: El archivo no existe.")
     except IOError:
         print("Error al leer el archivo.")
-        

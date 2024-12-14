@@ -9,6 +9,7 @@ import validaciones
 
 class Dispositivo:
     mails_usados = set()
+    
     def __init__(self, nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id):
         self.nombre = nombre
         self.marca = marca
@@ -119,6 +120,7 @@ class CelularNuevo(Celular):
         self.email = Email(self.direcc_email)
         self.apps = AppStore()   ## Crea la instancia de app store para este celular
         self.configuracion = Configuracion(nombre,self,True,True)
+        Dispositivo.mails_usados.add(direcc_email)
     
     def buscar_celu_por_email(self, email):
         for celular in Celular.central.celulares_registrados.values():

@@ -36,13 +36,14 @@ class Operadora:
                 escritor = csv.writer(archivo)
                 if isinstance(dispositivo,CelularNuevo):
                     lista = [
-                        'CelularNuevo',
+                        'Celular_Nuevo',
                         dispositivo.id,
                         dispositivo.configuracion.nombre,
                         dispositivo.modelo,
-                        dispositivo.sist_op,
+                        dispositivo.marca,
+                        dispositivo.sistema_operativo,
                         dispositivo.version,
-                        dispositivo.ram,
+                        dispositivo.memoria_ram,
                         dispositivo.almacenamiento,
                         dispositivo.numero,
                         dispositivo.direcc_email
@@ -53,23 +54,26 @@ class Operadora:
                         dispositivo.id,
                         dispositivo.configuracion.nombre,
                         dispositivo.modelo,
-                        dispositivo.sist_ope,
+                        dispositivo.marca,
+                        dispositivo.sistema_operativo,
                         dispositivo.version,
-                        dispositivo.ram,
-                        dispositivo.almacenamiento,
+                        dispositivo.memoria_ram,
+                        dispositivo.almacenamiento,'',
                         dispositivo.direcc_email
-                    ]
+                        ]
                 if isinstance(dispositivo,CelularAntiguo):
                     lista = [
-                        'CelularAntiguo',
+                        'Celular_Antiguo',
                         dispositivo.id,
                         dispositivo.configuracion.nombre,
                         dispositivo.modelo,
-                        dispositivo.sist_op,
+                        dispositivo.marca,
+                        dispositivo.sistema_operativo,
                         dispositivo.version,
-                        dispositivo.ram,
+                        dispositivo.memoria_ram,
                         dispositivo.almacenamiento,
-                        dispositivo.numero
+                        dispositivo.numero,
+                        ""
                     ]
                 escritor.writerow(lista)  
         except IOError:
@@ -102,59 +106,80 @@ class Operadora:
                 else: 
                     mail = input('Ingrese un mail válido, el ingresado ya está en uso por otro dispositivo: ')
         if tipo == "Celular Nuevo":
-            dispositivo = CelularNuevo(id,nombre,marca, modelo,sistema_operativo,version,cap_memoria_ram,cap_almacenamiento, numero,mail)
+            dispositivo = CelularNuevo(nombre, marca, modelo, sistema_operativo, version, cap_memoria_ram, cap_almacenamiento, id, numero, mail)
         elif tipo == "Celular Antiguo":
-            dispositivo = CelularAntiguo(self, nombre, marca, modelo, sistema_operativo, version, cap_memoria_ram, cap_almacenamiento, id, numero)
+            dispositivo = CelularAntiguo(nombre, marca, modelo, sistema_operativo, version, cap_memoria_ram, cap_almacenamiento, id, numero)
         elif tipo == "Tablet":
-            dispositivo = Tablet(nombre, marca, modelo, sistema_operativo, version, cap_memoria_ram, cap_almacenamiento,id)
+            dispositivo = Tablet(nombre, marca, modelo, sistema_operativo, version, cap_memoria_ram, cap_almacenamiento,id,mail)
+        Operadora.guardar_dispositivo(dispositivo)
+        Operadora.central.ids_registrados[dispositivo.id] = dispositivo
         if tipo != "Tablet":
-            Operadora.guardar_dispositivo(dispositivo)
-            Operadora.central.ids_registrados[dispositivo.id] = dispositivo
             Operadora.central.celulares_registrados[dispositivo.numero] = dispositivo
             dispositivo.asignar_sms_telefono(Operadora.central)
             print(f'Celular registrado con éxito.\nSu número es: {dispositivo.numero}')
         else:
-            print(f"Tablet registrada con éxito.\nIngese a ella con su email: {dispositivo.email}")
+            print(f"Tablet registrada con éxito.\nIngese a ella con su email: {mail}")
 
 
-    def borrar_de_csv(id): 
-        """Elimina un registro del archivo celulares.csv basado en el número de celular."""
+    def borrar_de_csv(self, id): 
+        ## Elimina un registro del archivo dispositivos.csv basado en el id del dispositivo.
         try:
             # Leer todos los registros excepto el que queremos eliminar
             dispositivos_actualizados = []
-            with open('dispositivos.csv', "r", newline='') as archivo:
+            with open('dispositivos.csv', "r", newline='', encoding='utf-8') as archivo:
                 lector = csv.reader(archivo)
                 encabezado = next(lector)  # Leer el encabezado
                 for fila in lector:
-                    # Comparar `id` en el archivo con el `id` a eliminar
-                    if fila[2] != id:  # Suponiendo que `id` está en la columna 8 (índice 7)
+                    # Validar que la fila tenga suficiente longitud antes de comparar
+                    if len(fila) > 2 and fila[1] != id:  # `id` asumido en columna 2 (índice 1)
                         dispositivos_actualizados.append(fila)
 
             # Sobreescribir el archivo con los registros actualizados
-            with open('celulares.csv', "w", newline='') as archivo:
+            with open('dispositivos.csv', "w", newline='', encoding='utf-8') as archivo:  # Corregido a 'dispositivos.csv'
                 escritor = csv.writer(archivo)
                 escritor.writerow(encabezado)  # Escribir encabezado
-                escritor.writerows(dispositivos_actualizados)  # Escribir datos sin el celular eliminado
+                escritor.writerows(dispositivos_actualizados)  # Escribir datos actualizados
 
         except FileNotFoundError:
             print("Error: No se encontró el archivo 'dispositivos.csv'.")
         except IOError:
-            print("Error al modificar el archivo 'dispositvos.csv'.")
+            print("Error al modificar el archivo 'dispositivos.csv'.")
+        except Exception as e:
+            print(f"Error inesperado: {e}")
+            
 
-    def eliminar_dispositivo(self,id):
-        if id in Operadora.central.ids_registrados:
-            dispositivo = Operadora.central.ids_registrados[id]
-            if isinstance(dispositivo,CelularNuevo):
-                mail = dispositivo.direcc_email 
-                del Operadora.central.celulares_registrados[dispositivo.numero]
-                Dispositivo.eliminar_mail(mail)
-            if isinstance(dispositivo,CelularAntiguo):
-                del Operadora.central.celulares_registrados[dispositivo.numero]
-            if isinstance(dispositivo,Tablet):
-                mail = dispositivo.direcc_email 
-                Dispositivo.eliminar_mail(mail)
-                
-            print(f'Dispositivo {id} eliminado con éxito.')
+    def eliminar_dispositivo(self,identificador):
+        ok = True
+        dispositivo = False
+        # Caso 1: El identificador es un número
+        if identificador in Operadora.central.celulares_registrados:
+            dispositivo = Operadora.central.celulares_registrados[identificador]
+            if isinstance(dispositivo, CelularNuevo):
+                mail = dispositivo.direcc_email
+                Dispositivo.eliminar_mail(mail)  # Eliminamos el correo
+            del Operadora.central.celulares_registrados[dispositivo.numero]  # Eliminamos por número
+            print(f'Dispositivo {identificador} eliminado con éxito.')
+            
+        # Caso 2: El identificador está en correos registrados
+        elif identificador in Dispositivo.mails_usados:
+            for elemento in Operadora.central.ids_registrados.values():
+                if not isinstance(elemento, CelularAntiguo): 
+                    if elemento.direcc_email == identificador:
+                        dispositivo = elemento
+                        break
+            if dispositivo:  # Validamos que el dispositivo se haya encontrado
+                if isinstance(dispositivo, CelularNuevo):
+                    del Operadora.central.celulares_registrados[dispositivo.numero]
+                mail = dispositivo.direcc_email
+                Dispositivo.eliminar_mail(mail)  # Eliminamos el correo
+                print(f'Dispositivo {identificador} eliminado con éxito.')
+            else:
+                print(f"Error: No se encontró el dispositivo con email {identificador}.")
+                ok = False
+        # Caso 3: El identificador no está registrado
         else:
-            print(f'Error: No se encontró el dispositivo {id}, no estaba registrado en la operadora,\nEs posible que ya haya sido eliminado')
-        self.borrar_de_csv(id)
+            print(f"Error: No se encontró el dispositivo {identificador}. Es posible que ya haya sido eliminado.")
+            ok = False
+        # Si se eliminó correctamente, borramos del CSV
+        if ok and dispositivo:
+            self.borrar_de_csv(dispositivo.id)

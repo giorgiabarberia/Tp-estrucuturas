@@ -31,37 +31,40 @@ def submenu_operadora(operadora):
     continuar = True
     while continuar:
         funciones_menu.mostrar_submenu_operadora()
-        dispositivos_validos = ['tablet','celular']
         sub_opcion = input("Seleccione una opción: ")
-        
         if sub_opcion == '1':
-            tipo_dispositivo = input('Ingrese el tipo de dispositivo que desea crear: ').strip().lower()
-            while tipo_dispositivo not in dispositivos_validos:
-                tipo_dispositivo = input('Dispositivo incorrecto. Ingrese nuevamente el tipo de dispositivo que desea crear: ').strip().lower() 
-            if tipo_dispositivo == 'tablet':
-                operadora.registrar_dispositivo('Tablet')
-            if tipo_dispositivo == 'celular':
-                while True:  
-                    año = input('Ingrese el año de fabricación del celular: ')
-                    try:
-                        año = int(año) 
-                        break  
-                    except ValueError:
-                        print("Entrada no válida. Debe ingresar un número.")
-                if año >= 2000:
-                    operadora.registrar_dispositivo('Celular Nuevo')
-                else:
-                    operadora.registrar_dispositivo('Celular Antiguo')
+            crear_dispositivo(operadora)
 
         elif sub_opcion == '2':
-            id = input('Ingrese el id del dispositivo que desea eliminar: ')
-            operadora.eliminar_dispositivo(id)
+            identificador = input('Ingrese el número o email del dispositivo que desea eliminar: ')
+            operadora.eliminar_dispositivo(identificador)
             
         elif sub_opcion == '3':
             continuar = False  # Cambiar la condición para salir del bucle
         
         else:
             print("Opción no válida. Intente de nuevo.")
+            
+# Menú crear dispositivo
+def crear_dispositivo(operadora):
+    dispositivos_validos = ['tablet','celular']
+    tipo_dispositivo = input('Ingrese el tipo de dispositivo que desea crear: ').strip().lower()
+    while tipo_dispositivo not in dispositivos_validos:
+        tipo_dispositivo = input('Dispositivo incorrecto. Ingrese nuevamente el tipo de dispositivo que desea crear (Tablet o Celular): ').strip().lower() 
+    if tipo_dispositivo == 'tablet':
+        operadora.registrar_dispositivo('Tablet')
+    if tipo_dispositivo == 'celular':
+        while True:  
+            año = input('Ingrese el año de fabricación del celular: ')
+            try:
+                año = int(año) 
+                break  
+            except ValueError:
+                print("Entrada no válida. Debe ingresar un número.")
+        if año >= 2000:
+            operadora.registrar_dispositivo('Celular Nuevo')
+        else:
+            operadora.registrar_dispositivo('Celular Antiguo')
 
 def manejar_celular():
     numero = funciones_menu.preguntar_numero_celular()

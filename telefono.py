@@ -6,7 +6,7 @@ from exportador import ExportadorLlamada
 ## Clase Telefono
 class Telefono:
     def __init__(self, id_celular, central: Central):
-        self.celular = central.obtener_celu_por_id(id_celular)
+        self.celular = central.obtener_dispos_por_id(id_celular)
         if self.celular is None:
             raise ValueError('Error: Celular no encontrado en la central.')
         self.num_remitente = self.celular.numero
