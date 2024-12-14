@@ -2,12 +2,14 @@ import validaciones
 
 
 class Configuracion:
-    def __init__(self,nombre,celular):
+    def __init__(self,nombre,celular,conectividad,red):
         self.nombre = nombre
         self.celular=celular
+        self.conectividad = conectividad ## Como los celulares viejos no tienen internet, es FALSE para bloquearle los métodos
         self.contraseña = None
         self.bloqueo = True
         self.red_movil = False
+        self.red = red #indica si un dispositivo necesita o no red movil
         self.datos = False
     
     ## función de configuración
@@ -37,23 +39,24 @@ class Configuracion:
                 
     # Menú configuración de datos
     def configurar_datos(self):
-        opciones = {
-            '1': 'Activar datos',
-            '2': 'Desactivar datos',
-            '3': 'Volver'
-        }
-        opcion = None
-        while opcion != '3':
-            print("\nConfiguración de Datos:")
-            for key, value in opciones.items():
-                print(f"{key}. {value}")
-            opcion = input("Seleccione una opción: ").strip()
-            if opcion == '1':
-                self.activar_datos()
-            elif opcion == '2':
-                self.desactivar_datos()
-            elif opcion != '3':
-                print("Opción Inválida. Por favor, intente nuevamente.")
+        if self.conectividad:
+            opciones = {
+                '1': 'Activar datos',
+                '2': 'Desactivar datos',
+                '3': 'Volver'
+            }
+            opcion = None
+            while opcion != '3':
+                print("\nConfiguración de Datos:")
+                for key, value in opciones.items():
+                    print(f"{key}. {value}")
+                opcion = input("Seleccione una opción: ").strip()
+                if opcion == '1':
+                    self.activar_datos()
+                elif opcion == '2':
+                    self.desactivar_datos()
+                elif opcion != '3':
+                    print("Opción Inválida. Por favor, intente nuevamente.")
                 
     # Cambiar el nombre del usuario
     def cambiar_nombre(self):
@@ -70,23 +73,24 @@ class Configuracion:
     
     # Menú configuración de red móvil
     def configurar_red_movil(self):
-        opciones = {
-            '1': 'Activar red móvil',
-            '2': 'Desactivar red móvil',
-            '3': 'Volver'
-        }
-        opcion = ""
-        while opcion != '3':
-            print("\nConfiguración de Red Móvil:")
-            for key, value in opciones.items():
-                print(f"{key}. {value}")
-            opcion = input("Seleccione una opción: ").strip()
-            if opcion == '1':
-                self.activar_red_movil()
-            elif opcion == '2':
-                self.desactivar_red_movil()
-            elif opcion != '3':
-                print("Opción Inválida. Por favor, intente nuevamente.")
+        if self.red:
+            opciones = {
+                '1': 'Activar red móvil',
+                '2': 'Desactivar red móvil',
+                '3': 'Volver'
+            }
+            opcion = ""
+            while opcion != '3':
+                print("\nConfiguración de Red Móvil:")
+                for key, value in opciones.items():
+                    print(f"{key}. {value}")
+                opcion = input("Seleccione una opción: ").strip()
+                if opcion == '1':
+                    self.activar_red_movil()
+                elif opcion == '2':
+                    self.desactivar_red_movil()
+                elif opcion != '3':
+                    print("Opción Inválida. Por favor, intente nuevamente.")
             
     # Actualizar la contraseña
     def actualizar_codigo(self):
@@ -111,37 +115,41 @@ class Configuracion:
        
     ## Activar la red movil
     def activar_red_movil(self):
-        if self.red_movil:
-            print('La red movil ya está activa.')
-        else:
-            print('Activando red movil...')
-            self.red_movil = True
+        if self.red:
+            if self.red_movil:
+                print('La red movil ya está activa.')
+            else:
+                print('Activando red movil...')
+                self.red_movil = True
     
     ## Desactiva la red movil
     def desactivar_red_movil(self):
-        if not self.red_movil:
-            print('La red movil ya está desactivada.')
-        else:
-            print('Desactivando red movil...')
-            if self.celular.en_llamada:
-                self.celular.telefono.colgar()
-            self.red_movil = False
+        if self.red:
+            if not self.red_movil:
+                print('La red movil ya está desactivada.')
+            else:
+                print('Desactivando red movil...')
+                if self.celular.en_llamada:
+                    self.celular.telefono.colgar()
+                self.red_movil = False
         
     ## Activar datos
     def activar_datos(self):
-        if self.datos:
-            print('Los datos celulares ya están activados')
-        else:
-            print('Activando datos...')
-            self.datos = True
+        if self.conectividad:
+            if self.datos:
+                print('Los datos celulares ya están activados')
+            else:
+                print('Activando datos...')
+                self.datos = True
         
     ## Desactivar datos
     def desactivar_datos(self):
-        if not self.datos:
-            print('Los datos celulares ya están desactivados')
-        else:
-            print('Desactivando datos...')
-            self.datos = False
+        if self.conectividad:
+            if not self.datos:
+                print('Los datos celulares ya están desactivados')
+            else:
+                print('Desactivando datos...')
+                self.datos = False
     
     ## validar que el usuario sepa cual es su contraseña actual
     def validar_contraseña_actual(self) -> str:

@@ -9,22 +9,22 @@ class Central:
 
     # Para verificar si un celular está disponible (encendido y con red móvil activa)
     def verif_disponibilidad(self, numero):
-        celu = self.celulares_registrados.get(numero)
+        celu = Central.celulares_registrados.get(numero)
         if celu and celu.prendido and celu.configuracion.red_movil:
             return True
         return False
     
     # Para validar que el numero destinatario este registrado en la central
     def celular_registrado(self, numero):
-        return numero in self.celulares_registrados
+        return numero in Central.celulares_registrados
     
     # Si el remitente esta disponible pero el destinatario no se deberia almacenar en algun lado???
     # Para enviar un SMS de un remitente a un destinatario si ambos están disponibles
     def enviar_sms(self, num_remitente, num_destino, texto):
         if self.celular_registrado(num_destino):
             if self.verif_disponibilidad(num_remitente):
-                remitente_celu = self.celulares_registrados[num_remitente]
-                destino_celu = self.celulares_registrados[num_destino]
+                remitente_celu = Central.celulares_registrados[num_remitente]
+                destino_celu = Central.celulares_registrados[num_destino]
                 remitente_celu.sms.enviar_sms(num_destino, texto)
                 destino_celu.sms.recibir_sms(num_remitente, texto)
 
@@ -47,22 +47,22 @@ class Central:
         })
         print('Registro de SMS guardado correctamente.')
 
-    def obtener_celu_por_id(self, id):
-        celular = self.ids_registrados.get(id)
+    def obtener_dispos_por_id(self, id):
+        celular = Central.ids_registrados.get(id)
         if celular:
             return celular
         else:
             print('Error: Celular no encontrado.')
             return None
-    
+
     def verif_mail(self, direcc_email):
-        for celular in self.celulares_registrados.values():
+        for celular in self.ids_registrados.values():
             if celular.direcc_email == direcc_email:
                 return True
         return False
 
     def obtener_celu_por_email(self, direcc_email):
-        for celular in self.celulares_registrados.values():
+        for celular in self.ids_registrados.values():
             if celular.direcc_email == direcc_email:
                 return celular
         return None
@@ -75,7 +75,7 @@ class Central:
         if not self.verif_disponibilidad(num_remitente):
             print('Error: El celular no está disponible.')
             return False
-        remitente_celu = self.celulares_registrados[num_remitente]
+        remitente_celu = Central.celulares_registrados[num_remitente]
         if remitente_celu.en_llamada:
             print('Error: Ya estás en una llamada.')
             return False
@@ -86,7 +86,7 @@ class Central:
             print(f'El número {num_destino} no está disponible.')
             return False
 
-        destino_celu = self.celulares_registrados[num_destino]
+        destino_celu = Central.celulares_registrados[num_destino]
         if destino_celu.en_llamada:
             print(f'{num_destino} se encuentra ocupado.')
             return False

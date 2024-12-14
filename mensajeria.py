@@ -5,12 +5,13 @@ from exportador import ExportadorChats
 from listaenlazada import Nodo,ListaEnlazada
 import validaciones
 
+
 # Clase SMS 
 class SMS():
     def __init__(self, id_celular, central: Central):
         self.chats = {}
         self.bandeja_entrada = {}  # Para cuando el celular está apagado
-        self.celular = central.obtener_celu_por_id(id_celular)
+        self.celular = central.obtener_dispos_por_id(id_celular)
         if self.celular is None:
             raise ValueError('Error: Celular no encontrado en la central.')
         self.num_remitente = self.celular.numero
@@ -257,7 +258,7 @@ class Email():
             for i, email in enumerate(bandeja, start=1):
                 print(f'{i}. 📧 {email["Remitente"]}\n{email["Asunto"]} | [{email["Fecha"]}]')
     
-    def ejecutar_email(self, central):
+    def ejecutar_email(self,central):
         continuar = True
         while continuar:
             print('\n-----EMAIL-----')

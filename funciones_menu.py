@@ -1,21 +1,21 @@
 import validaciones
+from dispositivo import Dispositivo,Tablet, Celular,CelularAntiguo,CelularNuevo
 from central import Central
 from app_store import AppStore
-from celular import Celular
 from operadora import Operadora
 import csv
 ## 1er menu que se muestra, opciones generales
 def mostrar_menu():
     print("\n-----MENÚ PRINCIPAL-----")
     print("1. Operadora")
-    print("2. Celular")
+    print("2. Dispositivo")
     print("3. Salir")
 
 ## Menu de la operadora, para crear o eliminar un celular
 def mostrar_submenu_operadora():
     print("\n-----Submenú Operadora-----")
-    print("1. Crear Celular")
-    print("2. Eliminar Celular")
+    print("1. Crear Dispositivo")
+    print("2. Eliminar Dispositivor")
     print("3. Volver al Menú Principal")
 
 ## Función para encontrar el numero de celular al que quiere acceder el usuario
@@ -30,7 +30,7 @@ def preguntar_numero_celular():
     return numero
 
 # Submenú celular, hay opciones que solo se muestran si las apps correspondientes están descargadas. 
-def mostrar_submenu_celular(celular):
+def mostrar_submenu_celular(dispositivo):
     print("\n-----Menú-----")
     print("1. 📖 Contactos")
     print("2. 💬 Mensajería SMS")
@@ -38,20 +38,23 @@ def mostrar_submenu_celular(celular):
     print("4. 📞 Teléfono")
     print("5. 📱 App Store")
     print("6. ⚙️  Configuración")
-    if True in [valor[0] for valor in celular.apps.apps_descargadas.values()]:  
+    if True in [valor[0] for valor in dispositivo.apps.apps_descargadas.values()] and not isinstance(dispositivo,CelularAntiguo):  
         print("7. 👺Eliminar app")
-    if celular.apps.apps_descargadas["Spotify"][0]:
+    if dispositivo.apps.apps_descargadas["Spotify"][0] and not isinstance(dispositivo,CelularAntiguo):
         print("8. 🎧 Abrir Spotify")
-    if celular.apps.apps_descargadas["Goodreads"][0]:
+    if dispositivo.apps.apps_descargadas["Goodreads"][0] and not isinstance(dispositivo,CelularAntiguo):
         print("9. 📚 Abrir Goodreads")
-    if celular.apps.apps_descargadas["Calculadora"][0]:
+    if dispositivo.apps.apps_descargadas["Calculadora"][0] and not isinstance(dispositivo,CelularAntiguo):
         print("10. 🧮 Abrir Calculadora")
-    if celular.apps.apps_descargadas["Reloj"][0]:
+    if dispositivo.apps.apps_descargadas["Reloj"][0] and not isinstance(dispositivo,CelularAntiguo):
         print("11. 🕑 Abrir Reloj")
-    if celular.apps.apps_descargadas["Notas"][0]:
+    if dispositivo.apps.apps_descargadas["Notas"][0] and not isinstance(dispositivo,CelularAntiguo):
         print("12. 📝 Abrir Notas")
-    print("0. Salir y dejar el celular prendido (puede recibir llamados)")
-    print("00. Salir y apagar el celular")
+    if not isinstance(dispositivo,Tablet):
+        print("0. Salir y dejar el celular prendido (puede recibir llamados)")
+        print("00. Salir y apagar el dispositivo")
+    else:
+        print("0. Apagar Tablet")
 
 
 # Permite al usuario eliminar aplicaciones descargadas en el celular
@@ -81,27 +84,63 @@ def menu_eliminar_app(celular):
         app_seleccionada = apps_descargadas[indice]
         celular.apps.eliminar_app(app_seleccionada)
         
-        
-def cargar_celulares():
+
+def cargar_dispositivos():
     try:
-        with open('celulares.csv', "r", newline='') as archivo:
+        with open('dispositivos.csv', "r", newline='') as archivo:
             lector = csv.DictReader(archivo)
             for fila in lector:
-                # Crea 1 instancia de Celular para cada fila
-                celular = Celular(
-                    id=fila['id'],
-                    nombre=fila['nombre'],
-                    modelo=fila['modelo'],
-                    sistema_operativo=fila['sistema_operativo'],
-                    version=fila['version'],
-                    cap_memoria_ram=fila['cap_memoria_ram'],
-                    cap_almacenamiento=fila['cap_almacenamiento'],
-                    numero=fila['numero'],
-                    direcc_email=fila['mail']
-                )
-                Operadora.central.ids_registrados[celular.id] = celular
-                Operadora.central.celulares_registrados[celular.numero] = celular
-                celular.asignar_sms_telefono(Operadora.central)
+                tipo_dispositivo = fila['tipo'].lower()  # Columna tipo indica la clase a instanciar
+
+                if tipo_dispositivo == 'celular_nuevo':
+                    dispositivo = CelularNuevo(
+                        nombre=fila['nombre'],
+                        marca=fila['marca'],
+                        modelo=fila['modelo'],
+                        sistema_operativo=fila['sistema_operativo'],
+                        version=fila['version'],
+                        memoria_ram=fila['cap_memoria_ram'],
+                        almacenamiento=fila['cap_almacenamiento'],
+                        id=fila['id'],
+                        numero=fila['numero'],
+                        direcc_email=fila['mail']
+                    )
+
+                elif tipo_dispositivo == 'tablet':
+                    dispositivo = Tablet(
+                        nombre=fila['nombre'],
+                        marca=fila['marca'],
+                        modelo=fila['modelo'],
+                        sistema_operativo=fila['sistema_operativo'],
+                        version=fila['version'],
+                        memoria_ram=fila['cap_memoria_ram'],
+                        almacenamiento=fila['cap_almacenamiento'],
+                        id=fila['id'],
+                        direcc_email=fila['mail'] 
+                    )
+
+                elif tipo_dispositivo == 'celular_antiguo':
+                    dispositivo = CelularAntiguo(
+                        nombre=fila['nombre'],
+                        marca=fila['marca'],
+                        modelo=fila['modelo'],
+                        sistema_operativo=fila['sistema_operativo'],
+                        version=fila['version'],
+                        memoria_ram=fila['cap_memoria_ram'],
+                        almacenamiento=fila['cap_almacenamiento'],
+                        id=fila['id'],
+                        numero=fila['numero']
+                    )
+
+                else:
+                    print(f"Tipo de dispositivo desconocido: {fila['tipo']}")
+                    continue
+
+                Operadora.central.ids_registrados[dispositivo.id] = dispositivo
+                if isinstance(dispositivo, Celular):  # Solo Celular y derivados tienen números
+                    Operadora.central.celulares_registrados[dispositivo.numero] = dispositivo
+                    dispositivo.asignar_sms_telefono(Operadora.central)
+
     except FileNotFoundError:
         print("Error: El archivo no existe.")
     except IOError:

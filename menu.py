@@ -1,6 +1,6 @@
 from operadora import Operadora
 from central import Central
-from celular import Celular
+from dispositivo import Dispositivo,Tablet,Celular,CelularAntiguo,CelularNuevo
 from app_store import AppStore
 from aplicaciones import Spotify, Goodreads, Calculadora, Reloj
 from contactos import Contactos
@@ -19,7 +19,7 @@ def menu_principal(operadora):
             if Central.celulares_registrados:
                 manejar_celular()
             else:
-                print('Aún no hay ningún celular registrado en la central al que pueda acceder.')
+                print('Aún no hay ningún dispositivo registrado al que pueda acceder.')
         elif opcion == '3':
             print("Saliendo del programa.")
             continuar = False 
@@ -31,15 +31,35 @@ def submenu_operadora(operadora):
     continuar = True
     while continuar:
         funciones_menu.mostrar_submenu_operadora()
+        dispositivos_validos = ['tablet','celular']
         sub_opcion = input("Seleccione una opción: ")
         
         if sub_opcion == '1':
-            operadora.registrar_celular()
+            tipo_dispositivo = input('Ingrese el tipo de dispositivo que desea crear: ').strip().lower()
+            while tipo_dispositivo not in dispositivos_validos:
+                tipo_dispositivo = input('Dispositivo incorrecto. Ingrese nuevamente el tipo de dispositivo que desea crear: ').strip().lower() 
+            if tipo_dispositivo == 'tablet':
+                operadora.registrar_dispositivo('Tablet')
+            if tipo_dispositivo == 'celular':
+                while True:  
+                    año = input('Ingrese el año de fabricación del celular: ')
+                    try:
+                        año = int(año) 
+                        break  
+                    except ValueError:
+                        print("Entrada no válida. Debe ingresar un número.")
+                if año >= 2000:
+                    operadora.registrar_dispositivo('Celular Nuevo')
+                else:
+                    operadora.registrar_dispositivo('Celular Antiguo')
+
         elif sub_opcion == '2':
-            numero = input('Ingrese el número del celular al que quiere eliminar: ')
-            operadora.eliminar_celular(numero)
+            id = input('Ingrese el id del dispositivo que desea eliminar: ')
+            operadora.eliminar_dispositivo(id)
+            
         elif sub_opcion == '3':
             continuar = False  # Cambiar la condición para salir del bucle
+        
         else:
             print("Opción no válida. Intente de nuevo.")
 
@@ -53,59 +73,60 @@ def manejar_celular():
     else:
         print("Número de celular no registrado.")
 
-def celular_menu(celular):
+def celular_menu(dispositivo,operadora):
     continuar = True
     while continuar:
-        # Apenas entras, se fija si tenes llamadas entrantes, y no te deja usar el celular hasta que decidas que hacer con ellas
-        while celular.telefono.llamadas_entrantes:
-            celular.telefono.ejecutar_llamadas_entrantes()
-        funciones_menu.mostrar_submenu_celular(celular)
+        if not isinstance(dispositivo,Tablet):
+            # Apenas entras, se fija si tenes llamadas entrantes, y no te deja usar el celular hasta que decidas que hacer con ellas
+            while dispositivo.telefono.llamadas_entrantes:
+                dispositivo.telefono.ejecutar_llamadas_entrantes()
+        funciones_menu.mostrar_submenu_celular(dispositivo)
         eleccion = input("Seleccione una opción: ")
         ## Acá poner lo de las llamadas entrantes. Que solo aparezca el menú
         if eleccion == '1':
             print("Has seleccionado Contactos.")
-            celular.contactos.menu_contactos()
-        elif eleccion == '2':
+            dispositivo.contactos.menu_contactos()
+        elif eleccion == '2' and not isinstance(dispositivo,Tablet):
             print("Has seleccionado Mensajería SMS.")
-            celular.abrir_app_sms()
-        elif eleccion == '3':
+            dispositivo.abrir_app_sms()
+        elif eleccion == '3' and not isinstance(dispositivo,CelularAntiguo):
             print("Has seleccionado e-mail.")
-            celular.abrir_app_email()
-        elif eleccion == '4':
+            dispositivo.abrir_app_email(operadora)
+        elif eleccion == '4' and not isinstance(dispositivo,Tablet):
             print("Has seleccionado Teléfono.")
-            celular.abrir_app_telefono()
-        elif eleccion == '5':
+            dispositivo.abrir_app_telefono()
+        elif eleccion == '5' and not isinstance(dispositivo,CelularAntiguo):
             print("Has seleccionado App Store.")
-            celular.apps.mostrar_apps()
+            dispositivo.apps.mostrar_apps()
         elif eleccion == '6':
             print("Has seleccionado Configuración.")
-            celular.configuracion.configuracion()
-        elif True in [valor[0] for valor in celular.apps.apps_descargadas.values()] and eleccion == '7':
+            dispositivo.configuracion.configuracion()
+        elif not isinstance(dispositivo,CelularAntiguo) and True in [valor[0] for valor in dispositivo.apps.apps_descargadas.values()] and eleccion == '7':
             print("Has seleccionado Eliminar App.")
-            funciones_menu.menu_eliminar_app(celular)
-        elif celular.apps.apps_descargadas["Spotify"][0] and eleccion == '8':
+            funciones_menu.menu_eliminar_app(dispositivo)
+        elif not isinstance(dispositivo,CelularAntiguo) and dispositivo.apps.apps_descargadas["Spotify"][0] and eleccion == '8':
             print("Has seleccionado Abrir Spotify.")
-            celular.apps.apps_descargadas["Spotify"][1].ejecutar_menu()
-        elif celular.apps.apps_descargadas["Goodreads"][0] and eleccion == '9':
+            dispositivo.apps.apps_descargadas["Spotify"][1].ejecutar_menu()
+        elif not isinstance(dispositivo,CelularAntiguo) and dispositivo.apps.apps_descargadas["Goodreads"][0] and eleccion == '9':
             print("Has seleccionado Abrir Goodreads.")
-            celular.apps.apps_descargadas["Goodreads"][1].ejecutar_menu()
-        elif celular.apps.apps_descargadas["Calculadora"][0] and eleccion == '10':
+            dispositivo.apps.apps_descargadas["Goodreads"][1].ejecutar_menu()
+        elif not isinstance(dispositivo,CelularAntiguo) and dispositivo.apps.apps_descargadas["Calculadora"][0] and eleccion == '10':
             print("Has seleccionado Abrir Calculadora.")
-            celular.apps.apps_descargadas["Calculadora"][1].ejecutar_menu()
-        elif celular.apps.apps_descargadas["Reloj"][0] and eleccion == '11':
+            dispositivo.apps.apps_descargadas["Calculadora"][1].ejecutar_menu()
+        elif not isinstance(dispositivo,CelularAntiguo) and dispositivo.apps.apps_descargadas["Reloj"][0] and eleccion == '11':
             print("Has seleccionado Abrir Reloj.")
-            celular.apps.apps_descargadas["Reloj"][1].ejecutar_menu()
-        elif celular.apps.apps_descargadas["Notas"][0] and eleccion == '12':
+            dispositivo.apps.apps_descargadas["Reloj"][1].ejecutar_menu()
+        elif not isinstance(dispositivo,CelularAntiguo) and dispositivo.apps.apps_descargadas["Notas"][0] and eleccion == '12':
             print("Has seleccionado Abrir Notas.")
-            celular.apps.apps_descargadas["Notas"][1].ejecutar_menu()
+            dispositivo.apps.apps_descargadas["Notas"][1].ejecutar_menu()
         elif eleccion == '0':
             print("Saliendo del menú.")
             continuar = False 
         elif eleccion == "00":
             print("Apagando el celular y saliendo del menú")
-            celular.prendido = False
-            celular.bloqueo = True
-            celular.configuracion.desactivar_red_movil()
+            dispositivo.prendido = False
+            dispositivo.bloqueo = True
+            dispositivo.configuracion.desactivar_red_movil()
             continuar = False 
         else:
             print("Opción inválida. Por favor, seleccione una opción válida.")
@@ -114,7 +135,7 @@ def celular_menu(celular):
 
 # Función principal
 def main():
-    funciones_menu.cargar_celulares()
+    funciones_menu.cargar_dispositivos()
     operadora = Operadora('Personal')
     menu_principal(operadora)
 
