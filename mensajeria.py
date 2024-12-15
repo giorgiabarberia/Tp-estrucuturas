@@ -185,23 +185,22 @@ class Email():
 
     #Agrega un email a la bandeja de salida y a la bandeja de entrada de quien lo recibe 
     def enviar_email(self,central:Central):
-        print('\nMensaje nuevo')
-        destino = input('Para: ')
-        asunto = input('Asunto: ')
-        cuerpo = input('Cuerpo: ')
+        print("\nMensaje nuevo")
+        destino = input("Para: ").strip()
+        asunto = input("Asunto: ").strip()
+        cuerpo = input("Cuerpo: ").strip()
         mensaje = {
-            'Remitente': self.email_remitente,
-            'Destino': destino,
-            'Asunto': asunto,
-            'Cuerpo': cuerpo,
-            'Fecha': validaciones.obtener_fecha_actual(),
-            'Leído': False  #Se marca como no leído por defecto
+            "Remitente": self.email_remitente,
+            "Destinatario": destino,
+            "Asunto": asunto,
+            "Cuerpo": cuerpo,
+            "Fecha": datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
         }
-        if central.verif_mail(destino): # Verifica que el email exista
+        if central.verif_mail(destino):  # Verifica que el e-mail exista en la central
             if asunto or cuerpo:
-                self.bandeja_salida.append(mensaje) 
-                celu_destino = central.obtener_celu_por_email(destino)
-                celu_destino.email.recibir_email(self.email_remitente,destino,asunto,cuerpo)
+                self.bandeja_salida.append(mensaje)
+                dispositivo_destino = central.obtener_dispositivo_por_email(destino)
+                dispositivo_destino.email.recibir_email(self.email_remitente, destino, asunto, cuerpo)
                 print('¡Email enviado!')
             else:
                 print('No puedes enviar un email sin ningún contenido.')

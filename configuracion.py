@@ -13,20 +13,28 @@ class Configuracion:
         self.datos = False
     
     ## función de configuración
+    def opciones(self):
+        print('1. Cambiar nombre')
+        print('2. Cambiar código de desbloqueo')
+        if self.conectividad:
+            print('3. Datos')
+        if self.red:
+            print('4. Red movil')
+        print('5. Visualizar información del celular')
+        print('6. Salir')
+        
     def configuracion(self): 
-        opciones = {'1': 'Cambiar nombre','2': 'Cambiar código de desbloqueo','3': 'Datos','4': 'Red móvil','5': 'Visualizar información del celular','6': 'Salir'}
         while True:
             print("\nConfiguración:")
-            for key, value in opciones.items():
-                print(f"{key}. {value}")
+            self.opciones()
             opcion = input("Seleccione una opción: ").strip()
             if opcion == '1':
                 self.cambiar_nombre()
             elif opcion == '2':
                 self.cambiar_codigo()
-            elif opcion == '3':
+            elif opcion == '3' and self.conectividad:
                 self.configurar_datos()
-            elif opcion == '4':
+            elif opcion == '4' and self.red:
                 self.configurar_red_movil()
             elif opcion == '5': #Para que aparezca la info de tu celular
                 print('Los datos de su celular son: ')

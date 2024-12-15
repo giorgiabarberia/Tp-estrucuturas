@@ -66,7 +66,7 @@ class Tablet(Dispositivo):
     def __init__(self, nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento,id,direcc_email):
         super().__init__(nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento,id)
         self.direcc_email = direcc_email  ## Acá el email está dos veces, una vez como objeto y otra el email en sí
-        self.email = Email(self.direcc_email)
+        self.email = Email(direcc_email)
         self.apps = AppStore()
         self.configuracion = Configuracion(nombre,self,True,False)
         Dispositivo.mails_usados.add(direcc_email)
@@ -130,14 +130,16 @@ class CelularNuevo(Celular):
         return None
 
     #menu para todo lo que se pueda hacer con email
-    def abrir_app_email(self,central):
-        self.email.ejecutar_email(central)
+    def abrir_app_email(self, central):
+        if not isinstance(central, Central):
+            raise ValueError("Error: El objeto proporcionado no es una instancia válida de Central.")
+        self.email.ejecutar_email(central) 
 
-#VER COMO SACARLE LA CONFIGURACION PARA QUE NO SE CONECTE A INTERNET
+
 class CelularAntiguo(Celular):
     def __init__(self, nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id, numero):
         super().__init__(nombre, marca, modelo, sistema_operativo, version, memoria_ram, almacenamiento, id, numero)
-        
+        self.apps = None
         self.configuracion = Configuracion(nombre,self,False,True)
 
     def __str__(self):

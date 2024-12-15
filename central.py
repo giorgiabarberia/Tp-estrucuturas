@@ -57,20 +57,27 @@ class Central:
 
     def verif_mail(self, direcc_email):
         for celular in self.ids_registrados.values():
-            if celular.direcc_email == direcc_email:
+            if hasattr(celular, 'direcc_email') and celular.direcc_email == direcc_email:
                 return True
         return False
 
     def obtener_celu_por_email(self, direcc_email):
         for celular in self.ids_registrados.values():
-            if celular.direcc_email == direcc_email:
+            if hasattr(celular, 'direcc_email') and celular.direcc_email == direcc_email:
                 return celular
+        return None
+    
+    #Devuelve el dispositivo (celular o tablet) asociado a un email en la central.
+    def obtener_dispositivo_por_email(self, direcc_email):
+        for dispositivo in self.ids_registrados.values():
+            if hasattr(dispositivo, 'direcc_email') and dispositivo.direcc_email == direcc_email:
+                return dispositivo
         return None
 
     ##Inicia el proceso de llamada entre dos celulares
     def llamar(self, num_remitente, num_destino):
         if num_destino == num_remitente:
-            print('Error: No se puede llamar a usted mismo')
+            print('Error: No se puede llamar a usted mismo.')
             return False
         if not self.verif_disponibilidad(num_remitente):
             print('Error: El celular no está disponible.')

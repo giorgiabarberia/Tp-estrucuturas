@@ -8,7 +8,7 @@ import funciones_menu
 
 
 # Función principal del menú
-def menu_principal(operadora):
+def menu_principal(operadora, central):
     continuar = True
     while continuar:
         funciones_menu.mostrar_menu()
@@ -16,13 +16,13 @@ def menu_principal(operadora):
         if opcion == '1':
             submenu_operadora(operadora)
         elif opcion == '2':
-            if Central.celulares_registrados:
-                manejar_celular()
+            if central.ids_registrados:
+                manejar_dispositivo(central)  
             else:
                 print('Aún no hay ningún dispositivo registrado al que pueda acceder.')
         elif opcion == '3':
             print("Saliendo del programa.")
-            continuar = False 
+            continuar = False
         else:
             print("Opción no válida. Intente de nuevo.")
 
@@ -66,39 +66,59 @@ def crear_dispositivo(operadora):
         else:
             operadora.registrar_dispositivo('Celular Antiguo')
 
-def manejar_celular():
-    numero = funciones_menu.preguntar_numero_celular()
-    if numero in Central.celulares_registrados:
-        celular = Central.celulares_registrados[numero]
-        ok = celular.prender_celular()
-        if ok:
-            celular_menu(celular)
-    else:
-        print("Número de celular no registrado.")
+def manejar_dispositivo(central):
+    print("\n¿Desea ingresar con un celular o una tablet?")
+    tipo = input("Escriba 'celular' o 'tablet': ").strip().lower()
 
-def celular_menu(dispositivo,operadora):
+    if tipo == 'celular':
+        numero = input("Ingrese el número del celular: ").strip()
+        if numero in central.celulares_registrados:
+            dispositivo = central.celulares_registrados[numero]
+            if isinstance(dispositivo, Celular):
+                ok = dispositivo.prender_celular()
+                if ok:
+                    dispositivo_menu(dispositivo, central)
+        else:
+            print("Número de celular no registrado.")
+
+    elif tipo == 'tablet':
+        mail = input("Ingrese el email de la tablet: ").strip()
+        if mail in Dispositivo.mails_usados:
+            for elemento in Operadora.central.ids_registrados.values():
+                if not isinstance(elemento, CelularAntiguo): 
+                    if elemento.direcc_email == mail:
+                        dispositivo = elemento
+                        break
+        if dispositivo and isinstance(dispositivo, Tablet):
+            dispositivo_menu(dispositivo, central)
+        else:
+            print("Mail de tablet no registrado o el dispositivo no es una tablet.")
+
+    else:
+        print("Tipo de dispositivo no válido. Por favor, intente nuevamente.")
+
+def dispositivo_menu(dispositivo, central):
     continuar = True
     while continuar:
-        if not isinstance(dispositivo,Tablet):
-            # Apenas entras, se fija si tenes llamadas entrantes, y no te deja usar el celular hasta que decidas que hacer con ellas
+        if not isinstance(dispositivo, Tablet):
             while dispositivo.telefono.llamadas_entrantes:
                 dispositivo.telefono.ejecutar_llamadas_entrantes()
-        funciones_menu.mostrar_submenu_celular(dispositivo)
+        funciones_menu.mostrar_submenu_dispositivo(dispositivo)
         eleccion = input("Seleccione una opción: ")
-        ## Acá poner lo de las llamadas entrantes. Que solo aparezca el menú
-        if eleccion == '1':
+
+        if not isinstance(dispositivo, Tablet) and eleccion == '1':
             print("Has seleccionado Contactos.")
             dispositivo.contactos.menu_contactos()
-        elif eleccion == '2' and not isinstance(dispositivo,Tablet):
+        elif not isinstance(dispositivo, Tablet) and eleccion == '2':
             print("Has seleccionado Mensajería SMS.")
             dispositivo.abrir_app_sms()
-        elif eleccion == '3' and not isinstance(dispositivo,CelularAntiguo):
+        elif not isinstance(dispositivo, CelularAntiguo) and eleccion == '3':
             print("Has seleccionado e-mail.")
-            dispositivo.abrir_app_email(operadora)
-        elif eleccion == '4' and not isinstance(dispositivo,Tablet):
+            dispositivo.abrir_app_email(central)  
+        elif not isinstance(dispositivo, Tablet) and eleccion == '4':
             print("Has seleccionado Teléfono.")
             dispositivo.abrir_app_telefono()
-        elif eleccion == '5' and not isinstance(dispositivo,CelularAntiguo):
+        elif eleccion == '5' and not isinstance(dispositivo, CelularAntiguo):
             print("Has seleccionado App Store.")
             dispositivo.apps.mostrar_apps()
         elif eleccion == '6':
@@ -140,7 +160,9 @@ def celular_menu(dispositivo,operadora):
 def main():
     funciones_menu.cargar_dispositivos()
     operadora = Operadora('Personal')
-    menu_principal(operadora)
+    central = Central()
+    operadora.central = central
+    menu_principal(operadora,central)
 
 # Ejecución del código
 if __name__ == "__main__":

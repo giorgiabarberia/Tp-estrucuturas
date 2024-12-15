@@ -58,6 +58,12 @@ class ListaEnlazada:
             aux = aux.siguiente
         return aux.dato    
     
+    #Añade los elementos de un iterable al final de la lista enlazada
+    def extend(self, iterable):
+        for elemento in iterable:
+            nuevo_nodo = Nodo(elemento)  
+            self.agregarFinal(nuevo_nodo)
+    
 class NodoTiempo:
     def __init__(self, titulo, cuerpo, tiempo):
         self.titulo = titulo

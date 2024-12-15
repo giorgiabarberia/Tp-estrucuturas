@@ -1,5 +1,4 @@
-tipo,id,nombre,modelo,marca,sistema_operativo,version,ram,almacenamiento,numero,email
-Tabelt,r8MRaDwbhkDsDLImEI1dwTQpX,belu,1,1,1,1,1,1,,1be@gmail.com
-Celular_Nuevo,sXbjAK4EeMsoEdbmTj0ucTPgb,beol,w,e,w,w,w,w,1171374925,w@gmail.com
-Celular_Antiguo,n7qS8Tij72GJWsigyaQCgprFa,be,wf,enejww,w,wg,weg,er,1169715254,
-Celular_Nuevo,OmjkPQPDI6Hj20pi7mxpXjxD0,beku,wef,wef,wef,ewf,wfe,wef,1136158232,aa@gmail.com
+tipo            ,id                        ,nombre ,modelo ,marca   ,sistema_operativo ,version ,ram ,almacenamiento ,numero     ,email
+Celular_Antiguo ,pw8M66Fxml7gIvRb7jP2v4z2V ,belu   ,ae     ,samsung ,andrioid          ,     22 ,120 ,           120 ,1131008298 ,
+Celular_Nuevo   ,45SZsnXEBizv17K4xwtjbPDz0 ,joaco  ,iphone ,apple   ,ios               ,     12 ,100 ,           130 ,1137937548 ,joaco@gmail.com
+Tabelt          ,VuuyAieXFkf9R0NirC8bpV0Mp ,gio    ,ipad   ,apple   ,ios               ,     12 ,120 ,           120 ,           ,gio@gmail.com

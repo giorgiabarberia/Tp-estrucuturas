@@ -30,26 +30,31 @@ def preguntar_numero_celular():
     return numero
 
 # Submenú celular, hay opciones que solo se muestran si las apps correspondientes están descargadas. 
-def mostrar_submenu_celular(dispositivo):
+def mostrar_submenu_dispositivo(dispositivo):
     print("\n-----Menú-----")
-    print("1. 📖 Contactos")
-    print("2. 💬 Mensajería SMS")
-    print("3. 📧 e-mail")
-    print("4. 📞 Teléfono")
-    print("5. 📱 App Store")
+    if not isinstance(dispositivo, Tablet):
+        print("1. 📖 Contactos")
+        print("2. 💬 Mensajería SMS")
+    if not isinstance(dispositivo, CelularAntiguo):
+        print("3. 📧 e-mail")
+    if not isinstance(dispositivo, Tablet):
+        print("4. 📞 Teléfono")
+    if not isinstance(dispositivo, CelularAntiguo):
+        print("5. 📱 App Store")
     print("6. ⚙️  Configuración")
-    if True in [valor[0] for valor in dispositivo.apps.apps_descargadas.values()] and not isinstance(dispositivo,CelularAntiguo):  
-        print("7. 👺Eliminar app")
-    if dispositivo.apps.apps_descargadas["Spotify"][0] and not isinstance(dispositivo,CelularAntiguo):
-        print("8. 🎧 Abrir Spotify")
-    if dispositivo.apps.apps_descargadas["Goodreads"][0] and not isinstance(dispositivo,CelularAntiguo):
-        print("9. 📚 Abrir Goodreads")
-    if dispositivo.apps.apps_descargadas["Calculadora"][0] and not isinstance(dispositivo,CelularAntiguo):
-        print("10. 🧮 Abrir Calculadora")
-    if dispositivo.apps.apps_descargadas["Reloj"][0] and not isinstance(dispositivo,CelularAntiguo):
-        print("11. 🕑 Abrir Reloj")
-    if dispositivo.apps.apps_descargadas["Notas"][0] and not isinstance(dispositivo,CelularAntiguo):
-        print("12. 📝 Abrir Notas")
+    if hasattr(dispositivo, 'apps') and dispositivo.apps:
+        if True in [valor[0] for valor in dispositivo.apps.apps_descargadas.values()]:
+            print("7. 👺 Eliminar App")
+        if dispositivo.apps.apps_descargadas.get("Spotify", [False])[0]:
+            print("8. 🎧 Abrir Spotify")
+        if dispositivo.apps.apps_descargadas.get("Goodreads", [False])[0]:
+            print("9. 📚 Abrir Goodreads")
+        if dispositivo.apps.apps_descargadas.get("Calculadora", [False])[0]:
+            print("10. 🧮 Abrir Calculadora")
+        if dispositivo.apps.apps_descargadas.get("Reloj", [False])[0]:
+            print("11. 🕑 Abrir Reloj")
+        if dispositivo.apps.apps_descargadas.get("Notas", [False])[0]:
+            print("12. 📝 Abrir Notas")
     if not isinstance(dispositivo,Tablet):
         print("0. Salir y dejar el celular prendido (puede recibir llamados)")
         print("00. Salir y apagar el dispositivo")
